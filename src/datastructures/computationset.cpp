@@ -1,4 +1,4 @@
-#include "computationset.h"
+#include "../../include/computationset.h"
 
 ComputationSet::ComputationSet()
 {

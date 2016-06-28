@@ -1,4 +1,4 @@
-#include "vertex.h"
+#include "../../include/vertex.h"
 
 // Constructors
 Vertex::Vertex(int idx, int id, std::vector<int> outEdges, std::vector<char> outEdgeValues)
