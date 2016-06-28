@@ -1,9 +1,0 @@
-#! /bin/bash
-
-i=0
-
-while [ $i -ne 5 ];
-do
-	../bin/comp GEN
-	let i+=1
-done
