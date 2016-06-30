@@ -16,11 +16,14 @@ int main(){
 			cmp.push_back(g);
 	}
 
+	ofstream fout;
+	fout.open("grammar.output");
 	int pos;
 	for(int i=0; i<cmp.size(); i++){
 		pos = find(cmp.begin(),cmp.end(),cmp.at(i)) - cmp.begin();
-		cout << cmp.at(i) << " -> " << pos << endl;
+		fout << cmp.at(i) << " -> " << pos << endl;
 	}
 
 	fin.close();
+	fout.close();
 }
