@@ -2,19 +2,24 @@
 
 Grammar::Grammar(){}
 
-void Grammar::GrammarCheck(){
+bool Grammar::LoadGrammar(string fname){
 	ifstream fin;
-	fin.open("grammar");
+	fin.open(fname);
+	if(!fin) return false;	
 
-	string temp;
+	char str[512]; //for reading original data
+	char *p; //token
+	vector<string> tok; //for distinguishing rules
+	string temp; //temporary storage
+
 	while(!fin.getline(str,sizeof(str)).eof()){
 		p = strtok(str,"\t");
 		while(p != NULL){
 			temp = trimStr(p);
 			trimStr(temp);
 			tok.push_back(temp);
-			if(mapp.size() == find(mapp.begin(),mapp.end(),temp) - mapp.begin())
-				mapp.push_back(temp);
+			//mapping process
+			mapping(temp);
 			p = strtok(NULL,"\t");
 		}
 
@@ -31,8 +36,14 @@ void Grammar::GrammarCheck(){
 		//initialize
 		tok.erase(tok.begin(),tok.end());
 	}
-
 	fin.close();
+	return true;
+}
+
+void Grammar::mapping(string temp){
+	if(map_info.size() == find(map_info.begin(),map_info.end(),temp) - map_info.begin())
+		map_info.push_back(temp);
+
 }
 
 string Grammar::trimStr(string str){
@@ -41,39 +52,42 @@ string Grammar::trimStr(string str){
 	return str.substr(first,(last - first + 1));
 }
 
-char Grammar::getValue(string str){
-	return (find(mapp.begin(),mapp.end(),str) - mapp.begin());
+inline char Grammar::getValue(string str){
+	return (find(map_info.begin(),map_info.end(),str) - map_info.begin());
 }
 
-short Grammar::changeShort(char a, char b){
+inline short Grammar::changeShort(char a, char b){
 	return (short)a << 8 | b;
 }
 
-void Grammar::print_e(){
-	set<char>::iterator it;
+char Grammar::check1Rules(string srcVal){
+	map<char,char>::iterator it = sRules.find(getValue(srcVal));
+	//return (*n).second;
+	return (it != sRules.end()) ? (*it).second : char(-1);
+}
+
+char Grammar::check2Rules(string srcEdgVal, string dstVal){
+	short key = changeShort(getValue(srcEdgVal),getValue(dstVal));
+	map<short, char>::iterator it = dRules.find(key);
+	return (it != dRules.end()) ? (*it).second : char(-1);
+}
+
+bool Grammar::print_all(){
+	if(!eRules.size() && !sRules.size() && !dRules.size()) return false;
+	
+	set<char>::iterator it_e; //for eRules
 	cout << "eRules" << endl;
-	for(it=eRules.begin();it!=eRules.end();it++)
-		cout << (short)*it << endl;
-}
-
-void Grammar::print_s(){
-	map<char, char>::iterator it;
+	for(it_e=eRules.begin();it_e!=eRules.end();it_e++)
+		cout << (short)*it_e << endl;
+	
+	map<char, char>::iterator it_s; //for sRules
 	cout << "sRules" << endl;
-	for(it=sRules.begin(); it!=sRules.end();it++)
-		cout << (short)(*it).first << " -> "  << (short)(*it).second << endl;
-}
-
-void Grammar::print_d(){
-	map<short, char>::iterator it;
+	for(it_s=sRules.begin(); it_s!=sRules.end();it_s++)
+		cout << (short)(*it_s).first << " -> "  << (short)(*it_s).second << endl;
+	
+	map<short, char>::iterator it_d; //for dRules
 	cout << "dRules" << endl;
-	for(it=dRules.begin(); it!=dRules.end();it++)
-		cout << ((*it).first >> 8) << "," << (short)((char)(*it).first) << " -> "  << (short)(*it).second << endl;
-}
-
-int main(){
-	Grammar g;
-	g.GrammarCheck();
-	g.print_e();
-	g.print_s();
-	g.print_d();
+	for(it_d=dRules.begin(); it_d!=dRules.end();it_d++)
+		cout << ((*it_d).first >> 8) << "," << (short)((char)(*it_d).first) << " -> "  << (short)(*it_d).second << endl;
+	return true;
 }
