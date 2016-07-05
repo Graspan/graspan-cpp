@@ -2,121 +2,125 @@
 
 bool compareV(const std::pair<int, std::string> &lhs, const std::pair<int, std::string> &rhs);
 
-Preproc::Preproc()	{
+Preproc::Preproc(char *fileName) {
+	clock_t begin, end;
 	part = "part";
+	vitSize = 0;
+	FILE *fp;
+	char buf[512];
+	char *p_token = NULL;
+	char *context = NULL;
+	int src;
+	dataSize = 0;
+	begin = clock();
+	//fisrt file scan for count how many src is in the file
+	//for memory allocation it takes 19s
+	fopen_s(&fp, fileName, "r");
+	while (NULL != fgets(buf, sizeof(buf), fp)) {
+		p_token = strtok_s(buf, "\n", &context);
+		p_token = strtok_s(buf, "\t", &context);
+		src = atoi(p_token);
+
+		if (src > dataSize)
+			dataSize = src;
+	}
+	fclose(fp);
+	end = clock();
+	std::cout << "Preproc data count time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
+
+	//memory allocation, it takes 10s
+	begin = clock();
+	data = new std::vector<std::pair<int, std::string>>[dataSize + 1];
+	vertInterTable = new int[dataSize + 1];
+	end = clock();
+	std::cout << "memory allocation time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
+
 }
 
-void Preproc::makeVIT(char *fileName, int size)	{
-	std::ifstream inFile(fileName);
-	std::map<int, int>::iterator it;
-	std::map<int, int>::reverse_iterator it2;
-
+void Preproc::makeVIT(char *fileName, int size) {
+	clock_t begin, end;
 	int src, dst, degree;
 	std::string label;
-
-	//use map to make VIT
-	while (!inFile.eof()) {
-		inFile >> src >> dst >> label;
-		vitMap[src] = vitMap[src]+1;
-	}
-	//maximum VIT size is vitMap's size
-	vertInterTable = new int[vitMap.size()];
-
-	int i = 0;
+	char buf[512];
+	char *ctemp[3];
+	int i = 0, j = 0;
+	char *p_token = NULL;
+	char *context = NULL;
 	int sum = 0;
-	//print for check
-	//for (it = vitMap.begin(); it != vitMap.end(); it++) {
-	//	std::cout << it->first << " " << it->second << std::endl;
-	//}
+	FILE *fp;
 
-	//make VIT
-	it2 = vitMap.rbegin();
-	for (it = vitMap.begin(); it != vitMap.end(); it++) {
-		sum += it->second;
+	//second file scan for get the data and put in the 
+	//data (vector of array) it takes 275s need to fix for improve the time complexity
+	begin = clock();
+	fopen_s(&fp, fileName, "r");
+	while (NULL != fgets(buf, sizeof(buf), fp)) {
+		p_token = strtok_s(buf, "\n", &context);
+		p_token = strtok_s(buf, "\t", &context);
+		while (p_token != NULL) {
+			ctemp[i++] = p_token;
+			p_token = strtok_s(NULL, "\t", &context);
+		}
+		src = atoi(ctemp[0]);
+		dst = atoi(ctemp[1]);
+		label = ctemp[2];
+
+		data[src].push_back(std::make_pair(dst, label));
+		i = 0;
+	}
+	fclose(fp);
+	end = clock();
+	std::cout << "makeVIT data input time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
+
+	//sorting the vector of array and make VIT, it takes 88s
+	begin = clock();
+	for (i = 0; i <= dataSize; i++) {
+		std::sort(data[i].begin(), data[i].end(), compareV);
+		sum += data[i].size();
 		if (sum >= size) {
-			vertInterTable[i++] = it->first;
+			vertInterTable[j++] = i;
 			sum = 0;
-			continue;
-			//print for check
-			//std::cout << i << " " << vertInterTable[i - 1] << std::endl;
-		}
-		if (it->first == it2->first) {
-			vertInterTable[i++] = it->first;
 		}
 	}
-	this->vitSize = i;
+	if (sum != 0)
+		vertInterTable[j++] = i - 1;
+	this->vitSize = j;
+	end = clock();
+	std::cout << "makeVIT sorting time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
+
 }
 
-void Preproc::makePart(char *fileName)	{
-	std::ifstream inFile(fileName);
-	int src, dst, degree;
-	std::string label;
-	while (!inFile.eof()) {
-		int i = 0;
-		inFile >> src >> dst >> label;
+void Preproc::makePart() {
+	FILE *f;
+	std::string str;
+	std::string name;
+	int start = 0;
 
-		//just make partition it isn't sorted
-		//1 3 1
-		//2 4 5
-		//1 2 6 can exist
-		for (int i = 0; i < (int)vitMap.size(); i++) {
-			if (src <= vertInterTable[i]) {
-				std::string str = std::to_string(i);
-				if (std::ifstream(this->part + str))	//if file exist write std::endl;
-				{
-					std::ofstream outFile(this->part + str, std::ios::app);
-					outFile << std::endl;
-					outFile << src << " " << dst << " " << label;
-				}
-				else {
-					std::ofstream outFile(this->part + str);
-					outFile << src << " " << dst << " " << label;
-				}
-				break;
+	//make partition files, it takes 64s
+	for (int i = 0; i < vitSize; i++) {
+		str = std::to_string(i);
+		name = this->part;
+		name += str.c_str();
+
+		fopen_s(&f, name.c_str(), "a");
+		for (int j = start; j <= vertInterTable[i]; j++) {
+			if (data[j].size() != 0) {
+				fprintf(f, "%d\t%d\t", j, data[j].size());
+				for (int k = 0; k < data[j].size(); k++)
+					fprintf(f, "%d\t%s\t", data[j][k].first, data[j][k].second.c_str());
+				fprintf(f, "\n");
 			}
 		}
+		fclose(f);
+		start = vertInterTable[i];
 	}
 }
-
-void Preproc::partSort()	{
-	outfileName = "spart";
-	for (int i = 0; i < this->vitSize; i++) {
-		std::string str = std::to_string(i);
-		std::ifstream inFile(this->part + str);
-
-		int src, dst, degree;
-		std::string label;
-		std::map<int, std::vector<std::pair<int, std::string>>> partMap;
-		std::map<int, std::vector<std::pair<int, std::string>>>::iterator it;
-		//read partition files
-		while (!inFile.eof()) {
-			inFile >> src >> dst >> label;
-
-			partMap.insert(std::pair<int, std::vector<std::pair<int, std::string>>>(src, std::vector<std::pair<int, std::string>>()));
-			partMap[src].push_back(std::make_pair(dst, label));
-		}
-		//sort and make outputFIle
-		for (it = partMap.begin(); it != partMap.end(); it++) {
-			std::sort(partMap[it->first].begin(), partMap[it->first].end(), compareV);
-			std::ofstream outFile(this->outfileName + str, std::ios::app);
-			if (it != partMap.begin())
-				outFile << "\n";
-			outFile << it->first << " " << partMap[it->first].size() << " ";
-			for (int j = 0; j < (int)partMap[it->first].size(); j++) {
-				outFile << partMap[it->first][j].first << " " << partMap[it->first][j].second;
-				if (j != partMap[it->first].size() - 1)
-					outFile << " ";
-			}
-		}
-		partMap.clear();
-	}
-}
-
 
 Preproc::~Preproc()
 {
 	delete[]vertInterTable;
-	vitMap.clear();
+	for (int i = 0; i <= dataSize; i++)
+		data[i].clear();
+	delete[]data;
 }
 
 bool compareV(const std::pair<int, std::string> &lhs, const std::pair<int, std::string> &rhs)
