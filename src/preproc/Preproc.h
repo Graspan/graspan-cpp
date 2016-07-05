@@ -15,6 +15,7 @@
 class Preproc {
 private:
 	char *part;
+	int count;
 	int vitSize;
 	int dataSize;
 	int *vertInterTable;
@@ -23,8 +24,8 @@ private:
 
 
 public:
-	Preproc(char *fileName);
-	void makeVIT(char *fileName, int size = 10000);
+	Preproc(char *fileName, int size);
+	void makeVIT(char *fileName);
 	void makePart();
 	~Preproc();
 };

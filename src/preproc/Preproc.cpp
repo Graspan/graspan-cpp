@@ -2,16 +2,17 @@
 
 bool compareV(const std::pair<int, std::string> &lhs, const std::pair<int, std::string> &rhs);
 
-Preproc::Preproc(char *fileName) {
+Preproc::Preproc(char *fileName, int size) {
 	clock_t begin, end;
+	vitSize = size;
 	part = "part";
-	vitSize = 0;
 	FILE *fp;
 	char buf[512];
 	char *p_token = NULL;
 	char *context = NULL;
 	int src;
 	dataSize = 0;
+	count = 0;
 	begin = clock();
 	//fisrt file scan for count how many src is in the file
 	//for memory allocation it takes 19s
@@ -23,6 +24,7 @@ Preproc::Preproc(char *fileName) {
 
 		if (src > dataSize)
 			dataSize = src;
+		count++;
 	}
 	fclose(fp);
 	end = clock();
@@ -37,7 +39,7 @@ Preproc::Preproc(char *fileName) {
 
 }
 
-void Preproc::makeVIT(char *fileName, int size) {
+void Preproc::makeVIT(char *fileName) {
 	clock_t begin, end;
 	int src, dst, degree;
 	std::string label;
@@ -75,15 +77,15 @@ void Preproc::makeVIT(char *fileName, int size) {
 	begin = clock();
 	for (i = 0; i <= dataSize; i++) {
 		std::sort(data[i].begin(), data[i].end(), compareV);
+		data[i].erase(unique(data[i].begin(), data[i].end()), data[i].end());
 		sum += data[i].size();
-		if (sum >= size) {
+		if (sum >= count / vitSize + 1) {
 			vertInterTable[j++] = i;
 			sum = 0;
 		}
 	}
 	if (sum != 0)
 		vertInterTable[j++] = i - 1;
-	this->vitSize = j;
 	end = clock();
 	std::cout << "makeVIT sorting time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 

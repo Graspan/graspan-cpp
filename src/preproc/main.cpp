@@ -3,14 +3,14 @@
 void delFiles();
 
 int main(int argc, char *argv[]) {
-	int size = 5000000;						//test size for each partitions
+	int numPart = 10;						//it will change numPart = argv[2] or else, userinput
 	clock_t begin, end;
 
 	delFiles();
-	Preproc pre("bigtest.txt");
+	Preproc pre("test.txt", numPart);
 
 	begin = clock();
-	pre.makeVIT("bigtest.txt", size);		//need to fix input file
+	pre.makeVIT("test.txt");		//need to fix input file
 	end = clock();
 	std::cout << "makeVIT time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 
