@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <stdio.h>
 #include <time.h>
+#include <set>
 
 
 
@@ -19,7 +20,7 @@ private:
 	int vitSize;
 	int dataSize;
 	int *vertInterTable;
-
+	std::set<char> eRules;
 	std::vector<std::pair<int, std::string>> *data;
 
 
@@ -27,6 +28,7 @@ public:
 	Preproc(char *fileName, int size);
 	void makeVIT(char *fileName);
 	void makePart();
+	void setErules(std::set<char> eRules);
 	~Preproc();
 };
 

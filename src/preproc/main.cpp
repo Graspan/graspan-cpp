@@ -1,4 +1,5 @@
 #include "Preproc.h"
+#include "../mapping/grammarChecker.cpp"
 
 void delFiles();
 
@@ -7,8 +8,13 @@ int main(int argc, char *argv[]) {
 	clock_t begin, end;
 
 	delFiles();
+	Grammar g;
+	if (!g.LoadGrammar("../mapping/grammar")) {			//just for test need to fix
+		std::cout << "file is not exist" << std::endl;
+		exit(1);
+	}
 	Preproc pre("test.txt", numPart);
-
+	pre.setErules(g.getErules());
 	begin = clock();
 	pre.makeVIT("test.txt");		//need to fix input file
 	end = clock();
