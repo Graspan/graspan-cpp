@@ -21,6 +21,7 @@ public:
 	Grammar();
 	bool LoadGrammar(string fname);
 	bool print_all();
+	inline vector<string> getMapInfo();
 	inline set<char> getErules();
 	char check1Rules(string srcVal);
 	char check2Rules(string srcEdgVal, string dstVal);
