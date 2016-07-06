@@ -15,12 +15,13 @@ private:
 	map<short, char> dRules;
 	void mapping(string temp);
 	string trimStr(string str);
+	inline char getValue(string str);
 	inline short changeShort(char a, char b);
 public:
 	Grammar();
 	bool LoadGrammar(string fname);
 	bool print_all();
-	inline char getValue(string str);
+	inline set<char> getErules();
 	char check1Rules(string srcVal);
 	char check2Rules(string srcEdgVal, string dstVal);
 };

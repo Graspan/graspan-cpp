@@ -60,6 +60,10 @@ inline short Grammar::changeShort(char a, char b){
 	return (short)a << 8 | b;
 }
 
+inline set<char> Grammar::getErules(){
+	return eRules;
+}
+
 char Grammar::check1Rules(string srcVal){
 	map<char,char>::iterator it = sRules.find(getValue(srcVal));
 	//return (*n).second;
