@@ -1,29 +1,34 @@
-#ifndef VERTEX_H
-#define VERTEX_H
+#ifndef PREPROC_H
+#define PREPROC_H
 
 #include <iostream>
 #include <fstream>
-#include <map>
 #include <vector>
 #include <stdlib.h>
 #include <string>
 #include <algorithm>
 #include <stdio.h>
+#include <time.h>
+#include <set>
 
 
-//coded in visualstudio so need to fix to use in linux 
+
 class Preproc {
 private:
 	char *part;
-	char *outfileName;
-	int *vertInterTable;
-	std::map<int, int> vitMap;
+	int count;
 	int vitSize;
+	int dataSize;
+	int *vertInterTable;
+	std::set<char> eRules;
+	std::vector<std::pair<int, std::string>> *data;
+
+
 public:
-	Preproc();
-	void makeVIT(char *fileName, int size = 5);
-	void makePart(char *fileName);
-	void partSort();
+	Preproc(char *fileName, int size);
+	void makeVIT(char *fileName);
+	void makePart();
+	void setErules(std::set<char> eRules);
 	~Preproc();
 };
 
