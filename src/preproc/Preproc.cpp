@@ -24,7 +24,6 @@ Preproc::Preproc(char *fileName, int size) {
 
 		if (src > dataSize)
 			dataSize = src;
-		count++;
 	}
 	fclose(fp);
 	end = clock();
@@ -42,6 +41,7 @@ Preproc::Preproc(char *fileName, int size) {
 void Preproc::makeVIT(char *fileName) {
 	clock_t begin, end;
 	int src, dst, degree;
+	int size;
 	std::string label;
 	char buf[512];
 	char *ctemp[3];
@@ -50,9 +50,10 @@ void Preproc::makeVIT(char *fileName) {
 	char *context = NULL;
 	int sum = 0;
 	FILE *fp;
+	std::set<char>::iterator it_e; //for eRules
 
-	//second file scan for get the data and put in the 
-	//data (vector of array) it takes 275s need to fix for improve the time complexity
+								   //second file scan for get the data and put in the 
+								   //data (vector of array) it takes 275s need to fix for improve the time complexity
 	begin = clock();
 	fopen_s(&fp, fileName, "r");
 	while (NULL != fgets(buf, sizeof(buf), fp)) {
@@ -76,10 +77,22 @@ void Preproc::makeVIT(char *fileName) {
 	//sorting the vector of array and make VIT, it takes 88s
 	begin = clock();
 	for (i = 0; i <= dataSize; i++) {
+		for (it_e = eRules.begin(); it_e != eRules.end(); it_e++) {
+			label = std::string(1, *it_e);
+			data[i].push_back(std::make_pair(i, label));
+		}
 		std::sort(data[i].begin(), data[i].end(), compareV);
 		data[i].erase(unique(data[i].begin(), data[i].end()), data[i].end());
+		count += data[i].size();
+	}
+	if (count % vitSize == 0)
+		size = count / vitSize;
+	else
+		size = count / vitSize + count %vitSize;
+
+	for (i = 0; i <= dataSize; i++) {
 		sum += data[i].size();
-		if (sum >= count / vitSize + 1) {
+		if (sum >= size) {
 			vertInterTable[j++] = i;
 			sum = 0;
 		}
@@ -115,6 +128,11 @@ void Preproc::makePart() {
 		fclose(f);
 		start = vertInterTable[i];
 	}
+}
+
+void Preproc::setErules(std::set<char> eRules)
+{
+	this->eRules = eRules;
 }
 
 Preproc::~Preproc()
