@@ -27,11 +27,11 @@ bool Grammar::LoadGrammar(string fname){
 		if(tok.size() == 1)
 			eRules.insert(getValue(tok.at(0)));
 		//s-rule
-		if(tok.size() == 2)
-			sRules[getValue(tok.at(1))]=getValue(tok.at(0));
+		else if(tok.size() == 2)
+			rules[changeShort(0,getValue(tok.at(1)))]=getValue(tok.at(0));
 		//d-rule
-		if(tok.size() == 3)
-			dRules[changeShort(getValue(tok.at(1)),getValue(tok.at(2)))]=getValue(tok.at(0));
+		else if(tok.size() == 3)
+			rules[changeShort(getValue(tok.at(1)),getValue(tok.at(2)))]=getValue(tok.at(0));
 		
 		//initialize
 		tok.erase(tok.begin(),tok.end());
@@ -68,33 +68,19 @@ inline set<char> Grammar::getErules(){
 	return eRules;
 }
 
-char Grammar::check1Rules(string srcVal){
-	map<char,char>::iterator it = sRules.find(getValue(srcVal));
-	return (it != sRules.end()) ? (*it).second : char(-1);
-}
-
-char Grammar::check2Rules(string srcEdgVal, string dstVal){
-	short key = changeShort(getValue(srcEdgVal),getValue(dstVal));
-	map<short, char>::iterator it = dRules.find(key);
-	return (it != dRules.end()) ? (*it).second : char(-1);
-}
-
 bool Grammar::print_all(){
-	if(!eRules.size() && !sRules.size() && !dRules.size()) return false;
+	if(!eRules.size() && !rules.size()) return false;
 	
 	set<char>::iterator it_e; //for eRules
-	cout << "eRules" << endl;
 	for(it_e=eRules.begin();it_e!=eRules.end();it_e++)
 		cout << (short)*it_e << endl;
 	
-	map<char, char>::iterator it_s; //for sRules
-	cout << "sRules" << endl;
-	for(it_s=sRules.begin(); it_s!=sRules.end();it_s++)
-		cout << (short)(*it_s).first << " -> "  << (short)(*it_s).second << endl;
-	
-	map<short, char>::iterator it_d; //for dRules
-	cout << "dRules" << endl;
-	for(it_d=dRules.begin(); it_d!=dRules.end();it_d++)
-		cout << ((*it_d).first >> 8) << "," << (short)((char)(*it_d).first) << " -> "  << (short)(*it_d).second << endl;
+	map<short, char>::iterator it;
+	for(it=rules.begin(); it!=rules.end(); it++){
+		if((*it).first <=256)
+			cout << ((*it).first) << "->" << (short)(*it).second << endl;
+		else
+			cout << ((*it).first >> 8) << "," << (short)(char)(*it).first << "->" << (short)(*it).second << endl;
+	}
 	return true;
 }
