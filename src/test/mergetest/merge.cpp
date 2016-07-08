@@ -7,11 +7,6 @@
 // TODO: Do for more than just one iteration
 
 
-// TYPEDEFS
-typedef std::vector< std::vector<int> > intvec;
-typedef std::vector< std::vector<char> > charvec;
-
-
 // GLOBAL VARS
 int deltaPtr = -1;
 int oUnUdPtr = -1;
@@ -21,8 +16,11 @@ std::unordered_set<char> currEvals;
 std::priority_queue<MinSet, std::vector<MinSet>, compare> minEdges;
 
 // FUNCTION HEADERS
-void mergeVecs(intvec &edgesToMergs, charvec &valsToMerge, int srcID, std::vector<int> &deltaEdges,
+void mergeVecs(std::vector< std::vector<int> > &edgesToMergs, std::vector< std::vector<char> > &valsToMerge, int srcID, std::vector<int> &deltaEdges,
 		std::vector<char> &deltaVals, std::vector<int> &oUnUdEdges, std::vector<char> &oUnUdVals);
+
+void removeExtraSpace(std::vector<int> &oUnUdEdges, std::vector<char> &oUnUdVals,
+		std::vector<int> &deltaEdges, std::vector<char> &deltaVals);
 
 void updateMinSet(MinSet &minset, std::vector<int> &edges, std::vector<char> &vals);
 
@@ -36,18 +34,18 @@ void processMinSets(MinSet &srcMS, MinSet &tgtMS, std::vector<int> &srcDeltaEdge
 
 void vecMerge(std::vector< std::vector<int> > &edgeVecsToMerge, std::vector< std::vector<char> > &valVecsToMerge, int srcID)
 {
-//	intvec edges{{100, 100, 200, 1700}, {2, 11, 17, 17, 25},
+//	std::vector< std::vector<int> > edges{{100, 100, 200, 1700}, {2, 11, 17, 17, 25},
 //			{3, 12, 13, 18, 23}, {}, {1, 4, 11, 12}};
-//	charvec vals{{'a', 'd', 'a', 'b', 'c', 'e', 'd'}, {'d', 'a', 'b' ,'c', 'e'},
+//	std::vector< std::vector<char> > vals{{'a', 'd', 'a', 'b', 'c', 'e', 'd'}, {'d', 'a', 'b' ,'c', 'e'},
 //			{'d', 'a', 'e', 'c', 'c', 'b', 'a', 'a', 'd'}, {}, {'a', 'b', 'e', 'd'}};
 //
-	intvec deltaEdges{5};
-	charvec deltaVals{5};
-	intvec oldUnewUdeltaEdges{5};
-	charvec oldUnewUdeltaVals{5};
+	std::vector< std::vector<int> > deltaEdges{5};
+	std::vector< std::vector<char> > deltaVals{5};
+	std::vector< std::vector<int> > oldUnewUdeltaEdges{5};
+	std::vector< std::vector<char> > oldUnewUdeltaVals{5};
 //
-//	intvec edgeVecsToMerge{3};
-//	charvec valVecsToMerge{3};
+//	std::vector< std::vector<int> > edgeVecsToMerge{3};
+//	std::vector< std::vector<char> > valVecsToMerge{3};
 //
 //	edgeVecsToMerge[0] = edges[0];
 //	valVecsToMerge[0] = vals[0];
@@ -83,10 +81,25 @@ void vecMerge(std::vector< std::vector<int> > &edgeVecsToMerge, std::vector< std
 }
 
 
-void mergeVecs(intvec &edgesToMerge, charvec &valsToMerge, int srcID, std::vector<int> &srcDeltaEdges,
+void mergeVecs(std::vector< std::vector<int> > &edgesToMerge, std::vector< std::vector<char> > &valsToMerge, int srcID, std::vector<int> &srcDeltaEdges,
 		std::vector<char> &srcDeltaVals, std::vector<int> &srcoUnUdEdges,
 		std::vector<char> &srcoUnUdVals)
 {
+	for (int i = 0; i < edgesToMerge.size(); i++) {
+        switch (i) {
+            case 0:
+                std::cout << "OG edges: ";
+                break;
+            case 1:
+                std::cout << "SRULE edges: ";
+                break;
+        }
+        for (int j = 0; j < edgesToMerge[i].size(); j++) {
+            std::cout << "(" << edgesToMerge[i][j] << ", " << valsToMerge[i][j] << ")  ";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
 	std::vector<MinSet> minsets{edgesToMerge.size()};
 
 	int totTgtRowSize = 0;
@@ -114,6 +127,7 @@ void mergeVecs(intvec &edgesToMerge, charvec &valsToMerge, int srcID, std::vecto
 			tgt = minEdges.top();
 			minEdges.pop();
 		}
+		
 
 		int max = std::numeric_limits<int>::max();
 		if (minsets[srcID].getCurrVID() == max && tgt.getCurrVID() == max) {
@@ -136,14 +150,18 @@ void mergeVecs(intvec &edgesToMerge, charvec &valsToMerge, int srcID, std::vecto
 	std::cout << std::endl;
 }
 
+void removeExtraSpace(std::vector<int> &oUnUdEdges, std::vector<char> &oUnUdVals,
+		std::vector<int> &deltaEdges, std::vector<char> &deltaVals)
+{
+	
+}
 
 void updateMinSet(MinSet &minset, std::vector<int> &edges, std::vector<char> &vals)
 {
 	minset.setCurrVID(std::numeric_limits<int>::max());
 	minset.clearEvalSet();
 
-	for (int i = minset.getPtr(); i < edges.size() && edges[i] <= minset.getCurrVID(); i++)
-	{
+	for (int i = minset.getPtr(); i < edges.size() && edges[i] <= minset.getCurrVID(); i++) {
 		minset.setCurrVID(edges[i]);
 		minset.addEval(vals[i]);
 		minset.incPtr();
@@ -164,8 +182,7 @@ void processMinSets(MinSet &srcMS, MinSet &tgtMS, std::vector<int> &srcDeltaEdge
 		}
 
 		std::unordered_set<char> tgtVals = tgtMS.getEvals();
-		for (std::unordered_set<char>::iterator iter = tgtVals.begin(); iter != tgtVals.end(); iter++)
-		{
+		for (std::unordered_set<char>::iterator iter = tgtVals.begin(); iter != tgtVals.end(); iter++) {
 			if (currEvals.find(*iter) == currEvals.end()) {
 				oUnUdPtr++;
 				if (oUnUdPtr < srcoUnUdEdges.size()) {
@@ -198,8 +215,7 @@ void processMinSets(MinSet &srcMS, MinSet &tgtMS, std::vector<int> &srcDeltaEdge
 
 		std::unordered_set<char> srcVals = srcMS.getEvals();
 		std::unordered_set<char> tgtVals = tgtMS.getEvals();
-		for (std::unordered_set<char>::iterator iter = tgtVals.begin(); iter != tgtVals.end(); iter++)
-		{
+		for (std::unordered_set<char>::iterator iter = tgtVals.begin(); iter != tgtVals.end(); iter++) {
 			if (srcVals.find(*iter) == srcVals.end()) {
 				if (currEvals.find(*iter) == currEvals.end()) {
 					oUnUdPtr++;
@@ -221,7 +237,7 @@ void processMinSets(MinSet &srcMS, MinSet &tgtMS, std::vector<int> &srcDeltaEdge
 			}
 		}
 		if (tgtEdgesToMerge.size() > 0) updateMinSet(tgtMS, tgtEdgesToMerge, tgtValsToMerge);
-		if (tgtMS.getPtr() < tgtEdgesToMerge.size()) minEdges.push(tgtMS);
+		minEdges.push(tgtMS);
 
 		return;
 	}
@@ -234,8 +250,7 @@ void processMinSets(MinSet &srcMS, MinSet &tgtMS, std::vector<int> &srcDeltaEdge
 		}
 
 		std::unordered_set<char> srcVals = srcMS.getEvals();
-		for (std::unordered_set<char>::iterator iter = srcVals.begin(); iter != srcVals.end(); iter++)
-		{
+		for (std::unordered_set<char>::iterator iter = srcVals.begin(); iter != srcVals.end(); iter++) {
 			if (currEvals.find(*iter) == currEvals.end()) {
 				oUnUdPtr++;
 				if (oUnUdPtr < srcoUnUdEdges.size()) {
@@ -247,6 +262,7 @@ void processMinSets(MinSet &srcMS, MinSet &tgtMS, std::vector<int> &srcDeltaEdge
 			}
 		} 
 		if (srcEdgesToMerge.size() > 0) updateMinSet(srcMS, srcEdgesToMerge, srcValsToMerge);
+		minEdges.push(tgtMS);
 
 		return;
 	}
