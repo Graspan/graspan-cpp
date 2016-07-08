@@ -27,7 +27,7 @@ std::string MinSet::toString()
 {
 	std::stringstream output;
 	
-	output << minSetID << ": " << currentVID << std::endl;
+	output << currentVID << ": ";
 	for (std::unordered_set<char>::iterator it = evals.begin(); it != evals.end(); it++)
 		output << *it << ", ";
 

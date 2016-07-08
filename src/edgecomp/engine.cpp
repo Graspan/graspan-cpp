@@ -27,6 +27,12 @@ void computeOneIteration(std::vector<Vertex> &vertices, ComputationSet compSets[
 		std::vector<LoadedVertexInterval> &intervals, int indStart1, int indEnd1,
 		int indStart2, int indEnd2)
 {
+//	if (vertices[0].getNumOutEdges() != 0) {
+//		std::cout << "Updating vertex " << vertices[0].getVertexID() << "..." << std::endl;
+//		updateEdges(0, compSets, intervals);
+//	}
+//	else std::cout << "Vertex " << vertices[0].getVertexID() << " has no edges" << std::endl;
+
 	long newEdges;
 	for (int i = 0; i < vertices.size(); i++) {   
 		if (vertices[i].getNumOutEdges() != 0) {

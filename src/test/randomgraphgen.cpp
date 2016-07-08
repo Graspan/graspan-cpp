@@ -33,7 +33,7 @@ std::vector<Vertex> randGraph()
 	int numVerts = rand() % 5 + 15;
 
 	// partition sizee
-	int part_size = rand() % 3 + 2;
+	int part_size = rand() % 2 + 3;
 //	std::cout << part_size << std::endl;
 
 	// ensure no overlap b/w partitions
@@ -57,7 +57,7 @@ std::vector<Vertex> randGraph()
 			offset = p2_start;
 		}
 
-		int edges = rand() % 6, n, c;
+		int edges = rand() % 3 + 3, n, c;
 		std::vector<int> outEdges;
 		std::vector<char> outEdgeValues;
 
