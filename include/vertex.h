@@ -24,7 +24,7 @@ class Vertex
 	Vertex(int idx, int id, std::vector<int> outEdges, std::vector<char> outEdgeValues);
 
 	// Getters
-	int getVertexId();
+	int getVertexID();
 	int getVertexIdx();
 	int getNumOutEdges();
 	std::vector<int> getOutEdges();

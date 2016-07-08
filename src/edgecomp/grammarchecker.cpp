@@ -4,8 +4,7 @@
 std::unordered_map<std::string, char> GrammarChecker::map = std::unordered_map<std::string, char>{};
 std::unordered_map<char, std::string> GrammarChecker::reverse_map = std::unordered_map<char, std::string>{};
 
-std::unordered_map<char, char> GrammarChecker::sRules = std::unordered_map<char, char>{};
-std::unordered_map<short, char> GrammarChecker::dRules = std::unordered_map<short, char>{};
+std::unordered_map<short, char> GrammarChecker::gramRules = std::unordered_map<short, char>{};
 
 short GrammarChecker::make_short(char a, char b)
 {
@@ -45,13 +44,25 @@ std::string GrammarChecker::getValue(char c)
 // rule checking
 char GrammarChecker::checkL1Rules(char srcVal)
 {
-	std::unordered_map<char, char>::iterator newVal = sRules.find(srcVal);
-	return (newVal != sRules.end()) ? newVal->second : (char(-1));
+	std::unordered_map<short, char>::iterator newVal = gramRules.find((short)srcVal);
+	return (newVal != gramRules.end()) ? newVal->second : (char(-1));
 }
 
 char GrammarChecker::checkL2Rules(char srcEdgVal, char dstVal)
 {
-	short key = make_short(srcEdgVal, dstVal);
-	std::unordered_map<short, char>::iterator newVal = dRules.find(key);
-	return (newVal != dRules.end()) ? newVal->second : (char(-1));
+	std::unordered_map<short, char>::iterator newVal = gramRules.find(make_short(srcEdgVal, dstVal));
+	return (newVal != gramRules.end()) ? newVal->second : (char(-1));
+}
+
+
+
+// test ---- delete later
+void GrammarChecker::addSRule(char src, char dst)
+{
+	gramRules.insert({(short)src, dst});
+}
+
+void GrammarChecker::addDRule(char src, char dst, char newedge)
+{
+	gramRules.insert({make_short(src, dst), newedge});
 }
