@@ -20,15 +20,17 @@ private:
 	int vitSize;
 	int dataSize;
 	int *vertInterTable;
-	std::set<char> eRules;
+	std::set<std::string> eRules;
+	std::vector<std::string> mapInfo;
 	std::vector<std::pair<int, std::string>> *data;
 
 
 public:
 	Preproc(char *fileName, int size);
 	void makeVIT(char *fileName);
-	void makePart();
-	void setErules(std::set<char> eRules);
+	void makePart(bool input);
+	void makeBinaryPart(bool input);
+	void setMapInfo(std::vector<std::string> mapInfo, std::set<char> eRules);
 	~Preproc();
 };
 
