@@ -16,6 +16,7 @@
 class Preproc {
 private:
 	char *part;
+	char *bpart;
 	int count;
 	int vitSize;
 	int dataSize;

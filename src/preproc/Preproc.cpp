@@ -6,6 +6,7 @@ Preproc::Preproc(char *fileName, int size) {
 	clock_t begin, end;
 	vitSize = size;
 	part = "part";
+	bpart = "bpart";
 	FILE *fp;
 	char buf[512];
 	char *p_token = NULL;
@@ -149,6 +150,70 @@ void Preproc::makePart(bool input) {
 }
 
 void Preproc::makeBinaryPart(bool input) {
+	std::vector<std::string>::iterator it_m;
+	FILE *f;
+	std::string str;
+	std::string name;
+	std::string buf, buf2, buf3;
+	int start = 0;
+	buf3 = "\n";
+	//make partition files in binary files
+	for (int i = 0; i < vitSize; i++) {
+		str = std::to_string(i);
+		name = this->bpart;
+		name += str.c_str();
+
+		fopen_s(&f, name.c_str(), "ab");
+		if (input) {
+			for (int j = start; j <= vertInterTable[i]; j++) {
+				if (data[j].size() != 0) {
+					buf += std::to_string(j);
+					buf += "\t";
+					buf += std::to_string(data[j].size());
+					buf += "\t";
+					fwrite((void*)buf.c_str(), sizeof(char), (sizeof(buf) / sizeof(char)), f);
+					for (int k = 0; k < data[j].size(); k++) {
+						buf2 += std::to_string(data[j][k].first);
+						buf2 += "\t";
+						buf2 += data[j][k].second;
+						buf2 += "\t";
+						fwrite((void*)buf2.c_str(), sizeof(char), (sizeof(buf2) / sizeof(char)), f);
+					}
+					fwrite((void*)buf3.c_str(), sizeof(char), (sizeof(buf3) / sizeof(char)), f);
+					buf.clear();
+					buf2.clear();
+				}
+			}
+		}
+		else {	//want label in int values
+			for (int j = start; j <= vertInterTable[i]; j++) {
+				if (data[j].size() != 0) {
+					buf += std::to_string(j);
+					buf += "\t";
+					buf += std::to_string(data[j].size());
+					buf += "\t";
+					fwrite((void*)buf.c_str(), sizeof(char), (sizeof(buf) / sizeof(char)), f);
+					for (int k = 0; k < data[j].size(); k++) {
+						for (int l = 0; l < mapInfo.size(); l++) {
+							if (strcmp(data[j][k].second.c_str(), mapInfo[l].c_str()) == 0) {
+								buf2 += std::to_string(data[j][k].first);
+								buf2 += "\t";
+								buf2 += data[j][k].second;
+								buf2 += "\t";
+								fwrite((void*)buf2.c_str(), sizeof(char), (sizeof(buf2) / sizeof(char)), f);
+							}
+						}
+					}
+					fwrite((void*)buf3.c_str(), sizeof(char), (sizeof(buf3) / sizeof(char)), f);
+					buf.clear();
+					buf2.clear();
+				}
+			}
+
+		}
+		fclose(f);
+		start = vertInterTable[i];
+	}
 }
 
 
