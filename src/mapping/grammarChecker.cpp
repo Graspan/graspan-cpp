@@ -60,6 +60,7 @@ inline short Grammar::changeShort(char a, char b){
 	return (short)a << 8 | b;
 }
 
+//if using map_info with rules, have to subtract 1 
 inline vector<string> Grammar::getMapInfo(){
 	return map_info;
 }
