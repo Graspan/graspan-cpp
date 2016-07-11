@@ -1,12 +1,12 @@
 #include <ctime>
 
-#include "../../include/vertex.h"
-#include "../../include/loadedvertexinterval.h"
-#include "../../include/computationset.h"
-#include "../../include/grammarchecker.h"
-#include "../../include/compute.h"
-#include "../../include/randomgraphgen.h"
-#include "../../include/timer.h"
+#include "../datastructures/vertex.h"
+#include "../datastructures/loadedvertexinterval.h"
+#include "../datastructures/computationset.h"
+#include "../edgecomp/grammarchecker.h"
+#include "../edgecomp/compute.h"
+#include "../../test/randomgraphgen.h"
+#include "../../test/timer.h"
 
 
 void loadGrammar();

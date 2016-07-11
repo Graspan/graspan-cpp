@@ -1,4 +1,4 @@
-#include "../../include/grammarchecker.h"
+#include "grammarchecker.h"
 
 
 std::unordered_map<std::string, char> GrammarChecker::map = std::unordered_map<std::string, char>{};

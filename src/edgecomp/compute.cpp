@@ -1,6 +1,5 @@
-#include "../../include/compute.h"
-#include "../../include/merge.h"
-#include "../../include/timer.h"
+#include "compute.h"
+#include "../../test/timer.h"
 
 
 // FUNCTION DEFINITIONS
@@ -40,6 +39,7 @@ long updateEdges(int i, ComputationSet compSets[], std::vector<LoadedVertexInter
 	std::unordered_set<IDValuePair, Hash> newRowIndsToMerge;
 	std::unordered_set<IDValuePair, Hash> oldUnewRowIndsToMerge;
 
+	// TODO: combine getRowInds with genEdgesToMerge
 	getRowIndsToMerge(compSets, intervals, oldEdges, oldVals, oldEdgesEmpty, newRowIndsToMerge, 'o');
 	getRowIndsToMerge(compSets, intervals, newEdges, newVals, newEdgesEmpty, oldUnewRowIndsToMerge, 'n');
 	
@@ -58,8 +58,9 @@ long updateEdges(int i, ComputationSet compSets[], std::vector<LoadedVertexInter
 	genEdgesToMergeForDRule(compSets, newRowIndsToMerge, edgeVecsToMerge, valVecsToMerge, rowToMergeID, 'o');
 	genEdgesToMergeForDRule(compSets, oldUnewRowIndsToMerge, edgeVecsToMerge, valVecsToMerge, rowToMergeID, 'n');
 
-	
-	vecMerge(edgeVecsToMerge, valVecsToMerge, 0);
+	EdgeMerger em;
+
+	em.mergeVectors(edgeVecsToMerge, valVecsToMerge, 0);
 
 	return 0;
 }
@@ -119,8 +120,7 @@ void genEdgesToMergeForSRule(std::vector<int> &newEdges, std::vector<char> &newV
 //	std::vector<int> newEdgesVec;
 //	std::vector<char> newValsVec;
 	char newEdgeVal;
-	for (int i = 0; i < newEdges.size(); i++)
-	{
+	for (int i = 0; i < newEdges.size(); i++) {
 		newEdgeVal = GrammarChecker::checkL1Rules(newVals[i]);
 		if (newEdgeVal != (char)-1) {
 			edgeVecsToMerge[rowMergeID].push_back(newEdges[i]);
@@ -148,8 +148,7 @@ void genEdgesToMergeForDRule(ComputationSet compSets[], std::unordered_set<IDVal
 		std::vector< std::vector<int> > &edgeVecsToMerge, std::vector< std::vector<char> > &valVecsToMerge,
 		int &rowMergeID, char flag)
 {
-	for (std::unordered_set<IDValuePair, Hash>::iterator iter = IDsToMerge.begin(); iter != IDsToMerge.end(); iter++)
-	{
+	for (std::unordered_set<IDValuePair, Hash>::iterator iter = IDsToMerge.begin(); iter != IDsToMerge.end(); iter++) {
 		// the outgoing edges and values (of each outgoing edge from the source vertex)
 		std::vector<int> edges = (flag == 'o') ? compSets[iter->id].getNewEdges() : compSets[iter->id].getoldUnewEdges();
 		std::vector<char> vals = (flag == 'o') ? compSets[iter->id].getNewVals() : compSets[iter->id].getoldUnewVals();
@@ -157,8 +156,7 @@ void genEdgesToMergeForDRule(ComputationSet compSets[], std::unordered_set<IDVal
 //		std::vector<int> newEdgesVec;
 //		std::vector<char> newValsVec;
 		char newEdgeVal;
-		for (int i = 0; i < edges.size(); i++)
-		{
+		for (int i = 0; i < edges.size(); i++) {
 			newEdgeVal = GrammarChecker::checkL2Rules(iter->val, vals[i]);
 			if (newEdgeVal != (char)-1) {
 				edgeVecsToMerge[rowMergeID].push_back(edges[i]);

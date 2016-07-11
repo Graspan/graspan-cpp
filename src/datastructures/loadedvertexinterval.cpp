@@ -1,4 +1,4 @@
-#include "../../include/loadedvertexinterval.h"
+#include "loadedvertexinterval.h"
 
 // Constructor
 LoadedVertexInterval::LoadedVertexInterval(int firstVertex, int lastVertex, int partitionID)

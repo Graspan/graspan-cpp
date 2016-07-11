@@ -6,6 +6,7 @@
 #include <vector>
 #include <stdlib.h>
 #include <string>
+#include <string.h>
 #include <algorithm>
 #include <stdio.h>
 #include <time.h>

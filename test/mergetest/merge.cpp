@@ -1,18 +1,13 @@
-#include <iostream>
-#include <ctime>
-#include <limits>
-#include <unordered_set>
-#include <queue>
+#include "../../../include/minset.h"
+#include "../../../include/merge.h"
+#include "../../../include/timer.h"
 
-#include "minset.h"
-#include "../../include/aux.h"
-
-// typedefs
-typedef std::vector< std::vector<int> > intvec;
-typedef std::vector< std::vector<char> > charvec;
+// TODO: Remove extra space in vecs after merge
+// TODO: Make into class to pass updated vectors back to "compute.cpp"
+// TODO: Do for more than just one iteration
 
 
-// global variables
+// GLOBAL VARS
 int deltaPtr = -1;
 int oUnUdPtr = -1;
 int currentID = -1;
@@ -20,9 +15,12 @@ int currentID = -1;
 std::unordered_set<char> currEvals;
 std::priority_queue<MinSet, std::vector<MinSet>, compare> minEdges;
 
-// function headers
-void mergeVecs(intvec &edgesToMergs, charvec &valsToMerge, int srcID, std::vector<int> &deltaEdges,
+// FUNCTION HEADERS
+void mergeVecs(std::vector< std::vector<int> > &edgesToMergs, std::vector< std::vector<char> > &valsToMerge, int srcID, std::vector<int> &deltaEdges,
 		std::vector<char> &deltaVals, std::vector<int> &oUnUdEdges, std::vector<char> &oUnUdVals);
+
+void removeExtraSpace(std::vector<int> &oUnUdEdges, std::vector<char> &oUnUdVals,
+		std::vector<int> &deltaEdges, std::vector<char> &deltaVals);
 
 void updateMinSet(MinSet &minset, std::vector<int> &edges, std::vector<char> &vals);
 
@@ -32,63 +30,58 @@ void processMinSets(MinSet &srcMS, MinSet &tgtMS, std::vector<int> &srcDeltaEdge
 		std::vector<char> &srcvalsToMerge, std::vector<int> &tgtEdgesToMerge,
 		std::vector<char> &tgtValsTomerge);
 
-void print_edges(intvec edgesToMerge, charvec valsToMerge, int n)
+
+
+void vecMerge(std::vector< std::vector<int> > &edgeVecsToMerge, std::vector< std::vector<char> > &valVecsToMerge, int srcID)
 {
-	for (int i = 0; i < n; i++)
-	{
-		std::cout << "ARR " << i << ": ";
-		for (int j = 0; j < edgesToMerge[i].size(); j++)
-			std::cout << "(" << edgesToMerge[i][j] << ", " << valsToMerge[i][j] << ")  ";
-
-		std::cout << std::endl;
-	}
-}
-
-
-int main()
-{
-	intvec edges{{100, 100, 200, 1700}, {2, 11, 17, 17, 25},
-			{3, 12, 13, 18, 23}, {}, {1, 4, 11, 12}};
-	charvec vals{{'a', 'd', 'a', 'b', 'c', 'e', 'd'}, {'d', 'a', 'b' ,'c', 'e'},
-			{'d', 'a', 'e', 'c', 'c', 'b', 'a', 'a', 'd'}, {}, {'a', 'b', 'e', 'd'}};
-
-	intvec deltaEdges{5};
-	charvec deltaVals{5};
-	intvec oldUnewUdeltaEdges{5};
-	charvec oldUnewUdeltaVals{5};
-
-	intvec edgeVecsToMerge{3};
-	charvec valVecsToMerge{3};
-
-	edgeVecsToMerge[0] = edges[0];
-	valVecsToMerge[0] = vals[0];
-
-	edgeVecsToMerge[1] = edges[1];
-	valVecsToMerge[1] = vals[1];
-
-	edgeVecsToMerge[2] = edges[2];
-	valVecsToMerge[2] = vals[2];
-	
-	// SOUREC VERTEX
-	int srcRowID = 0;
-
-	print_edges(edgeVecsToMerge, valVecsToMerge, 3);
-
+//	std::vector< std::vector<int> > edges{{100, 100, 200, 1700}, {2, 11, 17, 17, 25},
+//			{3, 12, 13, 18, 23}, {}, {1, 4, 11, 12}};
+//	std::vector< std::vector<char> > vals{{'a', 'd', 'a', 'b', 'c', 'e', 'd'}, {'d', 'a', 'b' ,'c', 'e'},
+//			{'d', 'a', 'e', 'c', 'c', 'b', 'a', 'a', 'd'}, {}, {'a', 'b', 'e', 'd'}};
+//
+	std::vector< std::vector<int> > deltaEdges{5};
+	std::vector< std::vector<char> > deltaVals{5};
+	std::vector< std::vector<int> > oldUnewUdeltaEdges{5};
+	std::vector< std::vector<char> > oldUnewUdeltaVals{5};
+//
+//	std::vector< std::vector<int> > edgeVecsToMerge{3};
+//	std::vector< std::vector<char> > valVecsToMerge{3};
+//
+//	edgeVecsToMerge[0] = edges[0];
+//	valVecsToMerge[0] = vals[0];
+//
+//	edgeVecsToMerge[1] = edges[1];
+//	valVecsToMerge[1] = vals[1];
+//
+//	edgeVecsToMerge[2] = edges[2];
+//	valVecsToMerge[2] = vals[2];
+//	
+//	// SOUREC VERTEX
+//	int srcRowID = 0;
+//
+//	print_edges(edgeVecsToMerge, valVecsToMerge, 3);
+//
 	Timer mergeTime;
 	mergeTime.startTimer();
 
-	mergeVecs(edgeVecsToMerge, valVecsToMerge, srcRowID, deltaEdges[srcRowID], deltaVals[srcRowID],
-		oldUnewUdeltaEdges[srcRowID], oldUnewUdeltaVals[srcRowID]);
+	mergeVecs(edgeVecsToMerge, valVecsToMerge, srcID, deltaEdges[srcID], deltaVals[srcID],
+		oldUnewUdeltaEdges[srcID], oldUnewUdeltaVals[srcID]);
 
 	mergeTime.endTimer();
 
-	std::cout << "TIME: " << mergeTime.toString();
+	std::cout << "MERGE TIME: " << mergeTime.toString() << std::endl << std::endl;
 
-	return 0;
+	// TEMP while iterative
+	// once using threads will need to make this file a class
+	oUnUdPtr = -1;
+	deltaPtr = -1;
+	currentID = -1;
+	currEvals.clear();
+	while (!minEdges.empty()) minEdges.pop();
 }
 
 
-void mergeVecs(intvec &edgesToMerge, charvec &valsToMerge, int srcID, std::vector<int> &srcDeltaEdges,
+void mergeVecs(std::vector< std::vector<int> > &edgesToMerge, std::vector< std::vector<char> > &valsToMerge, int srcID, std::vector<int> &srcDeltaEdges,
 		std::vector<char> &srcDeltaVals, std::vector<int> &srcoUnUdEdges,
 		std::vector<char> &srcoUnUdVals)
 {
@@ -129,20 +122,38 @@ void mergeVecs(intvec &edgesToMerge, charvec &valsToMerge, int srcID, std::vecto
 		processMinSets(minsets[srcID], tgt, srcDeltaEdges, srcDeltaVals, srcoUnUdEdges, srcoUnUdVals,
 			edgesToMerge[srcID], valsToMerge[srcID], edgesToMerge[indOfTgt], valsToMerge[indOfTgt]);
 
-		for (int k = 0; k < srcoUnUdEdges.size(); k++) 
-			std::cout << "(" << srcoUnUdEdges[k]  << ", " << srcoUnUdVals[k] << ")  ";
-		std::cout << std::endl;
 	}
+
+	removeExtraSpace(srcoUnUdEdges, srcoUnUdVals, srcDeltaEdges, srcDeltaVals);
+
+	std::cout << "oldUnewUdelta AFTER update  ->  ";
+	for (int k = 0; k < srcoUnUdEdges.size(); k++) 
+		std::cout << "(" << srcoUnUdEdges[k]  << ", " << srcoUnUdVals[k] << ")  ";
+	std::cout << std::endl;
+	std::cout << "delta AFTER update -> ";
+	for (int l = 0; l < srcDeltaEdges.size(); l++)
+		std::cout << "(" << srcDeltaEdges[l] << ", " << srcDeltaVals[l] << ")  ";
+	std::cout << std::endl;
 }
 
+void removeExtraSpace(std::vector<int> &oUnUdEdges, std::vector<char> &oUnUdVals,
+		std::vector<int> &deltaEdges, std::vector<char> &deltaVals)
+{
+	oUnUdEdges = std::vector<int>(oUnUdEdges.begin(), oUnUdEdges.begin() + oUnUdPtr + 1);
+	oUnUdVals = std::vector<char>(oUnUdVals.begin(), oUnUdVals.begin() + oUnUdPtr + 1);
+
+	if (deltaPtr >= 0) {
+		deltaEdges = std::vector<int>(deltaEdges.begin(), deltaEdges.begin() + deltaPtr + 1);
+		deltaVals = std::vector<char>(deltaVals.begin(), deltaVals.begin() + deltaPtr + 1);
+	}
+}
 
 void updateMinSet(MinSet &minset, std::vector<int> &edges, std::vector<char> &vals)
 {
 	minset.setCurrVID(std::numeric_limits<int>::max());
 	minset.clearEvalSet();
 
-	for (int i = minset.getPtr(); i < edges.size() && edges[i] <= minset.getCurrVID(); i++)
-	{
+	for (int i = minset.getPtr(); i < edges.size() && edges[i] <= minset.getCurrVID(); i++) {
 		minset.setCurrVID(edges[i]);
 		minset.addEval(vals[i]);
 		minset.incPtr();
@@ -155,20 +166,15 @@ void processMinSets(MinSet &srcMS, MinSet &tgtMS, std::vector<int> &srcDeltaEdge
 		std::vector<char> &srcValsToMerge, std::vector<int> &tgtEdgesToMerge,
 		std::vector<char> &tgtValsToMerge)
 {
-	// CURRENT VALUES
-	std::cout << "SRC: " << srcMS.getCurrVID() << ",  TGT: " << tgtMS.getCurrVID() << std::endl;
-
 	// case 1
-	if (srcMS.getCurrVID() > tgtMS.getCurrVID())
-	{
+	if (srcMS.getCurrVID() > tgtMS.getCurrVID()) {
 		if (currentID != tgtMS.getCurrVID()) {
 			currentID = tgtMS.getCurrVID();
 			currEvals.clear();
 		}
 
 		std::unordered_set<char> tgtVals = tgtMS.getEvals();
-		for (std::unordered_set<char>::iterator iter = tgtVals.begin(); iter != tgtVals.end(); iter++)
-		{
+		for (std::unordered_set<char>::iterator iter = tgtVals.begin(); iter != tgtVals.end(); iter++) {
 			if (currEvals.find(*iter) == currEvals.end()) {
 				oUnUdPtr++;
 				if (oUnUdPtr < srcoUnUdEdges.size()) {
@@ -193,8 +199,7 @@ void processMinSets(MinSet &srcMS, MinSet &tgtMS, std::vector<int> &srcDeltaEdge
 	}
 
 	// case 2
-	if (srcMS.getCurrVID() == tgtMS.getCurrVID())
-	{
+	if (srcMS.getCurrVID() == tgtMS.getCurrVID()) {
 		if (currentID != tgtMS.getCurrVID()) {
 			currentID = tgtMS.getCurrVID();
 			currEvals.clear();
@@ -202,8 +207,7 @@ void processMinSets(MinSet &srcMS, MinSet &tgtMS, std::vector<int> &srcDeltaEdge
 
 		std::unordered_set<char> srcVals = srcMS.getEvals();
 		std::unordered_set<char> tgtVals = tgtMS.getEvals();
-		for (std::unordered_set<char>::iterator iter = tgtVals.begin(); iter != tgtVals.end(); iter++)
-		{
+		for (std::unordered_set<char>::iterator iter = tgtVals.begin(); iter != tgtVals.end(); iter++) {
 			if (srcVals.find(*iter) == srcVals.end()) {
 				if (currEvals.find(*iter) == currEvals.end()) {
 					oUnUdPtr++;
@@ -225,22 +229,20 @@ void processMinSets(MinSet &srcMS, MinSet &tgtMS, std::vector<int> &srcDeltaEdge
 			}
 		}
 		if (tgtEdgesToMerge.size() > 0) updateMinSet(tgtMS, tgtEdgesToMerge, tgtValsToMerge);
-		if (tgtMS.getPtr() < tgtEdgesToMerge.size()) minEdges.push(tgtMS);
+		minEdges.push(tgtMS);
 
 		return;
 	}
 
 	// case 3
-	if (srcMS.getCurrVID() < tgtMS.getCurrVID())
-	{
+	if (srcMS.getCurrVID() < tgtMS.getCurrVID()) {
 		if (currentID != srcMS.getCurrVID()) {
 			currentID = srcMS.getCurrVID();
 			currEvals.clear();
 		}
 
 		std::unordered_set<char> srcVals = srcMS.getEvals();
-		for (std::unordered_set<char>::iterator iter = srcVals.begin(); iter != srcVals.end(); iter++)
-		{
+		for (std::unordered_set<char>::iterator iter = srcVals.begin(); iter != srcVals.end(); iter++) {
 			if (currEvals.find(*iter) == currEvals.end()) {
 				oUnUdPtr++;
 				if (oUnUdPtr < srcoUnUdEdges.size()) {
@@ -251,10 +253,11 @@ void processMinSets(MinSet &srcMS, MinSet &tgtMS, std::vector<int> &srcDeltaEdge
 				else std::cout << "ERROR: oUnUdPtr out of bounds" << std::endl;
 			}
 		} 
-	}
-	if (srcEdgesToMerge.size() > 0) updateMinSet(srcMS, srcEdgesToMerge, srcValsToMerge);
+		if (srcEdgesToMerge.size() > 0) updateMinSet(srcMS, srcEdgesToMerge, srcValsToMerge);
+		minEdges.push(tgtMS);
 
-	return;
+		return;
+	}
 }
 
 
