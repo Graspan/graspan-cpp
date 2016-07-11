@@ -13,7 +13,7 @@ Vertex::Vertex(int idx, int id, std::vector<int> outEdges, std::vector<char> out
 }
 
 // Getters
-int Vertex::getVertexId() { return id; }
+int Vertex::getVertexID() { return id; }
 int Vertex::getVertexIdx() { return idx; }
 int Vertex::getNumOutEdges() { return numOutEdges; }
 std::vector<int> Vertex::getOutEdges() { return outEdges; }
@@ -40,7 +40,6 @@ std::string Vertex::toString()
 	for (int i = 0; i < numOutEdges; i++)
 		output << outEdges[i] << ", " << outEdgeValues[i] << ";  ";
 
-	output << std::endl;
 
 	return output.str();
 }

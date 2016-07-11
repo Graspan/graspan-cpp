@@ -14,14 +14,20 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 	Preproc pre("test.txt", numPart);
-	pre.setErules(g.getErules());
+	pre.setMapInfo(g.getMapInfo(), g.getErules());
+
 	begin = clock();
 	pre.makeVIT("test.txt");		//need to fix input file
 	end = clock();
 	std::cout << "makeVIT time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 
 	begin = clock();
-	pre.makePart();
+	pre.makePart(0);			//if 0 then get mapped label else if 1 get label
+	end = clock();
+	std::cout << "makePart time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
+
+	begin = clock();
+	pre.makeBinaryPart(0);			//if 0 then get mapped label else if 1 get label binaryfile
 	end = clock();
 	std::cout << "makePart time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 	return 0;

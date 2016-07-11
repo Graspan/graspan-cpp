@@ -6,6 +6,7 @@ Preproc::Preproc(char *fileName, int size) {
 	clock_t begin, end;
 	vitSize = size;
 	part = "part";
+	bpart = "bpart";
 	FILE *fp;
 	char buf[512];
 	char *p_token = NULL;
@@ -50,10 +51,10 @@ void Preproc::makeVIT(char *fileName) {
 	char *context = NULL;
 	int sum = 0;
 	FILE *fp;
-	std::set<char>::iterator it_e; //for eRules
+	std::set<std::string>::iterator it_e; //for eRules
 
-								   //second file scan for get the data and put in the 
-								   //data (vector of array) it takes 275s need to fix for improve the time complexity
+										  //second file scan for get the data and put in the 
+										  //data (vector of array) it takes 275s need to fix for improve the time complexity
 	begin = clock();
 	fopen_s(&fp, fileName, "r");
 	while (NULL != fgets(buf, sizeof(buf), fp)) {
@@ -77,8 +78,8 @@ void Preproc::makeVIT(char *fileName) {
 	//sorting the vector of array and make VIT, it takes 88s
 	begin = clock();
 	for (i = 0; i <= dataSize; i++) {
-		for (it_e = eRules.begin(); it_e != eRules.end(); it_e++) {
-			label = std::string(1, *it_e);
+		for (it_e = eRules.begin(); it_e != eRules.end(); it_e++) {	//add 
+			label = *it_e;
 			data[i].push_back(std::make_pair(i, label));
 		}
 		std::sort(data[i].begin(), data[i].end(), compareV);
@@ -104,7 +105,8 @@ void Preproc::makeVIT(char *fileName) {
 
 }
 
-void Preproc::makePart() {
+void Preproc::makePart(bool input) {
+	std::vector<std::string>::iterator it_m;
 	FILE *f;
 	std::string str;
 	std::string name;
@@ -117,22 +119,111 @@ void Preproc::makePart() {
 		name += str.c_str();
 
 		fopen_s(&f, name.c_str(), "a");
-		for (int j = start; j <= vertInterTable[i]; j++) {
-			if (data[j].size() != 0) {
-				fprintf(f, "%d\t%d\t", j, data[j].size());
-				for (int k = 0; k < data[j].size(); k++)
-					fprintf(f, "%d\t%s\t", data[j][k].first, data[j][k].second.c_str());
-				fprintf(f, "\n");
+		if (input) {
+			for (int j = start; j <= vertInterTable[i]; j++) {
+				if (data[j].size() != 0) {
+					fprintf(f, "%d\t%d\t", j, data[j].size());
+					for (int k = 0; k < data[j].size(); k++)
+						fprintf(f, "%d\t%s\t", data[j][k].first, data[j][k].second.c_str());
+					fprintf(f, "\n");
+				}
 			}
+		}
+		else {	//want label in int values
+			for (int j = start; j <= vertInterTable[i]; j++) {
+				if (data[j].size() != 0) {
+					fprintf(f, "%d\t%d\t", j, data[j].size());
+					for (int k = 0; k < data[j].size(); k++) {
+						for (int l = 0; l < mapInfo.size(); l++) {
+							if (strcmp(data[j][k].second.c_str(), mapInfo[l].c_str()) == 0)
+								fprintf(f, "%d\t%d\t", data[j][k].first, l);
+						}
+					}
+					fprintf(f, "\n");
+				}
+			}
+
 		}
 		fclose(f);
 		start = vertInterTable[i];
 	}
 }
 
-void Preproc::setErules(std::set<char> eRules)
+void Preproc::makeBinaryPart(bool input) {
+	std::vector<std::string>::iterator it_m;
+	FILE *f;
+	std::string str;
+	std::string name;
+	std::string buf, buf2, buf3;
+	int start = 0;
+	buf3 = "\n";
+	//make partition files in binary files
+	for (int i = 0; i < vitSize; i++) {
+		str = std::to_string(i);
+		name = this->bpart;
+		name += str.c_str();
+
+		fopen_s(&f, name.c_str(), "ab");
+		if (input) {
+			for (int j = start; j <= vertInterTable[i]; j++) {
+				if (data[j].size() != 0) {
+					buf += std::to_string(j);
+					buf += "\t";
+					buf += std::to_string(data[j].size());
+					buf += "\t";
+					fwrite((void*)buf.c_str(), sizeof(char), (sizeof(buf) / sizeof(char)), f);
+					for (int k = 0; k < data[j].size(); k++) {
+						buf2 += std::to_string(data[j][k].first);
+						buf2 += "\t";
+						buf2 += data[j][k].second;
+						buf2 += "\t";
+						fwrite((void*)buf2.c_str(), sizeof(char), (sizeof(buf2) / sizeof(char)), f);
+					}
+					fwrite((void*)buf3.c_str(), sizeof(char), (sizeof(buf3) / sizeof(char)), f);
+					buf.clear();
+					buf2.clear();
+				}
+			}
+		}
+		else {	//want label in int values
+			for (int j = start; j <= vertInterTable[i]; j++) {
+				if (data[j].size() != 0) {
+					buf += std::to_string(j);
+					buf += "\t";
+					buf += std::to_string(data[j].size());
+					buf += "\t";
+					fwrite((void*)buf.c_str(), sizeof(char), (sizeof(buf) / sizeof(char)), f);
+					for (int k = 0; k < data[j].size(); k++) {
+						for (int l = 0; l < mapInfo.size(); l++) {
+							if (strcmp(data[j][k].second.c_str(), mapInfo[l].c_str()) == 0) {
+								buf2 += std::to_string(data[j][k].first);
+								buf2 += "\t";
+								buf2 += data[j][k].second;
+								buf2 += "\t";
+								fwrite((void*)buf2.c_str(), sizeof(char), (sizeof(buf2) / sizeof(char)), f);
+							}
+						}
+					}
+					fwrite((void*)buf3.c_str(), sizeof(char), (sizeof(buf3) / sizeof(char)), f);
+					buf.clear();
+					buf2.clear();
+				}
+			}
+
+		}
+		fclose(f);
+		start = vertInterTable[i];
+	}
+}
+
+
+void Preproc::setMapInfo(std::vector<std::string> mapInfo, std::set<char> eRules)
 {
-	this->eRules = eRules;
+	std::set<char>::iterator it_e; //for eRules
+	this->mapInfo.assign(mapInfo.begin(), mapInfo.end());
+
+	for (it_e = eRules.begin(); it_e != eRules.end(); it_e++)
+		this->eRules.insert(mapInfo[(int)*it_e]);
 }
 
 Preproc::~Preproc()

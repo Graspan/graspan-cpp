@@ -1,5 +1,11 @@
 #include "../../include/randomgraphgen.h"
 
+/**
+ * return true if edge destination already exists with the same
+ * grammar
+ *
+ * not working 
+ */
 bool check_dups(std::vector<int> edges, std::vector<char> gram, int n, char c)
 {
 	for (int i = 0; i < edges.size(); i++)
@@ -27,8 +33,8 @@ std::vector<Vertex> randGraph()
 	int numVerts = rand() % 5 + 15;
 
 	// partition sizee
-	int part_size = rand() % 3 + 2;
-	std::cout << part_size << std::endl;
+	int part_size = rand() % 2 + 3;
+//	std::cout << part_size << std::endl;
 
 	// ensure no overlap b/w partitions
 	int p1_start = 0, p2_start = 0;
@@ -38,7 +44,7 @@ std::vector<Vertex> randGraph()
 		p2_start = rand() % (numVerts - part_size);
 	}
 
-	std::cout << p1_start << ", " << p2_start << std::endl;
+//	std::cout << p1_start << ", " << p2_start << std::endl;
 
 
 	int ind = 0, offset = p1_start;
@@ -51,7 +57,7 @@ std::vector<Vertex> randGraph()
 			offset = p2_start;
 		}
 
-		int edges = rand() % 6, n, c;
+		int edges = rand() % 3 + 3, n, c;
 		std::vector<int> outEdges;
 		std::vector<char> outEdgeValues;
 
@@ -69,13 +75,15 @@ std::vector<Vertex> randGraph()
 		vertices.push_back(Vertex(i, ind++ + offset, outEdges, outEdgeValues));
 	}
 
-	std::cout << std::endl << "P1:";
+	std::cout << "P1:";
 	for (int j = 0; j < vertices.size(); j++)
 	{
-		if (j == part_size) std::cout << std::endl << "P2:";
+		if (j == part_size) std::cout << std::endl << "\nP2:";
 
 		std::cout << vertices[j].toString();
 	}
+
+	std::cout << std::endl;
 
 	return vertices;
 }
