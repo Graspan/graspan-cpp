@@ -22,4 +22,5 @@ public:
 	bool print_all();
 	inline vector<string> getMapInfo();
 	inline set<char> getErules();
+	char checkRules(string srcVal, string dstVal);
 };

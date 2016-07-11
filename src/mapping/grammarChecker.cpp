@@ -68,6 +68,23 @@ inline set<char> Grammar::getErules(){
 	return eRules;
 }
 
+//ex) checkRules("a","");
+//ex) checkRules("a","b");
+char Grammar::checkRules(string srcVal, string dstVal){
+	map<short, char>::iterator it;
+	if(!dstVal.empty()){
+		short key = changeShort(getValue(srcVal),getValue(dstVal));
+		it = rules.find(key);
+		return (it != rules.end()) ? (*it).second : char(-1);
+	}	
+	else{
+		short key = changeShort(0,getValue(srcVal));	
+		it = rules.find(key);
+		return (it != rules.end()) ? (*it).second : char(-1);
+	}
+
+}
+
 bool Grammar::print_all(){
 	if(!eRules.size() && !rules.size()) return false;
 	
