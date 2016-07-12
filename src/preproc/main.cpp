@@ -1,5 +1,5 @@
 #include "Preproc.h"
-#include "../mapping/grammarChecker.cpp"
+#include "../mapping/grammar.h"
 
 void delFiles();
 
@@ -35,10 +35,10 @@ int main(int argc, char *argv[]) {
 
 void delFiles() {//delete test files
 	for (int i = 0; i < 200; i++) {
-		std::string str = "part" + std::to_string(i);		//need to fix file names
+		std::string str = "part" + std::to_string((long long)i);		//need to fix file names
 		if (std::ifstream(str))
 			std::remove(str.c_str());
-		str = "spart" + std::to_string(i);
+		str = "spart" + std::to_string((long long)i);
 		if (std::ifstream(str))
 			std::remove(str.c_str());
 	}

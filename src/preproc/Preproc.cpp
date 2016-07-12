@@ -17,10 +17,10 @@ Preproc::Preproc(char *fileName, int size) {
 	begin = clock();
 	//fisrt file scan for count how many src is in the file
 	//for memory allocation it takes 19s
-	fopen_s(&fp, fileName, "r");
+	fp = fopen(fileName, "r");
 	while (NULL != fgets(buf, sizeof(buf), fp)) {
-		p_token = strtok_s(buf, "\n", &context);
-		p_token = strtok_s(buf, "\t", &context);
+		p_token = strtok_r(buf, "\n", &context);
+		p_token = strtok_r(buf, "\t", &context);
 		src = atoi(p_token);
 
 		if (src > dataSize)
@@ -56,13 +56,13 @@ void Preproc::makeVIT(char *fileName) {
 										  //second file scan for get the data and put in the 
 										  //data (vector of array) it takes 275s need to fix for improve the time complexity
 	begin = clock();
-	fopen_s(&fp, fileName, "r");
+	fp = fopen(fileName, "r");
 	while (NULL != fgets(buf, sizeof(buf), fp)) {
-		p_token = strtok_s(buf, "\n", &context);
-		p_token = strtok_s(buf, "\t", &context);
+		p_token = strtok_r(buf, "\n", &context);
+		p_token = strtok_r(buf, "\t", &context);
 		while (p_token != NULL) {
 			ctemp[i++] = p_token;
-			p_token = strtok_s(NULL, "\t", &context);
+			p_token = strtok_r(NULL, "\t", &context);
 		}
 		src = atoi(ctemp[0]);
 		dst = atoi(ctemp[1]);
@@ -114,11 +114,11 @@ void Preproc::makePart(bool input) {
 
 	//make partition files, it takes 64s
 	for (int i = 0; i < vitSize; i++) {
-		str = std::to_string(i);
+		str = std::to_string((long long)i);
 		name = this->part;
 		name += str.c_str();
 
-		fopen_s(&f, name.c_str(), "a");
+		f = fopen(name.c_str(), "a");
 		if (input) {
 			for (int j = start; j <= vertInterTable[i]; j++) {
 				if (data[j].size() != 0) {
@@ -159,21 +159,21 @@ void Preproc::makeBinaryPart(bool input) {
 	buf3 = "\n";
 	//make partition files in binary files
 	for (int i = 0; i < vitSize; i++) {
-		str = std::to_string(i);
+		str = std::to_string((long long)i);
 		name = this->bpart;
 		name += str.c_str();
 
-		fopen_s(&f, name.c_str(), "ab");
+		f = fopen(name.c_str(), "ab");
 		if (input) {
 			for (int j = start; j <= vertInterTable[i]; j++) {
 				if (data[j].size() != 0) {
-					buf += std::to_string(j);
+					buf += std::to_string((long long)j);
 					buf += "\t";
-					buf += std::to_string(data[j].size());
+					buf += std::to_string((long long)data[j].size());
 					buf += "\t";
 					fwrite((void*)buf.c_str(), sizeof(char), (sizeof(buf) / sizeof(char)), f);
 					for (int k = 0; k < data[j].size(); k++) {
-						buf2 += std::to_string(data[j][k].first);
+						buf2 += std::to_string((long long)data[j][k].first);
 						buf2 += "\t";
 						buf2 += data[j][k].second;
 						buf2 += "\t";
@@ -188,15 +188,15 @@ void Preproc::makeBinaryPart(bool input) {
 		else {	//want label in int values
 			for (int j = start; j <= vertInterTable[i]; j++) {
 				if (data[j].size() != 0) {
-					buf += std::to_string(j);
+					buf += std::to_string((long long)j);
 					buf += "\t";
-					buf += std::to_string(data[j].size());
+					buf += std::to_string((long long)data[j].size());
 					buf += "\t";
 					fwrite((void*)buf.c_str(), sizeof(char), (sizeof(buf) / sizeof(char)), f);
 					for (int k = 0; k < data[j].size(); k++) {
 						for (int l = 0; l < mapInfo.size(); l++) {
 							if (strcmp(data[j][k].second.c_str(), mapInfo[l].c_str()) == 0) {
-								buf2 += std::to_string(data[j][k].first);
+								buf2 += std::to_string((long long)data[j][k].first);
 								buf2 += "\t";
 								buf2 += data[j][k].second;
 								buf2 += "\t";
