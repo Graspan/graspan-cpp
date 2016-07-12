@@ -30,8 +30,8 @@ private:
 public:
 	Preproc(char *fileName, int size);
 	void makeVIT(char *fileName);
-	void makePart(bool input);
-	void makeBinaryPart(bool input);
+	void makePart();
+	void makeBinaryPart();
 	void setMapInfo(std::vector<std::string> mapInfo, std::set<char> eRules);
 	~Preproc();
 };
