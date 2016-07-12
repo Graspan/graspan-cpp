@@ -1,5 +1,5 @@
 #include "Preproc.h"
-#include "../mapping/grammar.h"
+#include "../mapping/grammarChecker.cpp"
 
 void delFiles();
 

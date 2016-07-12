@@ -1,3 +1,6 @@
+#ifndef GRAMMAR_H
+#define GRAMMAR_H
+
 #include <iostream>
 #include <algorithm>
 #include <fstream>
@@ -25,3 +28,6 @@ public:
 	inline set<char> getErules();
 	char checkRules(string srcVal, string dstVal);
 };
+
+
+#endif
