@@ -1,4 +1,4 @@
-#include "grammarChecker.cpp"
+#include "grammar.h"
 
 int main(){
 
@@ -17,4 +17,6 @@ int main(){
 		cout << "data is empty" << endl;
 		exit(2);
 	}
+
+	g.getErules();
 }

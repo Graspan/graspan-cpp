@@ -1,4 +1,4 @@
-#include "Preproc.h"
+#include "preproc.h"
 
 bool compareV(const std::pair<int, std::string> &lhs, const std::pair<int, std::string> &rhs);
 
@@ -17,10 +17,10 @@ Preproc::Preproc(char *fileName, int size) {
 	begin = clock();
 	//fisrt file scan for count how many src is in the file
 	//for memory allocation it takes 19s
-	fopen_s(&fp, fileName, "r");
+	fp = fopen(fileName, "r");
 	while (NULL != fgets(buf, sizeof(buf), fp)) {
-		p_token = strtok_s(buf, "\n", &context);
-		p_token = strtok_s(buf, "\t", &context);
+		p_token = strtok_r(buf, "\n", &context);
+		p_token = strtok_r(buf, "\t", &context);
 		src = atoi(p_token);
 
 		if (src > dataSize)
@@ -56,13 +56,13 @@ void Preproc::makeVIT(char *fileName) {
 										  //second file scan for get the data and put in the 
 										  //data (vector of array) it takes 275s need to fix for improve the time complexity
 	begin = clock();
-	fopen_s(&fp, fileName, "r");
+	fp = fopen(fileName, "r");
 	while (NULL != fgets(buf, sizeof(buf), fp)) {
-		p_token = strtok_s(buf, "\n", &context);
-		p_token = strtok_s(buf, "\t", &context);
+		p_token = strtok_r(buf, "\n", &context);
+		p_token = strtok_r(buf, "\t", &context);
 		while (p_token != NULL) {
 			ctemp[i++] = p_token;
-			p_token = strtok_s(NULL, "\t", &context);
+			p_token = strtok_r(NULL, "\t", &context);
 		}
 		src = atoi(ctemp[0]);
 		dst = atoi(ctemp[1]);
@@ -78,6 +78,8 @@ void Preproc::makeVIT(char *fileName) {
 	//sorting the vector of array and make VIT, it takes 88s
 	begin = clock();
 	for (i = 0; i <= dataSize; i++) {
+		if (data[i].size() == 0)
+			continue;
 		for (it_e = eRules.begin(); it_e != eRules.end(); it_e++) {	//add 
 			label = *it_e;
 			data[i].push_back(std::make_pair(i, label));
@@ -105,7 +107,7 @@ void Preproc::makeVIT(char *fileName) {
 
 }
 
-void Preproc::makePart(bool input) {
+void Preproc::makePart() {
 	std::vector<std::string>::iterator it_m;
 	FILE *f;
 	std::string str;
@@ -114,102 +116,63 @@ void Preproc::makePart(bool input) {
 
 	//make partition files, it takes 64s
 	for (int i = 0; i < vitSize; i++) {
-		str = std::to_string(i);
+		str = std::to_string((long long)i);
 		name = this->part;
 		name += str.c_str();
 
-		fopen_s(&f, name.c_str(), "a");
-		if (input) {
-			for (int j = start; j <= vertInterTable[i]; j++) {
-				if (data[j].size() != 0) {
-					fprintf(f, "%d\t%d\t", j, data[j].size());
-					for (int k = 0; k < data[j].size(); k++)
-						fprintf(f, "%d\t%s\t", data[j][k].first, data[j][k].second.c_str());
-					fprintf(f, "\n");
-				}
-			}
-		}
-		else {	//want label in int values
-			for (int j = start; j <= vertInterTable[i]; j++) {
-				if (data[j].size() != 0) {
-					fprintf(f, "%d\t%d\t", j, data[j].size());
-					for (int k = 0; k < data[j].size(); k++) {
-						for (int l = 0; l < mapInfo.size(); l++) {
-							if (strcmp(data[j][k].second.c_str(), mapInfo[l].c_str()) == 0)
-								fprintf(f, "%d\t%d\t", data[j][k].first, l);
+		f = fopen(name.c_str(), "a");
+
+		for (int j = start; j <= vertInterTable[i]; j++) {
+			if (data[j].size() != 0) {
+				fprintf(f, "%d\t%d\t", j, data[j].size());
+				for (int k = 0; k < data[j].size(); k++) {
+					for (int l = 0; l < mapInfo.size(); l++) {
+						if (strcmp(data[j][k].second.c_str(), mapInfo[l].c_str()) == 0) {
+							fprintf(f, "%d\t%d\t", data[j][k].first, l);
+							break;
 						}
 					}
-					fprintf(f, "\n");
 				}
+				fprintf(f, "\n");
 			}
-
 		}
 		fclose(f);
 		start = vertInterTable[i];
 	}
 }
 
-void Preproc::makeBinaryPart(bool input) {
-	std::vector<std::string>::iterator it_m;
+void Preproc::makeBinaryPart() {
 	FILE *f;
 	std::string str;
 	std::string name;
-	std::string buf, buf2, buf3;
 	int start = 0;
-	buf3 = "\n";
+	int degree, dst;
+	char label;
 	//make partition files in binary files
 	for (int i = 0; i < vitSize; i++) {
-		str = std::to_string(i);
+		str = std::to_string((long long)i);
 		name = this->bpart;
 		name += str.c_str();
 
-		fopen_s(&f, name.c_str(), "ab");
-		if (input) {
-			for (int j = start; j <= vertInterTable[i]; j++) {
-				if (data[j].size() != 0) {
-					buf += std::to_string(j);
-					buf += "\t";
-					buf += std::to_string(data[j].size());
-					buf += "\t";
-					fwrite((void*)buf.c_str(), sizeof(char), (sizeof(buf) / sizeof(char)), f);
-					for (int k = 0; k < data[j].size(); k++) {
-						buf2 += std::to_string(data[j][k].first);
-						buf2 += "\t";
-						buf2 += data[j][k].second;
-						buf2 += "\t";
-						fwrite((void*)buf2.c_str(), sizeof(char), (sizeof(buf2) / sizeof(char)), f);
-					}
-					fwrite((void*)buf3.c_str(), sizeof(char), (sizeof(buf3) / sizeof(char)), f);
-					buf.clear();
-					buf2.clear();
-				}
-			}
-		}
-		else {	//want label in int values
-			for (int j = start; j <= vertInterTable[i]; j++) {
-				if (data[j].size() != 0) {
-					buf += std::to_string(j);
-					buf += "\t";
-					buf += std::to_string(data[j].size());
-					buf += "\t";
-					fwrite((void*)buf.c_str(), sizeof(char), (sizeof(buf) / sizeof(char)), f);
-					for (int k = 0; k < data[j].size(); k++) {
-						for (int l = 0; l < mapInfo.size(); l++) {
-							if (strcmp(data[j][k].second.c_str(), mapInfo[l].c_str()) == 0) {
-								buf2 += std::to_string(data[j][k].first);
-								buf2 += "\t";
-								buf2 += data[j][k].second;
-								buf2 += "\t";
-								fwrite((void*)buf2.c_str(), sizeof(char), (sizeof(buf2) / sizeof(char)), f);
-							}
+		f = fopen(name.c_str(), "ab");
+		for (int j = start; j <= vertInterTable[i]; j++) {
+			if (data[j].size() != 0) {
+
+				fwrite((const void*)& j, sizeof(int), 1, f);
+				degree = data[j].size();
+				fwrite((const void*)&degree, sizeof(int), 1, f);
+				for (int k = 0; k < data[j].size(); k++) {
+					for (int l = 0; l < mapInfo.size(); l++) {
+						if (strcmp(data[j][k].second.c_str(), mapInfo[l].c_str()) == 0) {
+							dst = data[j][k].first;
+							fwrite((const void*)& dst, sizeof(int), 1, f);
+							label = l;
+							fwrite((const void*)& label, sizeof(char), 1, f);
+
 						}
 					}
-					fwrite((void*)buf3.c_str(), sizeof(char), (sizeof(buf3) / sizeof(char)), f);
-					buf.clear();
-					buf2.clear();
 				}
 			}
-
 		}
 		fclose(f);
 		start = vertInterTable[i];

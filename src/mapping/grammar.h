@@ -1,3 +1,6 @@
+#ifndef GRAMMAR_H
+#define GRAMMAR_H
+
 #include <iostream>
 #include <algorithm>
 #include <fstream>
@@ -54,3 +57,6 @@ class Grammar{
   char checkRules(char srcVal, char dstVal);
 
 };
+
+
+#endif
