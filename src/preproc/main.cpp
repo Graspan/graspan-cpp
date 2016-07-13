@@ -1,6 +1,6 @@
-#include "Preproc.h"
+#include "preproc.h"
 #include "../mapping/grammarChecker.cpp"
-#include "../loader/Loader.h"
+#include "../loader/loader.h"
 
 void delFiles();
 
