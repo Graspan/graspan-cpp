@@ -4,9 +4,14 @@
 // This file holds all globally used constants & types, class (forward)
 // declarations and a few frequently used utility functions.
 #include <string>
+#include <iostream>
+#include <vector>
+using std::vector;
+using std::cout;
+using std::endl;
 
 #ifndef ASSERT
-#define ASSERT 1
+#define ASSERT
 #endif 
 
 //----------------------------------------------------------------------------------------------------
@@ -14,9 +19,6 @@ typedef char label_t;
 typedef int vertexid_t;
 typedef std::string raw_label_t;
 typedef std::string string;
-
-
-
 
 
 
