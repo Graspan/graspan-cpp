@@ -10,8 +10,8 @@ int main(int argc, char *argv[]) {
 
 	delFiles();
 	Grammar g;
-	if (!g.LoadGrammar("../mapping/grammar")) {			//just for test need to fix
-		std::cout << "file is not exist" << std::endl;
+	if (!g.loadGrammar("../mapping/grammar")) {			//just for test need to fix
+		cout << "file is not exist" << std::endl;
 		exit(1);
 	}
 	Preproc pre("test.txt", numPart);
@@ -21,17 +21,17 @@ int main(int argc, char *argv[]) {
 	begin = clock();
 	pre.makeVIT("test.txt");		//need to fix input file
 	end = clock();
-	std::cout << "makeVIT time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
+	cout << "makeVIT time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 
 	begin = clock();
 	pre.makePart();			//if 0 then get mapped label else if 1 get label
 	end = clock();
-	std::cout << "makePart time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
+	cout << "makePart time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 
 	begin = clock();
 	pre.makeBinaryPart();			//if 0 then get mapped label else if 1 get label binaryfile
 	end = clock();
-	std::cout << "makePart time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
+	cout << "makePart time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 
 
 	load.loadBinary("bpart0");

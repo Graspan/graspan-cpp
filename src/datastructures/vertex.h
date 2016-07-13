@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 
+#include "../utilities/globalDefinitions.hpp"
 
 class Vertex
 {
@@ -14,30 +15,30 @@ class Vertex
 	int id;
 	int numOutEdges;
 
-	std::vector<int> outEdges;
-	std::vector<char> outEdgeValues;
+	vector<int> outEdges;
+	vector<char> outEdgeValues;
 	
 
 	public:
 	// Constructors
 	Vertex(int id, int outDegree);
-	Vertex(int idx, int id, std::vector<int> outEdges, std::vector<char> outEdgeValues);
+	Vertex(int idx, int id, vector<int> outEdges, vector<char> outEdgeValues);
 
 	// Getters
 	int getVertexID();
 	int getVertexIdx();
 	int getNumOutEdges();
-	std::vector<int> getOutEdges();
-	std::vector<char> getOutEdgeValues();
+	vector<int> getOutEdges();
+	vector<char> getOutEdgeValues();
 	int getOutEdge(int ind);
 	char getOutEdgeValue(int ind);
 
 	// Setters
 	void setNumOutEdges();
-	void setOutEdges(std::vector<int> outEdges);
-	void setOutEdgeValues(std::vector<char> outEdgeValues);
+	void setOutEdges(vector<int> outEdges);
+	void setOutEdgeValues(vector<char> outEdgeValues);
 
-	std::string toString();
+	string toString();
 };
 
 

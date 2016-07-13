@@ -80,7 +80,7 @@ char Grammar::checkRules(string srcVal, string dstVal){
 
 bool Grammar::print_all(){
 
-  using std::cout; using std::cin; using std::endl;
+  using std::cin; 
 
 	if(!eRules.size() && !rules.size()) return false;
 	

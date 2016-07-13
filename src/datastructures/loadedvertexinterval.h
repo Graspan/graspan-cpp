@@ -4,6 +4,8 @@
 #include <string>
 #include <sstream>
 
+#include "../utilities/globalDefinitions.hpp"
+
 class LoadedVertexInterval 
 {
 	int firstVertex;
@@ -42,7 +44,7 @@ class LoadedVertexInterval
 	void setNewEdgeAddedCurrRound(bool newEdgeCurrRound);
 
 
-	std::string toString();
+	string toString();
 };
 
 #endif

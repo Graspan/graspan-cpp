@@ -9,19 +9,19 @@ EdgeMerger::EdgeMerger()
 }
 
 // getters
-std::vector<int> EdgeMerger::getoUnUdEdges() { return srcoUnUdEdges; }
-std::vector<char> EdgeMerger::getoUnUdVals() { return srcoUnUdVals; }
+vector<int> EdgeMerger::getoUnUdEdges() { return srcoUnUdEdges; }
+vector<char> EdgeMerger::getoUnUdVals() { return srcoUnUdVals; }
 
-std::vector<int> EdgeMerger::getDeltaEdges() { return srcDeltaEdges; }
-std::vector<char> EdgeMerger::getDeltaVals() { return srcDeltaVals; }
+vector<int> EdgeMerger::getDeltaEdges() { return srcDeltaEdges; }
+vector<char> EdgeMerger::getDeltaVals() { return srcDeltaVals; }
 
-void EdgeMerger::mergeVectors(std::vector< std::vector<int> > &edgeVecsToMerge,
-		std::vector< std::vector<char> > &valVecsToMerge, int srcID)
+void EdgeMerger::mergeVectors(vector< std::vector<int> > &edgeVecsToMerge,
+		vector< std::vector<char> > &valVecsToMerge, int srcID)
 {
 	Timer mergeTime;
 	mergeTime.startTimer();
 
-	std::vector<MinSet> minsets(edgeVecsToMerge.size());
+	vector<MinSet> minsets(edgeVecsToMerge.size());
 	
 	int totTgtRowSize = 0;
     for (int i = 0; i < minsets.size(); i++)
@@ -35,11 +35,11 @@ void EdgeMerger::mergeVectors(std::vector< std::vector<int> > &edgeVecsToMerge,
         }
     }
 
-    srcDeltaEdges = std::vector<int>(totTgtRowSize, -1);
-    srcDeltaVals = std::vector<char>(totTgtRowSize, ((char)63));
+    srcDeltaEdges = vector<int>(totTgtRowSize, -1);
+    srcDeltaVals = vector<char>(totTgtRowSize, ((char)63));
 
-    srcoUnUdEdges = std::vector<int>(edgeVecsToMerge[srcID].size() + totTgtRowSize, -1);
-    srcoUnUdVals = std::vector<char>(edgeVecsToMerge[srcID].size() + totTgtRowSize, ((char)63));
+    srcoUnUdEdges = vector<int>(edgeVecsToMerge[srcID].size() + totTgtRowSize, -1);
+    srcoUnUdVals = vector<char>(edgeVecsToMerge[srcID].size() + totTgtRowSize, ((char)63));
 
     MinSet src, tgt;
     while (1)
@@ -61,14 +61,14 @@ void EdgeMerger::mergeVectors(std::vector< std::vector<int> > &edgeVecsToMerge,
 
     removeExtraSpace();
 
-    std::cout << "oldUnewUdelta AFTER update  ->  ";
+    cout << "oldUnewUdelta AFTER update  ->  ";
     for (int k = 0; k < srcoUnUdEdges.size(); k++)
-        std::cout << "(" << srcoUnUdEdges[k]  << ", " << srcoUnUdVals[k] << ")  ";
-    std::cout << std::endl;
-    std::cout << "delta AFTER update -> ";
+        cout << "(" << srcoUnUdEdges[k]  << ", " << srcoUnUdVals[k] << ")  ";
+    cout << endl;
+    cout << "delta AFTER update -> ";
     for (int l = 0; l < srcDeltaEdges.size(); l++)
-        std::cout << "(" << srcDeltaEdges[l] << ", " << srcDeltaVals[l] << ")  ";
-    std::cout << std::endl << std::endl;
+        cout << "(" << srcDeltaEdges[l] << ", " << srcDeltaVals[l] << ")  ";
+    cout << endl << std::endl;
 
 	mergeTime.endTimer();
 }
@@ -77,16 +77,16 @@ void EdgeMerger::mergeVectors(std::vector< std::vector<int> > &edgeVecsToMerge,
 // PRIVATE
 void EdgeMerger::removeExtraSpace()
 {
-	srcoUnUdEdges = std::vector<int>(srcoUnUdEdges.begin(), srcoUnUdEdges.begin() + oUnUdPtr + 1);
-	srcoUnUdVals = std::vector<char>(srcoUnUdVals.begin(), srcoUnUdVals.begin() + oUnUdPtr + 1);
+	srcoUnUdEdges = vector<int>(srcoUnUdEdges.begin(), srcoUnUdEdges.begin() + oUnUdPtr + 1);
+	srcoUnUdVals = vector<char>(srcoUnUdVals.begin(), srcoUnUdVals.begin() + oUnUdPtr + 1);
 
 	if (deltaPtr >= 0) {
-		srcDeltaEdges = std::vector<int>(srcDeltaEdges.begin(), srcDeltaEdges.begin() + deltaPtr + 1);
-        srcDeltaVals = std::vector<char>(srcDeltaVals.begin(), srcDeltaVals.begin() + deltaPtr + 1);
+		srcDeltaEdges = vector<int>(srcDeltaEdges.begin(), srcDeltaEdges.begin() + deltaPtr + 1);
+        srcDeltaVals = vector<char>(srcDeltaVals.begin(), srcDeltaVals.begin() + deltaPtr + 1);
 	}
 }
 
-void EdgeMerger::updateMinSet(MinSet &minset, std::vector<int> &edges, std::vector<char> &vals)
+void EdgeMerger::updateMinSet(MinSet &minset, vector<int> &edges, std::vector<char> &vals)
 {
 	minset.setCurrVID(std::numeric_limits<int>::max());
 	minset.clearEvalSet();
@@ -99,9 +99,9 @@ void EdgeMerger::updateMinSet(MinSet &minset, std::vector<int> &edges, std::vect
 	}
 }
 
-void EdgeMerger::processMinSets(MinSet &srcMS, MinSet &tgtMS, std::vector<int> &srcEdgesToMerge,
-		std::vector<char> &srcValsToMerge, std::vector<int> &tgtEdgesToMerge,
-		std::vector<char> &tgtValsToMerge)
+void EdgeMerger::processMinSets(MinSet &srcMS, MinSet &tgtMS, vector<int> &srcEdgesToMerge,
+		vector<char> &srcValsToMerge, std::vector<int> &tgtEdgesToMerge,
+		vector<char> &tgtValsToMerge)
 {
 	// case 1
 	if (srcMS.getCurrVID() > tgtMS.getCurrVID()) {
@@ -118,7 +118,7 @@ void EdgeMerger::processMinSets(MinSet &srcMS, MinSet &tgtMS, std::vector<int> &
                     srcoUnUdEdges[oUnUdPtr] = tgtMS.getCurrVID();
                     srcoUnUdVals[oUnUdPtr] = *iter;
                 }
-                else std::cout << "ERROR: oUnUdPtr out of bounds" << std::endl;
+                else cout << "ERROR: oUnUdPtr out of bounds" << endl;
 
                 deltaPtr++;
                 if (deltaPtr < srcDeltaEdges.size()) {
@@ -126,7 +126,7 @@ void EdgeMerger::processMinSets(MinSet &srcMS, MinSet &tgtMS, std::vector<int> &
                     srcDeltaVals[deltaPtr] = *iter;
                     currEvals.insert(*iter);
                 }
-                else std::cout << "ERROR: deltaPtr out of bounds" << std::endl;
+                else cout << "ERROR: deltaPtr out of bounds" << endl;
             }
         }
         if (tgtEdgesToMerge.size() > 0) updateMinSet(tgtMS, tgtEdgesToMerge, tgtValsToMerge);
@@ -152,7 +152,7 @@ void EdgeMerger::processMinSets(MinSet &srcMS, MinSet &tgtMS, std::vector<int> &
                         srcoUnUdEdges[oUnUdPtr] = tgtMS.getCurrVID();
                         srcoUnUdVals[oUnUdPtr] = *iter;
                     }
-                    else std::cout << "ERROR: oUnUdPtr out of bounds" << std::endl;
+                    else cout << "ERROR: oUnUdPtr out of bounds" << endl;
 
                     deltaPtr++;
                     if (deltaPtr < srcDeltaEdges.size()) {
@@ -160,7 +160,7 @@ void EdgeMerger::processMinSets(MinSet &srcMS, MinSet &tgtMS, std::vector<int> &
                         srcDeltaVals[deltaPtr] = *iter;
                         currEvals.insert(*iter);
                     }
-                    else std::cout << "ERROR: deltaPtr out of bounds" << std::endl;
+                    else cout << "ERROR: deltaPtr out of bounds" << endl;
 
                 }
             }
@@ -187,7 +187,7 @@ void EdgeMerger::processMinSets(MinSet &srcMS, MinSet &tgtMS, std::vector<int> &
                     srcoUnUdVals[oUnUdPtr] = *iter;
                     currEvals.insert(*iter);
                 }
-                else std::cout << "ERROR: oUnUdPtr out of bounds" << std::endl;
+                else cout << "ERROR: oUnUdPtr out of bounds" << endl;
             }
         }
         if (srcEdgesToMerge.size() > 0) updateMinSet(srcMS, srcEdgesToMerge, srcValsToMerge);

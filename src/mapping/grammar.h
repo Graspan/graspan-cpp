@@ -10,7 +10,6 @@
 #include <vector>
 #include <map>
 
-using std::vector;
 using std::set;
 using std::map;
 

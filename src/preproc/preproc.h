@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <set>
+#include "../utilities/globalDefinitions.hpp"
 
 
 
@@ -22,9 +23,9 @@ private:
 	int vitSize;
 	int dataSize;
 	int *vertInterTable;
-	std::set<std::string> eRules;
-	std::vector<std::string> mapInfo;
-	std::vector<std::pair<int, std::string>> *data;
+	std::set<string> eRules;
+	vector<string> mapInfo;
+	vector<std::pair<int, string>> *data;
 
 
 public:
@@ -32,7 +33,7 @@ public:
 	void makeVIT(char *fileName);
 	void makePart();
 	void makeBinaryPart();
-	void setMapInfo(std::vector<std::string> mapInfo, std::set<char> eRules);
+	void setMapInfo(vector<string> mapInfo, std::set<char> eRules);
 	~Preproc();
 };
 

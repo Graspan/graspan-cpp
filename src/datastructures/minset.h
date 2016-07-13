@@ -5,6 +5,8 @@
 #include <string>
 #include <sstream>
 
+#include "../utilities/globalDefinitions.hpp"
+
 class MinSet
 {
 	int ptr;
@@ -32,7 +34,7 @@ class MinSet
 	void addEval(char eval);
 	void clearEvalSet();
 	
-	std::string toString();
+	string toString();
 };
 
 class compare

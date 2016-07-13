@@ -1,8 +1,8 @@
 #include "grammarchecker.h"
 
 
-std::unordered_map<std::string, char> GrammarChecker::map = std::unordered_map<std::string, char>{};
-std::unordered_map<char, std::string> GrammarChecker::reverse_map = std::unordered_map<char, std::string>{};
+std::unordered_map<string, char> GrammarChecker::map = std::unordered_map<std::string, char>{};
+std::unordered_map<char, string> GrammarChecker::reverse_map = std::unordered_map<char, std::string>{};
 
 std::unordered_map<short, char> GrammarChecker::gramRules = std::unordered_map<short, char>{};
 
@@ -13,7 +13,7 @@ short GrammarChecker::make_short(char a, char b)
 
 // TODO: Get better trim method
 // this seems inefficient
-void trimStr(std::string &str)
+void trimStr(string &str)
 {
 	size_t first = str.find_first_not_of(' ');
 	size_t last = str.find_last_not_of(' ');
@@ -21,7 +21,7 @@ void trimStr(std::string &str)
 }
 
 // getters
-char GrammarChecker::getValue(std::string str)
+char GrammarChecker::getValue(string str)
 {
 	trimStr(str);
 	if (map.find(str) != map.end())
@@ -35,7 +35,7 @@ char GrammarChecker::getValue(std::string str)
 	}
 }
 
-std::string GrammarChecker::getValue(char c)
+string GrammarChecker::getValue(char c)
 {
 	return reverse_map.at(c);
 }

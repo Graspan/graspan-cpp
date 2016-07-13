@@ -23,7 +23,7 @@ void MinSet::addEval(char eval) { evals.insert(eval); }
 
 void MinSet::clearEvalSet() { evals.clear(); }
 
-std::string MinSet::toString()
+string MinSet::toString()
 {
 	std::stringstream output;
 	
@@ -31,7 +31,7 @@ std::string MinSet::toString()
 	for (std::unordered_set<char>::iterator it = evals.begin(); it != evals.end(); it++)
 		output << *it << ", ";
 
-	output << std::endl;
+	output << endl;
 
 	return output.str();
 }

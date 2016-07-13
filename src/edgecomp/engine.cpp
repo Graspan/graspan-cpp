@@ -7,6 +7,7 @@
 #include "../edgecomp/compute.h"
 #include "../../test/randomgraphgen.h"
 #include "../../test/timer.h"
+#include "../utilities/globalDefinitions.hpp"
 
 
 void loadGrammar();
@@ -23,23 +24,23 @@ void loadGrammar();
  * @param intervals		@param indEnd2
  * @param indStart1
  */
-void computeOneIteration(std::vector<Vertex> &vertices, ComputationSet compSets[],
-		std::vector<LoadedVertexInterval> &intervals, int indStart1, int indEnd1,
+void computeOneIteration(vector<Vertex> &vertices, ComputationSet compSets[],
+		vector<LoadedVertexInterval> &intervals, int indStart1, int indEnd1,
 		int indStart2, int indEnd2)
 {
 //	if (vertices[0].getNumOutEdges() != 0) {
-//		std::cout << "Updating vertex " << vertices[0].getVertexID() << "..." << std::endl;
+//		cout << "Updating vertex " << vertices[0].getVertexID() << "..." << endl;
 //		updateEdges(0, compSets, intervals);
 //	}
-//	else std::cout << "Vertex " << vertices[0].getVertexID() << " has no edges" << std::endl;
+//	else cout << "Vertex " << vertices[0].getVertexID() << " has no edges" << endl;
 
 	long newEdges;
 	for (int i = 0; i < vertices.size(); i++) {   
 		if (vertices[i].getNumOutEdges() != 0) {
-			std::cout << "Updating vertex " << vertices[i].getVertexID() << "..." << std::endl;
+			cout << "Updating vertex " << vertices[i].getVertexID() << "..." << endl;
 			newEdges = updateEdges(i, compSets, intervals);
 		}
-		else { std::cout << "Vertex " << vertices[i].getVertexID() << " has no edges" << std::endl << std::endl; }
+		else { cout << "Vertex " << vertices[i].getVertexID() << " has no edges" << endl << std::endl; }
 	}
 }
 
@@ -51,7 +52,7 @@ void computeOneIteration(std::vector<Vertex> &vertices, ComputationSet compSets[
  * @param compSets
  * @param intervals
  */
-void computeEdges(std::vector<Vertex> &vertices, ComputationSet compSets[], std::vector<LoadedVertexInterval> &intervals)
+void computeEdges(vector<Vertex> &vertices, ComputationSet compSets[], std::vector<LoadedVertexInterval> &intervals)
 {
 	if (vertices.size() == 0) return;
 
@@ -74,12 +75,12 @@ int main(int argc, char *argv[])
 
 	compTime.startTimer();
 
-	std::cout << "==== GRAPH ====" << std::endl;
-	std::vector<Vertex> vertices = randGraph();
+	cout << "==== GRAPH ====" << endl;
+	vector<Vertex> vertices = randGraph();
 	int pSize = vertices.size() / 2;
 
 	// temp function for testing
-	std::cout << "==== GRAMMAR ====" << std::endl;
+	cout << "==== GRAMMAR ====" << endl;
 	loadGrammar();
 
 	ComputationSet *compSets = new ComputationSet[vertices.size()];
@@ -92,7 +93,7 @@ int main(int argc, char *argv[])
 		compSets[i].setoldUnewVals(vertices[i].getOutEdgeValues());
 	}
 
-	std::vector<LoadedVertexInterval> lvi;
+	vector<LoadedVertexInterval> lvi;
 	lvi.reserve(2);
 
 	lvi.push_back(LoadedVertexInterval{vertices[0].getVertexID(), vertices[pSize-1].getVertexID(), 0});
@@ -109,15 +110,15 @@ int main(int argc, char *argv[])
 	compTime.endTimer();
 
 
-	std::cout << "TOTAL TIME: " << compTime.toString() << std::endl;
+	cout << "TOTAL TIME: " << compTime.toString() << endl;
 
 	return 0;
 }
 
 
-std::string make_chars(short s)
+string make_chars(short s)
 {
-	std::string str = "";
+	string str = "";
 	char a = s >> 8;
 	char b = (char)s;
 
@@ -135,10 +136,10 @@ void loadGrammar()
 	GrammarChecker::addDRule('d', 'b', 'c');
 	GrammarChecker::addDRule('c', 'b', 'a');
 
-	std::cout << "GRAM_RULES: ";
+	cout << "GRAM_RULES: ";
 	for (std::unordered_map<short, char>::iterator iter = GrammarChecker::gramRules.begin(); iter != GrammarChecker::gramRules.end(); iter++)
 	{
-		std::cout << "([" << make_chars(iter->first) << "] -> " << iter->second << ")  ";
+		cout << "([" << make_chars(iter->first) << "] -> " << iter->second << ")  ";
 	}
-	std::cout << std::endl << std::endl;
+	cout << endl << std::endl;
 }

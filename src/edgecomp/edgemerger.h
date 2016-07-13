@@ -9,6 +9,8 @@
 
 #include "../datastructures/minset.h"
 #include "../../test/timer.h"
+#include "../utilities/globalDefinitions.hpp"
+
 
 class EdgeMerger
 {
@@ -17,37 +19,37 @@ class EdgeMerger
 	int currID;
 
 	std::unordered_set<char> currEvals;
-	std::priority_queue<MinSet, std::vector<MinSet>, compare> minEdges;
+	std::priority_queue<MinSet, vector<MinSet>, compare> minEdges;
 
-	std::vector<int> srcoUnUdEdges;
-	std::vector<char> srcoUnUdVals;
+	vector<int> srcoUnUdEdges;
+	vector<char> srcoUnUdVals;
 
-	std::vector<int> srcDeltaEdges;
-	std::vector<char> srcDeltaVals;
+	vector<int> srcDeltaEdges;
+	vector<char> srcDeltaVals;
 
 
 	// FUNCTIONS
 	void removeExtraSpace();
 
-	void updateMinSet(MinSet &minset, std::vector<int> &edges, std::vector<char> &vals);
+	void updateMinSet(MinSet &minset, vector<int> &edges, std::vector<char> &vals);
 
-	void processMinSets(MinSet &srcMS, MinSet &tgtMS, std::vector<int> &srcEdgesToMerge,
-		std::vector<char> &srcValsToMerge, std::vector<int> &tgtEdgesToMerge,
-		std::vector<char> &tgtValsToMerge);
+	void processMinSets(MinSet &srcMS, MinSet &tgtMS, vector<int> &srcEdgesToMerge,
+		vector<char> &srcValsToMerge, std::vector<int> &tgtEdgesToMerge,
+		vector<char> &tgtValsToMerge);
 
 	public:
 	// constructor
 	EdgeMerger();
 
 	// getters
-	std::vector<int> getoUnUdEdges();
-	std::vector<char> getoUnUdVals();
+	vector<int> getoUnUdEdges();
+	vector<char> getoUnUdVals();
 	
-	std::vector<int> getDeltaEdges();
-	std::vector<char> getDeltaVals();
+	vector<int> getDeltaEdges();
+	vector<char> getDeltaVals();
 
 	// given all new edges and their values 
-	void mergeVectors(std::vector< std::vector<int> > &edgeVecsToMerge, std::vector< std::vector<char> > &valVecsToMerge, int srcID);
+	void mergeVectors(vector< std::vector<int> > &edgeVecsToMerge, std::vector< std::vector<char> > &valVecsToMerge, int srcID);
 };
 
 #endif

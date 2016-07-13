@@ -5,12 +5,15 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include "../utilities/globalDefinitions.hpp"
+
+
 class GrammarChecker
 {
 	
 	public:
-	static std::unordered_map<std::string, char> map;
-	static std::unordered_map<char, std::string> reverse_map;
+	static std::unordered_map<string, char> map;
+	static std::unordered_map<char, string> reverse_map;
 	static std::unordered_map<short, char> gramRules;
 
 	static short make_short(char a, char b);
@@ -19,8 +22,8 @@ class GrammarChecker
 	static std::unordered_set<char> eRules;
 
 	// getters
-	static char getValue(std::string str);
-	static std::string getValue(char c);
+	static char getValue(string str);
+	static string getValue(char c);
 
 	// rule checking
 	static char checkL1Rules(char srcVal);

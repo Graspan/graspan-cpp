@@ -2,7 +2,7 @@
 
 int main(){
 
-  using std::cout; using std::cin; using std::endl;
+  using cout; using std::cin; using endl;
 
 	string fname;
 

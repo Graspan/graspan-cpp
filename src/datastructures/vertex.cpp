@@ -1,7 +1,7 @@
 #include "vertex.h"
 
 // Constructors
-Vertex::Vertex(int idx, int id, std::vector<int> outEdges, std::vector<char> outEdgeValues)
+Vertex::Vertex(int idx, int id, vector<int> outEdges, std::vector<char> outEdgeValues)
 {
 	this->idx = idx;
 	this->id = id;
@@ -16,27 +16,27 @@ Vertex::Vertex(int idx, int id, std::vector<int> outEdges, std::vector<char> out
 int Vertex::getVertexID() { return id; }
 int Vertex::getVertexIdx() { return idx; }
 int Vertex::getNumOutEdges() { return numOutEdges; }
-std::vector<int> Vertex::getOutEdges() { return outEdges; }
-std::vector<char> Vertex::getOutEdgeValues() { return outEdgeValues; }
+vector<int> Vertex::getOutEdges() { return outEdges; }
+vector<char> Vertex::getOutEdgeValues() { return outEdgeValues; }
 int Vertex::getOutEdge(int ind) { return outEdges[ind]; }
 char Vertex::getOutEdgeValue(int ind) { return outEdgeValues[ind]; }
 
 // Setters
 void Vertex::setNumOutEdges() {}
-void Vertex::setOutEdges(std::vector<int> outEdges) { this->outEdges = outEdges; }
-void Vertex::setOutEdgeValues(std::vector<char> outEdgeValues) { this->outEdgeValues = outEdgeValues; }
+void Vertex::setOutEdges(vector<int> outEdges) { this->outEdges = outEdges; }
+void Vertex::setOutEdgeValues(vector<char> outEdgeValues) { this->outEdgeValues = outEdgeValues; }
 
 /**
  * Description: display a vertex as its id and the destination vertices it points to
  * with their grammar
  *
- * @return std::string output
+ * @return string output
  */
-std::string Vertex::toString()
+string Vertex::toString()
 {
 	std::stringstream output;
 
-	output << std::endl << id << " ->  ";
+	output << endl << id << " ->  ";
 	for (int i = 0; i < numOutEdges; i++)
 		output << outEdges[i] << ", " << outEdgeValues[i] << ";  ";
 

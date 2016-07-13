@@ -1,6 +1,6 @@
 #include "preproc.h"
 
-bool compareV(const std::pair<int, std::string> &lhs, const std::pair<int, std::string> &rhs);
+bool compareV(const std::pair<int, string> &lhs, const std::pair<int, string> &rhs);
 
 Preproc::Preproc(char *fileName, int size) {
 	clock_t begin, end;
@@ -28,14 +28,14 @@ Preproc::Preproc(char *fileName, int size) {
 	}
 	fclose(fp);
 	end = clock();
-	std::cout << "Preproc data count time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
+	cout << "Preproc data count time : " << ((end - begin) / CLOCKS_PER_SEC) << endl;
 
 	//memory allocation, it takes 10s
 	begin = clock();
-	data = new std::vector<std::pair<int, std::string>>[dataSize + 1];
+	data = new vector<std::pair<int, string>>[dataSize + 1];
 	vertInterTable = new int[dataSize + 1];
 	end = clock();
-	std::cout << "memory allocation time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
+	cout << "memory allocation time : " << ((end - begin) / CLOCKS_PER_SEC) << endl;
 
 }
 
@@ -43,7 +43,7 @@ void Preproc::makeVIT(char *fileName) {
 	clock_t begin, end;
 	int src, dst, degree;
 	int size;
-	std::string label;
+	string label;
 	char buf[512];
 	char *ctemp[3];
 	int i = 0, j = 0;
@@ -51,7 +51,7 @@ void Preproc::makeVIT(char *fileName) {
 	char *context = NULL;
 	int sum = 0;
 	FILE *fp;
-	std::set<std::string>::iterator it_e; //for eRules
+	std::set<string>::iterator it_e; //for eRules
 
 										  //second file scan for get the data and put in the 
 										  //data (vector of array) it takes 275s need to fix for improve the time complexity
@@ -73,7 +73,7 @@ void Preproc::makeVIT(char *fileName) {
 	}
 	fclose(fp);
 	end = clock();
-	std::cout << "makeVIT data input time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
+	cout << "makeVIT data input time : " << ((end - begin) / CLOCKS_PER_SEC) << endl;
 
 	//sorting the vector of array and make VIT, it takes 88s
 	begin = clock();
@@ -103,15 +103,15 @@ void Preproc::makeVIT(char *fileName) {
 	if (sum != 0)
 		vertInterTable[j++] = i - 1;
 	end = clock();
-	std::cout << "makeVIT sorting time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
+	cout << "makeVIT sorting time : " << ((end - begin) / CLOCKS_PER_SEC) << endl;
 
 }
 
 void Preproc::makePart() {
-	std::vector<std::string>::iterator it_m;
+	vector<string>::iterator it_m;
 	FILE *f;
-	std::string str;
-	std::string name;
+	string str;
+	string name;
 	int start = 0;
 
 	//make partition files, it takes 64s
@@ -143,8 +143,8 @@ void Preproc::makePart() {
 
 void Preproc::makeBinaryPart() {
 	FILE *f;
-	std::string str;
-	std::string name;
+	string str;
+	string name;
 	int start = 0;
 	int degree, dst;
 	char label;
@@ -180,7 +180,7 @@ void Preproc::makeBinaryPart() {
 }
 
 
-void Preproc::setMapInfo(std::vector<std::string> mapInfo, std::set<char> eRules)
+void Preproc::setMapInfo(vector<string> mapInfo, std::set<char> eRules)
 {
 	std::set<char>::iterator it_e; //for eRules
 	this->mapInfo.assign(mapInfo.begin(), mapInfo.end());
@@ -197,7 +197,7 @@ Preproc::~Preproc()
 	delete[]data;
 }
 
-bool compareV(const std::pair<int, std::string> &lhs, const std::pair<int, std::string> &rhs)
+bool compareV(const std::pair<int, string> &lhs, const std::pair<int, string> &rhs)
 {
 	if (lhs.first == rhs.first)
 		return lhs.second < rhs.second;

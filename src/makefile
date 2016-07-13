@@ -5,8 +5,8 @@ CFLAGS=-lpthread
 
 
 ##### source files #####
-# preprocessing
-PREPROC=preproc/main.cpp preproc/Preproc.cpp preproc/Preproc.h mapping/grammarChecker.cpp 
+# prepessing
+PREPROC=prep/main.cpp preproc/Preproc.cpp preproc/Preproc.h mapping/grammarChecker.cpp 
 
 # edge computation
 COMPUTATION=edgecomp/engine.cpp edgecomp/compute.cpp edgecomp/grammarchecker.cpp edgecomp/edgemerger.cpp
@@ -15,11 +15,11 @@ TEST=../test/randomgraphgen.cpp ../test/timer.cpp
 
 
 ##### build rules #####
-all: preproc comp
+all: prep comp
 
-# preprocessing
-#preproc: $(PREPROC)
-#	$(CC) $(PREPROC) -o ../bin/preproc
+# prepessing
+#prep: $(PREPROC)
+#	$(CC) $(PREPROC) -o ../bin/prep
 
 # edge computation program
 comp: $(COMPUTATION) $(DATASTRUCTS) $(TEST)

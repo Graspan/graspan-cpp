@@ -10,27 +10,27 @@ void Loader::loadBinary(char * fileName)
 
 	fp = fopen(fileName, "rb");
 	while (NULL != fread(&src, 4, 1, fp)) {
-		std::vector<int> outEdges;
-		std::vector<char> outEdgeValues;
+		vector<int> outEdges;
+		vector<char> outEdgeValues;
 		fread(&degree, 4, 1, fp);
-		std::cout << src << " " << degree << " ";
+		cout << src << " " << degree << " ";
 		for (int i = 0; i < degree; i++) {
 			fread(&dst, 4, 1, fp);
 
 			fread(&label, 1, 1, fp);
 
-			std::cout << dst << " " << (int)label << " ";
+			cout << dst << " " << (int)label << " ";
 			outEdges.push_back(dst);
 			outEdgeValues.push_back(label);
 		}
 		Vertex v(0, src, outEdges, outEdgeValues);
 		testt.push_back(v);
-		std::cout << std::endl;
+		cout << endl;
 
 	}
 }
 
-std::vector<Vertex> Loader::getData()
+vector<Vertex> Loader::getData()
 {
 	return this->testt;
 }

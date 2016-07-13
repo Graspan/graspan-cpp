@@ -37,11 +37,11 @@ void LoadedVertexInterval::setNewEdgeAddedCurrRound(bool newEdgeCurrRound)
 
 
 // string representation
-std::string LoadedVertexInterval::toString()
+string LoadedVertexInterval::toString()
 {
 	std::stringstream output;
 
-	output << std::endl << "(PartID: " << partitionID << ", VRange: " << firstVertex << " - " << lastVertex << ", IDRange: " << indexStart << " - " << indexEnd << ")";
+	output << endl << "(PartID: " << partitionID << ", VRange: " << firstVertex << " - " << lastVertex << ", IDRange: " << indexStart << " - " << indexEnd << ")";
 
 	return output.str();
 }

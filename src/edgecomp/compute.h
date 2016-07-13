@@ -12,6 +12,7 @@
 #include "../datastructures/computationset.h"
 #include "grammarchecker.h"
 #include "edgemerger.h"
+#include "../utilities/globalDefinitions.hpp"
 
 struct IDValuePair {
 	int id;
@@ -24,6 +25,6 @@ struct Hash {
 	size_t operator()(const IDValuePair &pair) const { return 1 * 31 + pair.id; }
 };
 
-long updateEdges(int i, ComputationSet compSets[], std::vector<LoadedVertexInterval> &intervals);
+long updateEdges(int i, ComputationSet compSets[], vector<LoadedVertexInterval> &intervals);
 
 #endif
