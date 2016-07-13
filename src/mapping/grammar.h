@@ -1,6 +1,7 @@
 #ifndef GRAMMAR_H
 #define GRAMMAR_H
 
+#include "../utilities/globalDefinitions.hpp"
 #include <iostream>
 #include <algorithm>
 #include <fstream>
@@ -9,10 +10,7 @@
 #include <vector>
 #include <map>
 
-//using namespace std;
-
 using std::vector;
-using std::string;
 using std::set;
 using std::map;
 
@@ -20,19 +18,19 @@ class Grammar{
   
  private:
 
-  vector<string> map_info; //for storing map info
+  vector<raw_label_t> map_info; //for storing map info
 
-  set<char> eRules; //encoded form
+  set<label_t> eRules; //encoded form
   
-  std::map<short, char> rules;
+  map<short, label_t> rules;
 	
-  void mapping(string temp);
+  void mapping(raw_label_t temp);
   
   string trimStr(string str);
 	
-  inline char getValue(string str);
+  inline label_t getValue(raw_label_t str);
 	
-  inline short changeShort(char a, char b);
+  inline short changeShort(label_t a, label_t b);
  
  public:
 	
@@ -44,17 +42,17 @@ class Grammar{
   bool print_all();
 
   //if using map_info with rules, have to subtract 1	
-  inline vector<string> getMapInfo() {
+  inline vector<raw_label_t> getMapInfo() {
     return map_info;
   }
 	
-  inline set<char> getErules() {
+  inline set<label_t> getErules() {
     return eRules;
   }
 
-	char checkRules(string srcVal, string dstVal);
+	label_t checkRules(string srcVal, string dstVal);
 
-  char checkRules(char srcVal, char dstVal);
+  label_t checkRules(label_t srcVal, label_t dstVal);
 
 };
 

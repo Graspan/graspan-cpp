@@ -17,6 +17,8 @@ int main(){
 		cout << "data is empty" << endl;
 		exit(2);
 	}
-
+  assert(1!=2, "falsedadsads");
+  //fprintf (stderr, "Error at %s, line %d \n", __FILE__, __LINE__);
+  //  cout << __FILE__ << __LINE__ << endl;
 	g.getErules();
 }
