@@ -1,6 +1,7 @@
 #ifndef LOADER_H
 #define LOADER_H
 
+#include "../datastructures/vertex.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -16,10 +17,10 @@ class Loader {
 private:
 	char *part;
 	char *bpart;
-	std::vector<std::pair<int, std::string>> *data;
-
+	std::vector<Vertex> testt;
 public:
 	void loadBinary(char *fileName);
+	std::vector<Vertex> getData();
 };
 
 
