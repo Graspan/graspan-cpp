@@ -1,9 +1,10 @@
 #include "grammar.h"
 
 Grammar::Grammar(){}
+Grammar::~Grammar(){}
 
-bool Grammar::LoadGrammar(string fname){
-	ifstream fin;
+bool Grammar::loadGrammar(string fname){
+  std::ifstream fin;
 	fin.open(fname);
 	if(!fin) return false;	
 
@@ -60,15 +61,6 @@ inline short Grammar::changeShort(char a, char b){
 	return (short)a << 8 | b;
 }
 
-//if using map_info with rules, have to subtract 1 
-inline vector<string> Grammar::getMapInfo(){
-	return map_info;
-}
-
-inline set<char> Grammar::getErules(){
-	return eRules;
-}
-
 //ex) checkRules("a","");
 //ex) checkRules("a","b");
 char Grammar::checkRules(string srcVal, string dstVal){
@@ -87,6 +79,9 @@ char Grammar::checkRules(string srcVal, string dstVal){
 }
 
 bool Grammar::print_all(){
+
+  using std::cout; using std::cin; using std::endl;
+
 	if(!eRules.size() && !rules.size()) return false;
 	
 	set<char>::iterator it_e; //for eRules

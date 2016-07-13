@@ -1,12 +1,15 @@
 #include "grammarChecker.cpp"
 
 int main(){
+
+  using std::cout; using std::cin; using std::endl;
+
 	string fname;
 
 	cout << "insert the file name : ";
 	cin >> fname;
 	Grammar g;
-	if(!g.LoadGrammar(fname)){
+	if(!g.loadGrammar(fname)){
 		cout << "file is not exist" << endl;
 		exit(1);
 	}
