@@ -1,6 +1,6 @@
 #include "preproc.h"
 
-bool compareV(const std::pair<int, string> &lhs, const std::pair<int, string> &rhs);
+bool compareV(const pair<int, string> &lhs, const pair<int, string> &rhs);
 
 Preproc::Preproc(char *fileName, int size) {
 	clock_t begin, end;
@@ -32,8 +32,7 @@ Preproc::Preproc(char *fileName, int size) {
 
 	//memory allocation, it takes 10s
 	begin = clock();
-	data = new vector<std::pair<int, string>>[dataSize + 1];
-	vertInterTable = new int[dataSize + 1];
+	data = new vector<pair<int, string>>[dataSize + 1];
 	end = clock();
 	cout << "memory allocation time : " << ((end - begin) / CLOCKS_PER_SEC) << endl;
 
@@ -47,11 +46,13 @@ void Preproc::makeVIT(char *fileName) {
 	char buf[512];
 	char *ctemp[3];
 	int i = 0, j = 0;
+	int startS = 0, endS = 0;
 	char *p_token = NULL;
 	char *context = NULL;
 	int sum = 0;
 	FILE *fp;
-	std::set<string>::iterator it_e; //for eRules
+	set<string>::iterator it_e; //for eRules
+	vector<pair<int, int>> tempVIT;
 
 										  //second file scan for get the data and put in the 
 										  //data (vector of array) it takes 275s need to fix for improve the time complexity
@@ -94,16 +95,19 @@ void Preproc::makeVIT(char *fileName) {
 		size = count / vitSize + count %vitSize;
 
 	for (i = 0; i <= dataSize; i++) {
+		endS = i;
 		sum += data[i].size();
 		if (sum >= size) {
-			vertInterTable[j++] = i;
+			tempVIT.push_back(std::make_pair(startS, endS));
+			startS = i+1;
 			sum = 0;
 		}
 	}
 	if (sum != 0)
-		vertInterTable[j++] = i - 1;
+		tempVIT.push_back(std::make_pair(startS, endS));
 	end = clock();
-	cout << "makeVIT sorting time : " << ((end - begin) / CLOCKS_PER_SEC) << endl;
+	vit.setVIT(tempVIT);
+	cout << "makeVIT sorting time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 
 }
 
@@ -121,8 +125,8 @@ void Preproc::makePart() {
 		name += str.c_str();
 
 		f = fopen(name.c_str(), "a");
-
-		for (int j = start; j <= vertInterTable[i]; j++) {
+		cout << vit.getEnd(i) << endl;
+		for (int j = start; j <= vit.getEnd(i); j++) {
 			if (data[j].size() != 0) {
 				fprintf(f, "%d\t%d\t", j, data[j].size());
 				for (int k = 0; k < data[j].size(); k++) {
@@ -137,7 +141,7 @@ void Preproc::makePart() {
 			}
 		}
 		fclose(f);
-		start = vertInterTable[i];
+		start = vit.getEnd(i);
 	}
 }
 
@@ -155,7 +159,7 @@ void Preproc::makeBinaryPart() {
 		name += str.c_str();
 
 		f = fopen(name.c_str(), "ab");
-		for (int j = start; j <= vertInterTable[i]; j++) {
+		for (int j = start; j <= vit.getEnd(i); j++) {
 			if (data[j].size() != 0) {
 
 				fwrite((const void*)& j, sizeof(int), 1, f);
@@ -175,29 +179,30 @@ void Preproc::makeBinaryPart() {
 			}
 		}
 		fclose(f);
-		start = vertInterTable[i];
+		start = vit.getEnd(i);
 	}
 }
 
 
-void Preproc::setMapInfo(vector<string> mapInfo, std::set<char> eRules)
+void Preproc::setMapInfo(vector<string> mapInfo, set<char> eRules)
 {
-	std::set<char>::iterator it_e; //for eRules
+	set<char>::iterator it_e; //for eRules
 	this->mapInfo.assign(mapInfo.begin(), mapInfo.end());
 
 	for (it_e = eRules.begin(); it_e != eRules.end(); it_e++)
 		this->eRules.insert(mapInfo[(int)*it_e]);
 }
 
+VIT Preproc::getVIT() { return vit; }
+
 Preproc::~Preproc()
 {
-	delete[]vertInterTable;
 	for (int i = 0; i <= dataSize; i++)
 		data[i].clear();
 	delete[]data;
 }
 
-bool compareV(const std::pair<int, string> &lhs, const std::pair<int, string> &rhs)
+bool compareV(const pair<int, string> &lhs, const pair<int, string> &rhs)
 {
 	if (lhs.first == rhs.first)
 		return lhs.second < rhs.second;

@@ -1,8 +1,6 @@
 #ifndef LOADER_H
 #define LOADER_H
 
-#include "../datastructures/vertex.h"
-#include "../utilities/globalDefinitions.hpp"
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -12,16 +10,20 @@
 #include <time.h>
 #include <set>
 
+#include "../datastructures/vertex.h"
+#include "../datastructures/partition.h"
+#include "../utilities/globalDefinitions.hpp"
+
 
 
 class Loader {
 private:
-	char *part;
-	char *bpart;
-	vector<Vertex> testt;
 public:
-	void loadBinary(char *fileName);
-	vector<Vertex> getData();
+	Partition loadBinary(char *fileName, int id);
+	//static Partition loadPartition(int id, bool readable = false) {};
+	//graphname
+		//graphname.partition.1.b
+		//graphname.partition.1.h
 };
 
 

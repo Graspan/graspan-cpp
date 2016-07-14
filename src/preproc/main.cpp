@@ -7,7 +7,6 @@ void delFiles();
 int main(int argc, char *argv[]) {
 	int numPart = 3;						//it will change numPart = argv[2] or else, userinput
 	clock_t begin, end;
-
 	delFiles();
 	Grammar g;
 	if (!g.loadGrammar("../mapping/grammar")) {			//just for test need to fix
@@ -17,7 +16,6 @@ int main(int argc, char *argv[]) {
 	Preproc pre("test.txt", numPart);
 	pre.setMapInfo(g.getMapInfo(), g.getErules());
 	Loader load;
-
 	begin = clock();
 	pre.makeVIT("test.txt");		//need to fix input file
 	end = clock();
@@ -34,13 +32,13 @@ int main(int argc, char *argv[]) {
 	cout << "makePart time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 
 
-	load.loadBinary("bpart0");
+	load.loadBinary("bpart", 0);
 	return 0;
 }
 
 void delFiles() {//delete test files
 	for (int i = 0; i < 200; i++) {
-		std::string str = "part" + std::to_string((long long)i);		//need to fix file names
+		string str = "part" + std::to_string((long long)i);		//need to fix file names
 		if (std::ifstream(str))
 			std::remove(str.c_str());
 		str = "spart" + std::to_string((long long)i);
