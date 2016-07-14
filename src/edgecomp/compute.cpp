@@ -20,14 +20,14 @@ void genEdgesToMergeForDRule(ComputationSet compSets[], std::unordered_set<IDVal
  */
 long updateEdges(int i, ComputationSet compSets[], vector<LoadedVertexInterval> &intervals)
 {
-	ComputationSet compSet = compSets[i];
+	ComputationSet *compSet = &compSets[i];
 
 	// get the list of dest vertices of the current source vertex
-	vector<int> oldEdges = compSet.getOldEdges();
-	vector<char> oldVals = compSet.getOldVals();
+	vector<int> oldEdges = compSet->getOldEdges();
+	vector<char> oldVals = compSet->getOldVals();
 
-	vector<int> newEdges = compSet.getNewEdges();
-	vector<char> newVals = compSet.getNewVals();
+	vector<int> newEdges = compSet->getNewEdges();
+	vector<char> newVals = compSet->getNewVals();
 
 	bool oldEdgesEmpty = (oldEdges.empty()) ? true : false;
 	bool newEdgesEmpty = (newEdges.empty()) ? true : false;
@@ -49,8 +49,8 @@ long updateEdges(int i, ComputationSet compSets[], vector<LoadedVertexInterval> 
 	vector< vector<char> > valVecsToMerge(numRowsToMerge);
 
 	int rowToMergeID = 0;
-	edgeVecsToMerge[rowToMergeID] = compSet.getoldUnewEdges();
-	valVecsToMerge[rowToMergeID++] = compSet.getoldUnewVals();
+	edgeVecsToMerge[rowToMergeID] = compSet->getoldUnewEdges();
+	valVecsToMerge[rowToMergeID++] = compSet->getoldUnewVals();
 	
 
 	genEdgesToMergeForSRule(newEdges, newVals, edgeVecsToMerge, valVecsToMerge, rowToMergeID);
@@ -62,7 +62,14 @@ long updateEdges(int i, ComputationSet compSets[], vector<LoadedVertexInterval> 
 
 	em.mergeVectors(edgeVecsToMerge, valVecsToMerge, 0);
 
-	return 0;
+	compSet->setOldEdges(compSet->getoldUnewEdges());
+	compSet->setOldVals(compSet->getoldUnewVals());
+	compSet->setoldUnewEdges(em.getoUnUdEdges());
+	compSet->setoldUnewVals(em.getoUnUdVals());
+	compSet->setNewEdges(em.getDeltaEdges());
+	compSet->setNewVals(em.getDeltaVals());
+
+	return em.getNumNewEdges();
 }
 
 /**

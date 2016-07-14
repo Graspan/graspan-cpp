@@ -9,6 +9,12 @@
 #include "../../test/timer.h"
 #include "../utilities/globalDefinitions.hpp"
 
+long totNewEdges;
+long newEdgesThisIter;
+int iterNo;
+
+bool newEdgesPart1;
+bool newEdgesPart2;
 
 void loadGrammar();
 
@@ -19,14 +25,12 @@ void loadGrammar();
  * TODO: Make multithreaded
  * compute the new edges of each vertex simultaneously
  *
- * @param vertices		@param indEnd1
- * @param compSets		@param indStart2
- * @param intervals		@param indEnd2
- * @param indStart1
+ * @param vertices
+ * @param compSets
+ * @param intervals
  */
 void computeOneIteration(vector<Vertex> &vertices, ComputationSet compSets[],
-		vector<LoadedVertexInterval> &intervals, int indStart1, int indEnd1,
-		int indStart2, int indEnd2)
+		vector<LoadedVertexInterval> &intervals)
 {
 //	if (vertices[0].getNumOutEdges() != 0) {
 //		cout << "Updating vertex " << vertices[0].getVertexID() << "..." << endl;
@@ -34,11 +38,10 @@ void computeOneIteration(vector<Vertex> &vertices, ComputationSet compSets[],
 //	}
 //	else cout << "Vertex " << vertices[0].getVertexID() << " has no edges" << endl;
 
-	long newEdges;
 	for (int i = 0; i < vertices.size(); i++) {   
 		if (vertices[i].getNumOutEdges() != 0) {
 			cout << "Updating vertex " << vertices[i].getVertexID() << "..." << endl;
-			newEdges = updateEdges(i, compSets, intervals);
+			newEdgesThisIter += updateEdges(i, compSets, intervals);
 		}
 		else { cout << "Vertex " << vertices[i].getVertexID() << " has no edges" << endl << std::endl; }
 	}
@@ -56,12 +59,16 @@ void computeEdges(vector<Vertex> &vertices, ComputationSet compSets[], vector<Lo
 {
 	if (vertices.size() == 0) return;
 
-	int indStart1 = intervals[0].getIndexStart();
-	int indEnd1 = intervals[0].getIndexEnd();
-	int indStart2 = intervals[1].getIndexStart();
-	int indEnd2 = intervals[1].getIndexEnd();
+	iterNo = 0;
+	totNewEdges = 0;
+	
+	do {
+		iterNo++;
+		newEdgesThisIter = 0;
+		computeOneIteration(vertices, compSets, intervals);
 
-	computeOneIteration(vertices, compSets, intervals, indStart1, indEnd1, indStart2, indEnd2);
+		totNewEdges += newEdgesThisIter;
+	} while (newEdgesThisIter > 0);
 }
 
 /**
