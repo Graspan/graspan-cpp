@@ -6,7 +6,10 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <set>
 using std::vector;
+using std::pair;
+using std::set;
 using std::cout;
 using std::endl;
 
@@ -17,10 +20,14 @@ using std::endl;
 //----------------------------------------------------------------------------------------------------
 typedef char label_t;
 typedef int vertexid_t;
+typedef int partitionid_t;
 typedef std::string raw_label_t;
 typedef std::string string;
 
-
+static string GRAP = ".graph";
+static string PART = ".partition";
+static string BINA = ".binary";
+static string HUMA = ".human";
 
 //----------------------------------------------------------------------------------------------------
 #ifdef ASSERT
