@@ -52,7 +52,7 @@ void computeOneIteration(vector<Vertex> &vertices, ComputationSet compSets[],
  * @param compSets
  * @param intervals
  */
-void computeEdges(vector<Vertex> &vertices, ComputationSet compSets[], std::vector<LoadedVertexInterval> &intervals)
+void computeEdges(vector<Vertex> &vertices, ComputationSet compSets[], vector<LoadedVertexInterval> &intervals)
 {
 	if (vertices.size() == 0) return;
 

@@ -15,8 +15,10 @@ vector<char> EdgeMerger::getoUnUdVals() { return srcoUnUdVals; }
 vector<int> EdgeMerger::getDeltaEdges() { return srcDeltaEdges; }
 vector<char> EdgeMerger::getDeltaVals() { return srcDeltaVals; }
 
-void EdgeMerger::mergeVectors(vector< std::vector<int> > &edgeVecsToMerge,
-		vector< std::vector<char> > &valVecsToMerge, int srcID)
+int EdgeMerger::getNumNewEdges() { return deltaPtr + 1; }
+
+void EdgeMerger::mergeVectors(vector< vector<int> > &edgeVecsToMerge,
+		vector< vector<char> > &valVecsToMerge, int srcID)
 {
 	Timer mergeTime;
 	mergeTime.startTimer();
@@ -86,7 +88,7 @@ void EdgeMerger::removeExtraSpace()
 	}
 }
 
-void EdgeMerger::updateMinSet(MinSet &minset, vector<int> &edges, std::vector<char> &vals)
+void EdgeMerger::updateMinSet(MinSet &minset, vector<int> &edges, vector<char> &vals)
 {
 	minset.setCurrVID(std::numeric_limits<int>::max());
 	minset.clearEvalSet();
@@ -100,7 +102,7 @@ void EdgeMerger::updateMinSet(MinSet &minset, vector<int> &edges, std::vector<ch
 }
 
 void EdgeMerger::processMinSets(MinSet &srcMS, MinSet &tgtMS, vector<int> &srcEdgesToMerge,
-		vector<char> &srcValsToMerge, std::vector<int> &tgtEdgesToMerge,
+		vector<char> &srcValsToMerge, vector<int> &tgtEdgesToMerge,
 		vector<char> &tgtValsToMerge)
 {
 	// case 1
