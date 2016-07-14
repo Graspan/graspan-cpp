@@ -14,7 +14,9 @@ private:
 	vector<vector<double> > partitionRate; //for store percentage
 	vector<vector<double> > edgeCnt; //for store number of edges of p and q
 	vector<int> partitionSize; //for store total edges count
+	int f_read(string name);
 	int numPartition;
+	int originNumPartition;
 	vector<std::string> partitionName;
 	void prepare(vector<int> val);
 	void set();
@@ -23,6 +25,7 @@ public:
 	DDM(string dirName);
 	~DDM();
 	long nextPartitionPart();
+	void addPartition(string fileName);
 	void testPrint();
 };
 
