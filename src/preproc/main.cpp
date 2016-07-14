@@ -32,19 +32,20 @@ int main(int argc, char *argv[]) {
 	cout << "makePart time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 
 
-	load.loadBinary("bpart", 0);
+	//load.loadBinary("bpart", 0);
+	Partition p = Loader::loadPartition(1, false);
+	p.setID(6);
+	Partition::writeToFile(p, true);
 	return 0;
 }
 
 void delFiles() {//delete test files
+	string str;
 	for (int i = 0; i < 200; i++) {
-		string str = "part" + std::to_string((long long)i);		//need to fix file names
+		str = GRAP + "." + PART + "." + HUMA + "." + std::to_string((long long)i);		//need to fix file names
 		if (std::ifstream(str))
 			std::remove(str.c_str());
-		str = "spart" + std::to_string((long long)i);
-		if (std::ifstream(str))
-			std::remove(str.c_str());
-		str = "bpart" + std::to_string((long long)i);
+		str = GRAP + "." + PART + "." + BINA + "." + std::to_string((long long)i);
 		if (std::ifstream(str))
 			std::remove(str.c_str());
 	}

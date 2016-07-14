@@ -19,8 +19,7 @@
 class Loader {
 private:
 public:
-	Partition loadBinary(char *fileName, int id);
-	//static Partition loadPartition(int id, bool readable = false) {};
+	static Partition loadPartition(int id, bool readable = false);
 	//graphname
 		//graphname.partition.1.b
 		//graphname.partition.1.h

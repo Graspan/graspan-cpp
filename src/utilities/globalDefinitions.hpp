@@ -24,10 +24,9 @@ typedef int partitionid_t;
 typedef std::string raw_label_t;
 typedef std::string string;
 
-static string GRAP = ".graph";
-static string PART = ".partition";
-static string BINA = ".binary";
-static string HUMA = ".human";
+const static string PART = "partition";
+const static string BINA = "binary";
+const static string HUMA = "human";
 
 //----------------------------------------------------------------------------------------------------
 #ifdef ASSERT

@@ -21,6 +21,7 @@ class Vertex
 
 	public:
 	// Constructors
+	Vertex() {};
 	Vertex(int id, int outDegree);
 	Vertex(int idx, int id, vector<int> outEdges, vector<char> outEdgeValues);
 
