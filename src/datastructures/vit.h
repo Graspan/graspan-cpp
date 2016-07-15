@@ -5,6 +5,9 @@
 #include <sstream>
 #include <vector>
 #include <string>
+#include <stdlib.h>
+#include <string>
+#include <string.h>
 
 #include "../utilities/globalDefinitions.hpp"
 
@@ -22,7 +25,7 @@ public:
 	
 
 	//Getters
-	vector<pair<int, int>> getVIT();
+	vector<pair<vertexid_t, vertexid_t>> &getVIT();
 	int getStart(int pid);
 	int getEnd(int pid);
 
@@ -41,7 +44,7 @@ public:
 
 	static void writeToFile(VIT& vit);
 
-	static VIT loadFromFile(char* filename) ;
+	static void loadFromFile(VIT &vit) ;
 	
 };
 

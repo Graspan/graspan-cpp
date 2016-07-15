@@ -28,7 +28,7 @@ public:
 	int getID();
 	int getNumVertices();
 	int getNumEdges();
-	vector<Vertex> getData();
+	vector<Vertex> &getData();
 
 	//Setters
 	void setID(int id);
@@ -36,9 +36,11 @@ public:
 	void setNumEdges(int numEdges);
 	void setData(vector<Vertex> data);
 
-	
+	//if user want save the partition to the disk use this function
+	//readable == true then text format readable == false binary format
 	static void writeToFile(Partition& part, bool readable = false);
 
+	//read the partition from the harddisk
 	static Partition loadFromFile();
 };
 

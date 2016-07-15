@@ -1,9 +1,9 @@
 #include "loader.h"
 
-Partition Loader::loadPartition(int id, bool readable)
+bool Loader::loadPartition(int id, Partition &p, bool readable)
 {
 	static char s[32 + 1] = { '0', };
-	vector<Vertex> data;
+	vector<Vertex>& data=p.getData();
 	FILE *fp;
 	char label;
 	int size = 0;
@@ -41,9 +41,11 @@ Partition Loader::loadPartition(int id, bool readable)
 		}
 		Vertex v(0, src, outEdges, outEdgeValues);
 		data.push_back(v);
-
 		cout << std::endl;
 	}
+	p.setID(id);
+	p.setNumEdges(numVertices);
+	p.setNumVertices(size);
 	fclose(fp);
-	return Partition(id, numVertices, size, data);
+	return 0;
 }

@@ -52,7 +52,7 @@ void Preproc::makeVIT(char *fileName) {
 	int sum = 0;
 	FILE *fp;
 	set<string>::iterator it_e; //for eRules
-	vector<pair<int, int>> tempVIT;
+	vector<pair<vertexid_t, vertexid_t>> &tempVIT = vit.getVIT();
 
 										  //second file scan for get the data and put in the 
 										  //data (vector of array) it takes 275s need to fix for improve the time complexity
@@ -89,6 +89,7 @@ void Preproc::makeVIT(char *fileName) {
 		data[i].erase(unique(data[i].begin(), data[i].end()), data[i].end());
 		count += data[i].size();
 	}
+
 	if (count % vitSize == 0)
 		size = count / vitSize;
 	else
@@ -106,7 +107,6 @@ void Preproc::makeVIT(char *fileName) {
 	if (sum != 0)
 		tempVIT.push_back(std::make_pair(startS, endS));
 	end = clock();
-	vit.setVIT(tempVIT);
 	VIT::writeToFile(vit);
 	cout << "makeVIT sorting time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 

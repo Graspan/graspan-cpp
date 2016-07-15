@@ -4,7 +4,7 @@
 VIT::VIT(vector<pair<int, int>> vit) { this->vit = vit; }
 
 //Getters
-vector<pair<int, int>> VIT::getVIT() { return vit; }
+vector<pair<vertexid_t, vertexid_t>> &VIT::getVIT() { return vit; }
 int VIT::getStart(int id) { return vit[id].first; }
 int VIT::getEnd(int id) { return vit[id].second; }
 
@@ -41,7 +41,26 @@ void VIT::writeToFile(VIT & vit)
 	fclose;
 }
 
-VIT VIT::loadFromFile(char * filename)
+void VIT::loadFromFile(VIT &vit)
 {
-	return VIT();
+	FILE *fp;
+	string str;
+	str = GRAP + ".vit";
+	vit.vit.clear();
+	char buf[512];
+	char *ctemp[3];
+	char *p_token = NULL;
+	char *context = NULL;
+	int i = 0;
+	fp = fopen(str.c_str(), "r");
+	while (NULL != fgets(buf, sizeof(buf), fp)) {
+		p_token = strtok_r(buf, "\n", &context);
+		p_token = strtok_r(buf, "\t", &context);
+		while (p_token != NULL) {
+			ctemp[i++] = p_token;
+			p_token = strtok_r(NULL, "\t", &context);
+		}
+		vit.vit.push_back(std::make_pair(atoi(ctemp[1]), atoi(ctemp[2])));
+		i = 0;
+	}
 }

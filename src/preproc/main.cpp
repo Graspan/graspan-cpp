@@ -22,19 +22,17 @@ int main(int argc, char *argv[]) {
 	cout << "makeVIT time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 
 	begin = clock();
-	pre.makePart();			//if 0 then get mapped label else if 1 get label
+	pre.makePart();
 	end = clock();
 	cout << "makePart time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 
 	begin = clock();
-	pre.makeBinaryPart();			//if 0 then get mapped label else if 1 get label binaryfile
+	pre.makeBinaryPart();
 	end = clock();
 	cout << "makePart time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 
-
-	//load.loadBinary("bpart", 0);
-	Partition p = Loader::loadPartition(1, false);
-	p.setID(6);
+	Partition p;
+	Loader::loadPartition(1,p, false);
 	Partition::writeToFile(p, true);
 	return 0;
 }

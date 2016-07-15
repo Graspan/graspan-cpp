@@ -19,7 +19,7 @@ int Partition::getNumEdges()
 {
 	return numEdges;
 }
-vector<Vertex> Partition::getData() { return data; }
+vector<Vertex> &Partition::getData() { return data; }
 
 // Setters
 void Partition::setID(int id) { this->id = id; }
@@ -35,6 +35,7 @@ void Partition::setData(vector<Vertex> data) { this->data = data; }
 
 void Partition::writeToFile(Partition & part, bool readable)
 {
+
 	cout << "write partition file" << endl;
 	FILE *fp;
 	string str;
@@ -42,7 +43,7 @@ void Partition::writeToFile(Partition & part, bool readable)
 		cout << HUMA << endl;
 		str = GRAP + PART + HUMA + "." + std::to_string((long long)part.id);
 		fp = fopen(str.c_str(), "w");
-		fprintf(fp, "%d\t%d\t%d\n", part.id, part.numVertices, part.numEdges);
+		//fprintf(fp, "%d\t%d\t%d\n", part.id, part.numVertices, part.numEdges);
 		for (int i = 0; i < part.data.size(); i++) {
 			fprintf(fp, "%d\t%d\t", part.data[i].getVertexID(), part.data[i].getNumOutEdges());
 			for (int j = 0; j < part.data[i].getNumOutEdges(); j++)
