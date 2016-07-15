@@ -4,15 +4,15 @@
 
 // FUNCTION DEFINITIONS
 void getRowIndsToMerge(ComputationSet compSets[], vector<LoadedVertexInterval> &intervals,
-		vector<int> &edges, std::vector<char> &vals, bool edgesEmpty,
+		vector<int> &edges, vector<char> &vals, bool edgesEmpty,
 		std::unordered_set<IDValuePair, Hash> &newIDsToMerge, char flag);
 
-void genEdgesToMergeForSRule(vector<int> &newEdges, std::vector<char> &newVals,
-		vector< std::vector<int> > &edgeVecsToMerge,
-		vector< std::vector<char> > &valVecsToMerge, int &rowMergeID);
+void genEdgesToMergeForSRule(vector<int> &newEdges, vector<char> &newVals,
+		vector< vector<int> > &edgeVecsToMerge,
+		vector< vector<char> > &valVecsToMerge, int &rowMergeID);
 
 void genEdgesToMergeForDRule(ComputationSet compSets[], std::unordered_set<IDValuePair, Hash> &IDsToMerge,
-		vector< std::vector<int> > &edgeVecsToMerge, std::vector< std::vector<char> > &valVecsToMerge,
+		vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge,
 		int &rowMergeID, char flag);
 
 /**
@@ -20,14 +20,14 @@ void genEdgesToMergeForDRule(ComputationSet compSets[], std::unordered_set<IDVal
  */
 long updateEdges(int i, ComputationSet compSets[], vector<LoadedVertexInterval> &intervals)
 {
-	ComputationSet compSet = compSets[i];
+	ComputationSet *compSet = &compSets[i];
 
 	// get the list of dest vertices of the current source vertex
-	vector<int> oldEdges = compSet.getOldEdges();
-	vector<char> oldVals = compSet.getOldVals();
+	vector<int> oldEdges = compSet->getOldEdges();
+	vector<char> oldVals = compSet->getOldVals();
 
-	vector<int> newEdges = compSet.getNewEdges();
-	vector<char> newVals = compSet.getNewVals();
+	vector<int> newEdges = compSet->getNewEdges();
+	vector<char> newVals = compSet->getNewVals();
 
 	bool oldEdgesEmpty = (oldEdges.empty()) ? true : false;
 	bool newEdgesEmpty = (newEdges.empty()) ? true : false;
@@ -45,12 +45,12 @@ long updateEdges(int i, ComputationSet compSets[], vector<LoadedVertexInterval> 
 	
 	int numRowsToMerge = 2 + oldUnewRowIndsToMerge.size() + newRowIndsToMerge.size();
 
-	vector< std::vector<int> > edgeVecsToMerge(numRowsToMerge);
-	vector< std::vector<char> > valVecsToMerge(numRowsToMerge);
+	vector< vector<int> > edgeVecsToMerge(numRowsToMerge);
+	vector< vector<char> > valVecsToMerge(numRowsToMerge);
 
 	int rowToMergeID = 0;
-	edgeVecsToMerge[rowToMergeID] = compSet.getoldUnewEdges();
-	valVecsToMerge[rowToMergeID++] = compSet.getoldUnewVals();
+	edgeVecsToMerge[rowToMergeID] = compSet->getoldUnewEdges();
+	valVecsToMerge[rowToMergeID++] = compSet->getoldUnewVals();
 	
 
 	genEdgesToMergeForSRule(newEdges, newVals, edgeVecsToMerge, valVecsToMerge, rowToMergeID);
@@ -62,7 +62,14 @@ long updateEdges(int i, ComputationSet compSets[], vector<LoadedVertexInterval> 
 
 	em.mergeVectors(edgeVecsToMerge, valVecsToMerge, 0);
 
-	return 0;
+	compSet->setOldEdges(compSet->getoldUnewEdges());
+	compSet->setOldVals(compSet->getoldUnewVals());
+	compSet->setoldUnewEdges(em.getoUnUdEdges());
+	compSet->setoldUnewVals(em.getoUnUdVals());
+	compSet->setNewEdges(em.getDeltaEdges());
+	compSet->setNewVals(em.getDeltaVals());
+
+	return em.getNumNewEdges();
 }
 
 /**
@@ -75,7 +82,7 @@ long updateEdges(int i, ComputationSet compSets[], vector<LoadedVertexInterval> 
  * @param vals
  */
 void getRowIndsToMerge(ComputationSet compSets[], vector<LoadedVertexInterval> &intervals,
-		vector<int> &edges, std::vector<char> &vals, bool edgesEmpty,
+		vector<int> &edges, vector<char> &vals, bool edgesEmpty,
 		std::unordered_set<IDValuePair, Hash> &newIDsToMerge, char flag)
 {
 	int targetRowIndex = -1;
@@ -113,9 +120,9 @@ void getRowIndsToMerge(ComputationSet compSets[], vector<LoadedVertexInterval> &
  * @param newVals					@param rowMergeID
  * @param edgeVecsToMerge
  */
-void genEdgesToMergeForSRule(vector<int> &newEdges, std::vector<char> &newVals,
-		vector< std::vector<int> > &edgeVecsToMerge,
-		vector< std::vector<char> > &valVecsToMerge, int &rowMergeID)
+void genEdgesToMergeForSRule(vector<int> &newEdges, vector<char> &newVals,
+		vector< vector<int> > &edgeVecsToMerge,
+		vector< vector<char> > &valVecsToMerge, int &rowMergeID)
 {
 //	vector<int> newEdgesVec;
 //	vector<char> newValsVec;
@@ -145,7 +152,7 @@ void genEdgesToMergeForSRule(vector<int> &newEdges, std::vector<char> &newVals,
  * @param edgeVecsToMerge		@param flag
  */
 void genEdgesToMergeForDRule(ComputationSet compSets[], std::unordered_set<IDValuePair, Hash> &IDsToMerge,
-		vector< std::vector<int> > &edgeVecsToMerge, std::vector< std::vector<char> > &valVecsToMerge,
+		vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge,
 		int &rowMergeID, char flag)
 {
 	for (std::unordered_set<IDValuePair, Hash>::iterator iter = IDsToMerge.begin(); iter != IDsToMerge.end(); iter++) {
