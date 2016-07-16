@@ -32,6 +32,9 @@ public:
 	//Setters
 	void setVIT(vector<pair<int, int>> vit);
 
+	//change the vit[id] values
+	void setVITID(int id, vertexid_t start, vertexid_t end);
+
 	// given a vertex id, return true if this vertex is in partition pid
 	bool is_in_partition(vertexid_t vid, partitionid_t pid);
 
@@ -42,9 +45,9 @@ public:
 	// also VIT adds new entry for the newly-created partition
 	//void modify(partitionid_t pid); 
 
-	static void writeToFile(VIT& vit);
+	static void writeToFile(VIT& v);
 
-	static void loadFromFile(VIT &vit) ;
+	static void loadFromFile(VIT &v) ;
 	
 };
 

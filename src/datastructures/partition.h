@@ -41,7 +41,7 @@ public:
 	static void writeToFile(Partition& part, bool readable = false);
 
 	//read the partition from the harddisk
-	static Partition loadFromFile();
+	static void loadFromFile(int id, Partition &part, bool readable = false);
 };
 
 

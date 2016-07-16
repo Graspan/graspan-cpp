@@ -1,6 +1,7 @@
 #include "preproc.h"
 #include "../mapping/grammarChecker.cpp"
 #include "../loader/loader.h"
+#include "repart.h"
 
 void delFiles();
 
@@ -13,11 +14,11 @@ int main(int argc, char *argv[]) {
 		cout << "file is not exist" << std::endl;
 		exit(1);
 	}
-	Preproc pre("test.txt", numPart);
+	Preproc pre(argv[1], numPart);
 	pre.setMapInfo(g.getMapInfo(), g.getErules());
 	Loader load;
 	begin = clock();
-	pre.makeVIT("test.txt");		//need to fix input file
+	pre.makeVIT(argv[1]);		//need to fix input file
 	end = clock();
 	cout << "makeVIT time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 
@@ -31,9 +32,12 @@ int main(int argc, char *argv[]) {
 	end = clock();
 	cout << "makePart time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 
-	Partition p;
+	Partition p, p2;
 	Loader::loadPartition(1,p, false);
 	Partition::writeToFile(p, true);
+	//Repart::repartition(p, p2);
+	//Partition::writeToFile(p, true);
+	//Partition::writeToFile(p2, true);
 	return 0;
 }
 

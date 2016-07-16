@@ -43,9 +43,10 @@ bool Loader::loadPartition(int id, Partition &p, bool readable)
 		data.push_back(v);
 		cout << std::endl;
 	}
+	cout << id << " " << size << " " << numVertices << endl;
 	p.setID(id);
-	p.setNumEdges(numVertices);
-	p.setNumVertices(size);
+	p.setNumEdges(size);
+	p.setNumVertices(numVertices);
 	fclose(fp);
 	return 0;
 }

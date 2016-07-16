@@ -1,4 +1,5 @@
 #include "partition.h"
+#include "../loader/loader.h"
 
 //Constructor
 Partition::Partition(int id, int numVertices, int numEdges, vector<Vertex> data)
@@ -29,14 +30,14 @@ void Partition::setNumVertices(int numVertices)
 }
 void Partition::setNumEdges(int numEdges)
 {
-	this->numEdges;
+	this->numEdges = numEdges;
 }
 void Partition::setData(vector<Vertex> data) { this->data = data; }
 
 void Partition::writeToFile(Partition & part, bool readable)
 {
-
 	cout << "write partition file" << endl;
+	
 	FILE *fp;
 	string str;
 	if (readable) {
@@ -72,7 +73,7 @@ void Partition::writeToFile(Partition & part, bool readable)
 }
 
 
-Partition Partition::loadFromFile()
+void Partition::loadFromFile(int id, Partition &part, bool readable)
 {
-	return Partition();
+	Loader::loadPartition(id, part, readable);
 }

@@ -5,11 +5,17 @@ VIT::VIT(vector<pair<int, int>> vit) { this->vit = vit; }
 
 //Getters
 vector<pair<vertexid_t, vertexid_t>> &VIT::getVIT() { return vit; }
-int VIT::getStart(int id) { return vit[id].first; }
-int VIT::getEnd(int id) { return vit[id].second; }
+int VIT::getStart(int pid) { return vit[pid].first; }
+int VIT::getEnd(int pid) { return vit[pid].second; }
 
 //Setters
 void VIT::setVIT(vector<pair<int, int>> vit) { this->vit = vit; }
+
+void VIT::setVITID(int id, vertexid_t start, vertexid_t end)
+{
+	vit[id].first = start;
+	vit[id].second = end;
+}
 
 bool VIT::is_in_partition(vertexid_t vid, partitionid_t pid)
 {
@@ -28,25 +34,25 @@ int VIT::partition(vertexid_t vid)
 	return 0;
 }
 
-void VIT::writeToFile(VIT & vit)
+void VIT::writeToFile(VIT & v)
 {
 	FILE *fp;
 	string str;
 	str = GRAP + ".vit";
 
 	fp = fopen(str.c_str(), "w");
-	for (int i = 0; i < vit.vit.size(); i++) {
-		fprintf(fp, "%d\t%d\t%d\n", i, vit.vit[i].first, vit.vit[i].second);
-	}	
-	fclose;
+	for (int i = 0; i < v.vit.size(); i++) {
+		fprintf(fp, "%d\t%d\t%d\n", i, v.vit[i].first, v.vit[i].second);
+	}
+	fclose(fp);
 }
 
-void VIT::loadFromFile(VIT &vit)
+void VIT::loadFromFile(VIT &v)
 {
 	FILE *fp;
 	string str;
 	str = GRAP + ".vit";
-	vit.vit.clear();
+	v.vit.clear();
 	char buf[512];
 	char *ctemp[3];
 	char *p_token = NULL;
@@ -60,7 +66,8 @@ void VIT::loadFromFile(VIT &vit)
 			ctemp[i++] = p_token;
 			p_token = strtok_r(NULL, "\t", &context);
 		}
-		vit.vit.push_back(std::make_pair(atoi(ctemp[1]), atoi(ctemp[2])));
+		v.vit.push_back(std::make_pair(atoi(ctemp[1]), atoi(ctemp[2])));
 		i = 0;
 	}
+	fclose(fp);
 }
