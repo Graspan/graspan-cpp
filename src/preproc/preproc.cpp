@@ -125,7 +125,6 @@ void Preproc::makePart() {
 		name = GRAP + "." + PART + "." + HUMA + "." + str.c_str();
 
 		f = fopen(name.c_str(), "a");
-		cout << vit.getEnd(i) << endl;
 		for (int j = start; j <= vit.getEnd(i); j++) {
 			if (data[j].size() != 0) {
 				fprintf(f, "%d\t%d\t", j, data[j].size());
