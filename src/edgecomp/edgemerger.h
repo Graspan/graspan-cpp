@@ -31,10 +31,10 @@ class EdgeMerger
 	// FUNCTIONS
 	void removeExtraSpace();
 
-	void updateMinSet(MinSet &minset, vector<int> &edges, std::vector<char> &vals);
+	void updateMinSet(MinSet &minset, vector<int> &edges, vector<char> &vals);
 
 	void processMinSets(MinSet &srcMS, MinSet &tgtMS, vector<int> &srcEdgesToMerge,
-		vector<char> &srcValsToMerge, std::vector<int> &tgtEdgesToMerge,
+		vector<char> &srcValsToMerge, vector<int> &tgtEdgesToMerge,
 		vector<char> &tgtValsToMerge);
 
 	public:
@@ -48,8 +48,10 @@ class EdgeMerger
 	vector<int> getDeltaEdges();
 	vector<char> getDeltaVals();
 
+	int getNumNewEdges();
+
 	// given all new edges and their values 
-	void mergeVectors(vector< std::vector<int> > &edgeVecsToMerge, std::vector< std::vector<char> > &valVecsToMerge, int srcID);
+	void mergeVectors(vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge, int srcID);
 };
 
 #endif

@@ -19,8 +19,10 @@
 class Loader {
 private:
 public:
-	Partition loadBinary(char *fileName, int id);
-	//static Partition loadPartition(int id, bool readable = false) {};
+	//if user want to load the partition from the disk and save on the p
+	//use this function, id is partition id, p is where you going to save on memory
+	//readable is text and readable == false is binary format file
+	static bool loadPartition(int id, Partition &p, bool readable = false);
 	//graphname
 		//graphname.partition.1.b
 		//graphname.partition.1.h

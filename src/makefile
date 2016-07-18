@@ -15,7 +15,7 @@ TEST=../test/randomgraphgen.cpp ../test/timer.cpp
 
 
 ##### build rules #####
-all: prep comp
+all: comp
 
 # prepessing
 #prep: $(PREPROC)

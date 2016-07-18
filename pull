@@ -1,0 +1,3 @@
+unset SSH_ASKPASS
+
+git pull origin computation_and_preproc

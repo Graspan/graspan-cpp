@@ -1,6 +1,7 @@
 #include "preproc.h"
 #include "../mapping/grammarChecker.cpp"
 #include "../loader/loader.h"
+#include "repart.h"
 
 void delFiles();
 
@@ -13,38 +14,40 @@ int main(int argc, char *argv[]) {
 		cout << "file is not exist" << std::endl;
 		exit(1);
 	}
-	Preproc pre("test.txt", numPart);
+	Preproc pre(argv[1], numPart);
 	pre.setMapInfo(g.getMapInfo(), g.getErules());
 	Loader load;
 	begin = clock();
-	pre.makeVIT("test.txt");		//need to fix input file
+	pre.makeVIT(argv[1]);		//need to fix input file
 	end = clock();
 	cout << "makeVIT time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 
 	begin = clock();
-	pre.makePart();			//if 0 then get mapped label else if 1 get label
+	pre.makePart();
 	end = clock();
 	cout << "makePart time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 
 	begin = clock();
-	pre.makeBinaryPart();			//if 0 then get mapped label else if 1 get label binaryfile
+	pre.makeBinaryPart();
 	end = clock();
 	cout << "makePart time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 
-
-	load.loadBinary("bpart", 0);
+	Partition p, p2;
+	Loader::loadPartition(1,p, false);
+	Partition::writeToFile(p, true);
+	//Repart::repartition(p, p2);
+	//Partition::writeToFile(p, true);
+	//Partition::writeToFile(p2, true);
 	return 0;
 }
 
 void delFiles() {//delete test files
+	string str;
 	for (int i = 0; i < 200; i++) {
-		string str = "part" + std::to_string((long long)i);		//need to fix file names
+		str = GRAP + "." + PART + "." + HUMA + "." + std::to_string((long long)i);		//need to fix file names
 		if (std::ifstream(str))
 			std::remove(str.c_str());
-		str = "spart" + std::to_string((long long)i);
-		if (std::ifstream(str))
-			std::remove(str.c_str());
-		str = "bpart" + std::to_string((long long)i);
+		str = GRAP + "." + PART + "." + BINA + "." + std::to_string((long long)i);
 		if (std::ifstream(str))
 			std::remove(str.c_str());
 	}
