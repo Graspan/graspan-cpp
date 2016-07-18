@@ -1,32 +1,20 @@
-#ifndef DDM_H
-#define DDM_H
-
-#include "../utilities/globalDefinitions.hpp"
 #include <iostream>
-#include <fstream>
-#include <dirent.h>
-#include <cstring>
 #include <vector>
 
+#define MARK 1
+#define UNMARK 0
 
 class DDM{
 private:
 	vector<vector<double> > partitionRate; //for store percentage
-	vector<vector<double> > edgeCnt; //for store number of edges of p and q
-	vector<int> partitionSize; //for store total edges count
-	int f_read(string name);
+	vector<vector<int> > terminate_map;
 	int numPartition;
 	int originNumPartition;
-	vector<std::string> partitionName;
-	void prepare(vector<int> val);
-	void set();
-	int findPart(int num);
 public:
-	DDM(string dirName);
+	DDM(int numPartition);
 	~DDM();
+	void set(int p,int q,double rate);
 	long nextPartitionPart();
-	void addPartition(string fileName);
-	void testPrint();
+	void adjust(int p);
+	void markTerminate(int p,int q);
 };
-
-#endif
