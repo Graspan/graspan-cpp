@@ -1,11 +1,12 @@
 #include <ctime>
 
+#include <fstream>
+
 #include "../datastructures/vertex.h"
 #include "../datastructures/loadedvertexinterval.h"
 #include "../datastructures/computationset.h"
 #include "../loader/loader.h"
 #include "compute.h"
-#include "../../test/rand/randomgraphgen.h"
 #include "../../test/timer.h"
 #include "../utilities/globalDefinitions.hpp"
 
@@ -40,11 +41,14 @@ void computeOneIteration(vector<Vertex> &vertices, ComputationSet compSets[],
 	#pragma omp parallel for
 	for (int i = 0; i < vertices.size(); i++)
 	{
+		long newEdges = 0;
 		if (vertices[i].getNumOutEdges() != 0) {
 			cout << "Updating vertex " << vertices[i].getVertexID() << "..." << endl;
 			
+			newEdges += updateEdges(i, compSets, intervals, gram);
+
 			#pragma omp atomic
-			newEdgesThisIter += updateEdges(i, compSets, intervals, gram);
+			newEdgesThisIter += newEdges;
 		}
 		else { cout << "Vertex " << vertices[i].getVertexID() << " has no edges" << endl << std::endl; }
 	}
@@ -75,6 +79,22 @@ void computeEdges(vector<Vertex> &vertices, ComputationSet compSets[], vector<Lo
 
 		cout << endl << endl;
 	} while (newEdgesThisIter > 0);
+
+	for (int i = 0; i < vertices.size(); i++)
+		vertices[i].setOutEdges(compSets[i].getoldUnewEdges());
+
+	std::ofstream output;
+	output.open("../resources/results");
+	for (int j = 0; j < vertices.size(); j++)
+	{
+		output << "V" << vertices[j].getVertexID() << " -> ";
+		for (int k = 0; k < vertices[j].getOutEdges().size(); k++)
+		{
+			output << "(" << vertices[j].getOutEdges()[k] << ", " << (short)(vertices[j].getOutEdgeValues()[k]) << ")  ";
+		}
+		output << endl;
+	}
+
 }
 
 /**
@@ -89,8 +109,8 @@ int main(int argc, char *argv[])
 	compTime.startTimer();
 
 	Partition p1, p2;
-	Loader::loadPartition(0, p1, true);
-	Loader::loadPartition(1, p2, true);
+	Loader::loadPartition(3, p1, true);
+	Loader::loadPartition(4, p2, true);
 	vector<Vertex> &data1 = p1.getData(), &data2 = p2.getData();
 
 	vector<Vertex> vertices;

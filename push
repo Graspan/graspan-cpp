@@ -1,0 +1,28 @@
+#! /bin/bash
+
+dir=''
+correct=''
+message=''
+
+echo -n "add: "
+read dir
+
+git add $dir
+
+git status
+
+echo -n "is this correct (y/n)? "
+read correct
+
+if [ $correct == "n" ];
+then
+	git reset HEAD $dir
+	exit 0
+fi
+
+echo -n "write a message: "
+read message
+
+git commit -m "$message"
+
+git push origin computation_and_preproc
