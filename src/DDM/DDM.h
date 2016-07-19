@@ -1,9 +1,5 @@
 #ifndef DDM_H
 #define DDM_H
-<<<<<<< HEAD
-=======
-//where is my #ifndef and #def?
->>>>>>> d459ac2f322bb4acd06f5dfbac1777702fc350fa
 
 #include "../utilities/globalDefinitions.hpp"
 #include <iostream>
