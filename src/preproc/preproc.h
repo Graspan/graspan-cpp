@@ -37,6 +37,8 @@ public:
 
 	void setMapInfo(vector<string> mapInfo, set<char> eRules);
 	VIT getVIT();
+
+	int getNumOfPartitions();
 	~Preproc();
 };
 

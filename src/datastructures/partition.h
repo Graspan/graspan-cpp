@@ -42,6 +42,8 @@ public:
 
 	//read the partition from the harddisk
 	static void loadFromFile(int id, Partition &part, bool readable = false);
+
+	string toString();
 };
 
 
