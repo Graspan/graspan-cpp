@@ -1,7 +1,5 @@
 #include <ctime>
 
-#include <fstream>
-
 #include "../datastructures/vertex.h"
 #include "../datastructures/loadedvertexinterval.h"
 #include "../datastructures/computationset.h"
@@ -9,6 +7,8 @@
 #include "compute.h"
 #include "../../test/timer.h"
 #include "../utilities/globalDefinitions.hpp"
+
+#define MAX_NEW_EDGES 3000000
 
 long totNewEdges;
 long newEdgesThisIter;
@@ -20,7 +20,7 @@ bool newEdgesPart2;
 // FUNCTION DEFS
 void initCompSets(ComputationSet compsets[], vector<Vertex> &part1, vector<Vertex> &part2);
 
-void initLVIs(vector<LoadedVertexInterval> &intervals, vector<Vertex> &part1, vector<Vertex> &part2);
+void initLVIs(LoadedVertexInterval intervals[], vector<Vertex> &part1, vector<Vertex> &part2);
 
 
 /**
@@ -30,8 +30,7 @@ void initLVIs(vector<LoadedVertexInterval> &intervals, vector<Vertex> &part1, ve
  * @param compSets
  * @param intervals
  */
-void computeOneIteration(ComputationSet compSets[], int setSize,
-		vector<LoadedVertexInterval> &intervals, Grammar &gram)
+void computeOneIteration(ComputationSet compSets[], int setSize, LoadedVertexInterval intervals[], Grammar &gram)
 {
 //	if (vertices[0].getNumOutEdges() != 0) {
 //		cout << "Updating vertex " << vertices[2].getVertexID() << "..." << endl;
@@ -59,7 +58,7 @@ void computeOneIteration(ComputationSet compSets[], int setSize,
  * @param compSets
  * @param intervals
  */
-void computeEdges(ComputationSet compSets[], int setSize, vector<LoadedVertexInterval> &intervals, Grammar &gram)
+void computeEdges(ComputationSet compSets[], int setSize, LoadedVertexInterval intervals[], Grammar &gram)
 {
 	iterNo = 0;
 	totNewEdges = 0;
@@ -73,6 +72,8 @@ void computeEdges(ComputationSet compSets[], int setSize, vector<LoadedVertexInt
 		totNewEdges += newEdgesThisIter;
 
 		cout << endl << endl;
+
+		if (totNewEdges > MAX_NEW_EDGES) break;
 	} while (newEdgesThisIter > 0);
 }
 
@@ -112,15 +113,13 @@ int main(int argc, char *argv[])
 	initCompSets(compSets, part1, part2);
 	
 	// replace with primitive array
-	vector<LoadedVertexInterval> intervals;
-	intervals.reserve(2);
+	LoadedVertexInterval intervals[2] = {LoadedVertexInterval{0}, LoadedVertexInterval{1}};
 	initLVIs(intervals, part1, part2);
 
 	for (int i = 0; i < 2; i++)
 	{
 		LoadedVertexInterval lvi = intervals[i];
-		cout << i << ": (" << lvi.getFirstVertex() << "-" << lvi.getLastVertex() << "), (" << lvi.getIndexStart() << "-" << lvi.getIndexEnd() << ")";
-		cout << endl;
+		cout << lvi.toString() << endl;
 	}
 
 	computeEdges(compSets, setSize, intervals, gram);
@@ -155,13 +154,15 @@ void initCompSets(ComputationSet compsets[], vector<Vertex> &part1, vector<Verte
 	}
 }
 
-void initLVIs(vector<LoadedVertexInterval> &intervals, vector<Vertex> &part1, vector<Vertex> &part2)
+void initLVIs(LoadedVertexInterval intervals[], vector<Vertex> &part1, vector<Vertex> &part2)
 {
-	intervals.push_back(LoadedVertexInterval{part1[0].getVertexID(), part1[part1.size() - 1].getVertexID(), 0});
+	intervals[0].setFirstVertex(part1[0].getVertexID());
+	intervals[0].setLastVertex(part1[part1.size() - 1].getVertexID());
 	intervals[0].setIndexStart(0);
 	intervals[0].setIndexEnd(part1.size()-1);
 
-	intervals.push_back(LoadedVertexInterval{part2[0].getVertexID(), part2[part2.size() - 1].getVertexID(), 1});
+	intervals[1].setFirstVertex(part2[0].getVertexID());
+	intervals[1].setLastVertex(part2[part2.size() - 1].getVertexID());
 	intervals[1].setIndexStart(part1.size());
 	intervals[1].setIndexEnd(part1.size() + part2.size()-1);
 }

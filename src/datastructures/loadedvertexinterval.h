@@ -21,7 +21,7 @@ class LoadedVertexInterval
 
 	public:
 	// Constructor
-	LoadedVertexInterval(int firstVertex, int lastVertex, int partitionID);
+	LoadedVertexInterval(int partitionID);
 
 	// Getters
 	int getFirstVertex();

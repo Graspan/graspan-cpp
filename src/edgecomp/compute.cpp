@@ -3,7 +3,7 @@
 
 
 // FUNCTION DEFINITIONS
-void getRowIndsToMerge(ComputationSet compSets[], vector<LoadedVertexInterval> &intervals,
+void getRowIndsToMerge(ComputationSet compSets[], LoadedVertexInterval intervals[],
 		vector<int> &edges, vector<char> &vals, bool edgesEmpty,
 		std::unordered_set<IDValuePair, Hash> &newIDsToMerge, char flag);
 
@@ -19,7 +19,7 @@ void genEdgesToMergeForDRule(ComputationSet compSets[], std::unordered_set<IDVal
 /**
  * given an index into the compSets, 
  */
-long updateEdges(int i, ComputationSet compSets[], vector<LoadedVertexInterval> &intervals, Grammar &gram)
+long updateEdges(int i, ComputationSet compSets[], LoadedVertexInterval intervals[], Grammar &gram)
 {
 	ComputationSet *compSet = &compSets[i];
 
@@ -83,7 +83,7 @@ long updateEdges(int i, ComputationSet compSets[], vector<LoadedVertexInterval> 
  * @param edges				@param flag
  * @param vals
  */
-void getRowIndsToMerge(ComputationSet compSets[], vector<LoadedVertexInterval> &intervals,
+void getRowIndsToMerge(ComputationSet compSets[], LoadedVertexInterval intervals[],
 		vector<int> &edges, vector<char> &vals, bool edgesEmpty,
 		std::unordered_set<IDValuePair, Hash> &newIDsToMerge, char flag)
 {
@@ -97,11 +97,11 @@ void getRowIndsToMerge(ComputationSet compSets[], vector<LoadedVertexInterval> &
 			newTgt = edges[i];
 			val = vals[i];
 
-			for (int j = 0; j < intervals.size(); j++) {
+			for (int j = 0; j < 2; j++) {
 				targetRowIndex = -1;
-				LoadedVertexInterval interval = intervals[j];
-				if (newTgt >= interval.getFirstVertex() && newTgt <= interval.getLastVertex()) {
-					targetRowIndex = newTgt - interval.getFirstVertex() + interval.getIndexStart();
+				LoadedVertexInterval *interval = &intervals[j];
+				if (newTgt >= interval->getFirstVertex() && newTgt <= interval->getLastVertex()) {
+					targetRowIndex = newTgt - interval->getFirstVertex() + interval->getIndexStart();
 					break;
 				}
 			}
