@@ -30,7 +30,7 @@ void initLVIs(vector<LoadedVertexInterval> &intervals, vector<Vertex> &part1, ve
  * @param compSets
  * @param intervals
  */
-void computeOneIteration(ComputationSet compSets[],
+void computeOneIteration(ComputationSet compSets[], int setSize,
 		vector<LoadedVertexInterval> &intervals, Grammar &gram)
 {
 //	if (vertices[0].getNumOutEdges() != 0) {
@@ -39,9 +39,8 @@ void computeOneIteration(ComputationSet compSets[],
 //	}
 //	else cout << "Vertex " << vertices[0].getVertexID() << " has no edges" << endl;
 
-	assert(intervals[1].getIndexEnd() == 8, "not equal");
 	#pragma omp parallel for
-	for (int i = 0; i < 9; i++)
+	for (int i = 0; i < setSize; i++)
 	{
 		long newEdges = 0;
 
@@ -60,7 +59,7 @@ void computeOneIteration(ComputationSet compSets[],
  * @param compSets
  * @param intervals
  */
-void computeEdges(ComputationSet compSets[], vector<LoadedVertexInterval> &intervals, Grammar &gram)
+void computeEdges(ComputationSet compSets[], int setSize, vector<LoadedVertexInterval> &intervals, Grammar &gram)
 {
 	iterNo = 0;
 	totNewEdges = 0;
@@ -69,7 +68,7 @@ void computeEdges(ComputationSet compSets[], vector<LoadedVertexInterval> &inter
 		iterNo++;
 		cout << "ITERATION: " << iterNo << endl;
 		newEdgesThisIter = 0;
-		computeOneIteration(compSets, intervals, gram);
+		computeOneIteration(compSets, setSize, intervals, gram);
 
 		totNewEdges += newEdgesThisIter;
 
@@ -108,6 +107,7 @@ int main(int argc, char *argv[])
 	gram.loadGrammar("grammar");
 
 	ComputationSet *compSets = new ComputationSet[part1.size() + part2.size()];
+	int setSize = part1.size() + part2.size();
 
 	initCompSets(compSets, part1, part2);
 	
@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
 		cout << endl;
 	}
 
-	computeEdges(compSets, intervals, gram);
+	computeEdges(compSets, setSize, intervals, gram);
 
 	delete[] compSets;
 

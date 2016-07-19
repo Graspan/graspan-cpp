@@ -23,27 +23,30 @@ void EdgeMerger::mergeVectors(vector< vector<int> > &edgeVecsToMerge,
 	Timer mergeTime;
 	mergeTime.startTimer();
 
-	vector<MinSet> minsets(edgeVecsToMerge.size());
-	
-	int totTgtRowSize = 0;
-    for (int i = 0; i < minsets.size(); i++)
-    {
-        minsets[i].setMinSetID(i);
-        updateMinSet(minsets[i], edgeVecsToMerge[i], valVecsToMerge[i]);
+//	vector<MinSet> minsets(edgeVecsToMerge.size());
 
-        if (i != srcID) {
-            totTgtRowSize += edgeVecsToMerge[i].size();
-            minEdges.push(minsets[i]);
-        }
+	MinSet srcMS;
+	srcMS.setMinSetID(0);
+	updateMinSet(srcMS, edgeVecsToMerge[srcID], valVecsToMerge[srcID]);
+	
+	MinSet newminset;
+	int totTgtRowSize = 0;
+    for (int i = 1; i < edgeVecsToMerge.size(); i++)
+    {
+        newminset.setMinSetID(i);
+        updateMinSet(newminset, edgeVecsToMerge[i], valVecsToMerge[i]);
+
+		totTgtRowSize += edgeVecsToMerge[i].size();
+		minEdges.push(newminset);
     }
 
-    srcDeltaEdges = vector<int>(totTgtRowSize, -1);
-    srcDeltaVals = vector<char>(totTgtRowSize, ((char)63));
+    srcDeltaEdges.reserve(totTgtRowSize);
+    srcDeltaVals.reserve(totTgtRowSize);
 
-    srcoUnUdEdges = vector<int>(edgeVecsToMerge[srcID].size() + totTgtRowSize, -1);
-    srcoUnUdVals = vector<char>(edgeVecsToMerge[srcID].size() + totTgtRowSize, ((char)63));
+    srcoUnUdEdges.reserve(edgeVecsToMerge[srcID].size() + totTgtRowSize);
+    srcoUnUdVals.reserve(edgeVecsToMerge[srcID].size() + totTgtRowSize);
 
-    MinSet src, tgt;
+    MinSet tgt;
     while (1)
     {
         if (!minEdges.empty()) {
@@ -52,12 +55,12 @@ void EdgeMerger::mergeVectors(vector< vector<int> > &edgeVecsToMerge,
         }
 
         int max = std::numeric_limits<int>::max();
-        if (minsets[srcID].getCurrVID() == max && tgt.getCurrVID() == max) {
+        if (srcMS.getCurrVID() == max && tgt.getCurrVID() == max) {
             break;
         }
 
         int indOfTgt = tgt.getMinSetID();
-        processMinSets(minsets[srcID], tgt, edgeVecsToMerge[srcID], valVecsToMerge[srcID], edgeVecsToMerge[indOfTgt], valVecsToMerge[indOfTgt]);
+        processMinSets(srcMS, tgt, edgeVecsToMerge[srcID], valVecsToMerge[srcID], edgeVecsToMerge[indOfTgt], valVecsToMerge[indOfTgt]);
 
     }
 
