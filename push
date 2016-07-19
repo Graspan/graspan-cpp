@@ -25,4 +25,5 @@ read message
 
 git commit -m "$message"
 
+unset SSH_ASKPASS
 git push origin computation_and_preproc
