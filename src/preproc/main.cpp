@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
 	begin = clock();
 	pre.makeBinaryPart();
 	end = clock();
-	cout << "makePart time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
+	cout << "makeBinaryPart time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 
 	Partition p, p2;
 	Loader::loadPartition(1,p, true);
