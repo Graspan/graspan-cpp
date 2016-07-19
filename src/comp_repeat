@@ -1,9 +1,0 @@
-#! /bin/bash
-
-counter=0
-
-while [ $counter -lt $1 ];
-do
-	run
-	let counter+=1
-done

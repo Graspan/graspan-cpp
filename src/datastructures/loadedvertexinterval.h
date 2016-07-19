@@ -31,7 +31,6 @@ class LoadedVertexInterval
 	int getPartitionID();
 
 	bool hasNewEdges();
-	bool hasNewEdgesCurrRound();
 
 	// Setters
 	void setFirstVertex(int firstVertex);
@@ -41,7 +40,6 @@ class LoadedVertexInterval
 	void setPartitionID(int partitionID);
 
 	void setNewEdgeAdded(bool newEdgeAdded);
-	void setNewEdgeAddedCurrRound(bool newEdgeCurrRound);
 
 
 	string toString();

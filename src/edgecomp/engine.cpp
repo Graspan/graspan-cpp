@@ -17,12 +17,13 @@ int iterNo;
 bool newEdgesPart1;
 bool newEdgesPart2;
 
+// FUNCTION DEFS
+void initCompSets(ComputationSet compsets[], vector<Vertex> &part1, vector<Vertex> &part2);
 
+void initLVIs(vector<LoadedVertexInterval> intervals, vector<Vertex> &data1, vector<Vertex> &data2);
 
-// TODO: ADD TIMERS TO TEST PERFORMANCE
 
 /**
- * TODO: Make multithreaded
  * compute the new edges of each vertex simultaneously
  *
  * @param vertices
@@ -64,8 +65,6 @@ void computeOneIteration(vector<Vertex> &vertices, ComputationSet compSets[],
  */
 void computeEdges(vector<Vertex> &vertices, ComputationSet compSets[], vector<LoadedVertexInterval> &intervals, Grammar &gram)
 {
-	if (vertices.size() == 0) return;
-
 	iterNo = 0;
 	totNewEdges = 0;
 	
@@ -79,22 +78,6 @@ void computeEdges(vector<Vertex> &vertices, ComputationSet compSets[], vector<Lo
 
 		cout << endl << endl;
 	} while (newEdgesThisIter > 0);
-
-	for (int i = 0; i < vertices.size(); i++)
-		vertices[i].setOutEdges(compSets[i].getoldUnewEdges());
-
-	std::ofstream output;
-	output.open("../resources/results");
-	for (int j = 0; j < vertices.size(); j++)
-	{
-		output << "V" << vertices[j].getVertexID() << " -> ";
-		for (int k = 0; k < vertices[j].getOutEdges().size(); k++)
-		{
-			output << "(" << vertices[j].getOutEdges()[k] << ", " << (short)(vertices[j].getOutEdgeValues()[k]) << ")  ";
-		}
-		output << endl;
-	}
-
 }
 
 /**
@@ -108,49 +91,35 @@ int main(int argc, char *argv[])
 
 	compTime.startTimer();
 
+	// load partitions into memory
 	Partition p1, p2;
 	Loader::loadPartition(3, p1, true);
 	Loader::loadPartition(4, p2, true);
 	vector<Vertex> &data1 = p1.getData(), &data2 = p2.getData();
 
-	vector<Vertex> vertices;
-	vertices.reserve(data1.size() + data2.size());
+//	vector<Vertex> vertices;
+//	vertices.reserve(data1.size() + data2.size());
+//
+//	vertices.insert(vertices.end(), data1.begin(), data1.end());
+//	vertices.insert(vertices.end(), data2.begin(), data2.end());
+//
+//	for (int j = 0; j < vertices.size(); j++)
+//		cout << vertices[j].toString() << endl;
 
-	vertices.insert(vertices.end(), data1.begin(), data1.end());
-	vertices.insert(vertices.end(), data2.begin(), data2.end());
-
-	for (int j = 0; j < vertices.size(); j++)
-		cout << vertices[j].toString() << endl;
-
-	cout << endl;
-
-
+	// load grammar into memory
 	Grammar g;
 	g.loadGrammar("grammar");
 
-	g.print_all();
 	ComputationSet *compSets = new ComputationSet[vertices.size()];
-	
-	for (int i = 0; i < vertices.size(); i++)
-	{
-		compSets[i].setNewEdges(vertices[i].getOutEdges());
-		compSets[i].setNewVals(vertices[i].getOutEdgeValues());
-		compSets[i].setoldUnewEdges(vertices[i].getOutEdges());
-		compSets[i].setoldUnewVals(vertices[i].getOutEdgeValues());
-	}
 
+	initCompSets(compSets, data1, data2);
+	
 	// replace with primitive array
 	vector<LoadedVertexInterval> lvi;
 	lvi.reserve(2);
+	initLVIs(lvi, data1, data2);
 
-	lvi.push_back(LoadedVertexInterval{vertices[0].getVertexID(), vertices[data1.size() - 1].getVertexID(), p1.getID()});
-	lvi.push_back(LoadedVertexInterval{vertices[data1.size()].getVertexID(), vertices[vertices.size() - 1].getVertexID(), p2.getID()});
-	lvi[0].setIndexStart(0);
-	lvi[0].setIndexEnd(data1.size()-1);
-	lvi[1].setIndexStart(data1.size());
-	lvi[1].setIndexEnd(vertices.size()-1);
-
-	computeEdges(vertices, compSets, lvi, g);
+	computeEdges(compSets, lvi, g);
 
 	delete[] compSets;
 
@@ -162,3 +131,32 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
+void initCompSets(ComputationSet compsets[], vector<Vertex> &part1, vector<Vertex> &part2)
+{
+	for (int i = 0; i < data1.size(); i++)
+	{
+		compSets[i].setNewEdges(vertices[i].getOutEdges());
+		compSets[i].setNewVals(vertices[i].getOutEdgeValues());
+		compSets[i].setoldUnewEdges(vertices[i].getOutEdges());
+		compSets[i].setoldUnewVals(vertices[i].getOutEdgeValues());
+	}
+
+	for (int j = data1.size(); j < data1.size() + data2.size(); j++)
+	{
+		compSets[j].setNewEdges(vertices[j].getOutEdges());
+		compSets[j].setNewVals(vertices[j].getOutEdgeValues());
+		compSets[j].setoldUnewEdges(vertices[j].getOutEdges());
+		compSets[j].setoldUnewVals(vertices[j].getOutEdgeValues());
+	}
+}
+
+void initLVIs(vector<LoadedVertexInterval> intervals, vector<Vertex> &data1, vector<Vertex> &data2)
+{
+	lvi.push_back(LoadedVertexInterval{data1[0].getVertexID(), data1[data1.size() - 1].getVertexID(), 0});
+	lvi[0].setIndexStart(0);
+	lvi[0].setIndexEnd(data1.size()-1);
+
+	lvi.push_back(LoadedVertexInterval{data2[0].getVertexID(), data2[data2.size() - 1].getVertexID(), 1});
+	lvi[1].setIndexStart(data1.size());
+	lvi[1].setIndexEnd(data1.size() + data2.size()-1);
+}

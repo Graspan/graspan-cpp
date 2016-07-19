@@ -16,7 +16,6 @@ int LoadedVertexInterval::getIndexEnd() { return indexEnd; }
 int LoadedVertexInterval::getPartitionID() { return partitionID; }
 
 bool LoadedVertexInterval::hasNewEdges() { return newEdgeAdded; }
-bool LoadedVertexInterval::hasNewEdgesCurrRound() { return newEdgeAddedCurrRound; }
 
 // Setters
 void LoadedVertexInterval::setFirstVertex(int firstVertex)
@@ -32,8 +31,6 @@ void LoadedVertexInterval::setPartitionID(int partitionID)
 
 void LoadedVertexInterval::setNewEdgeAdded(bool newEdgeAdded)
 { this->newEdgeAdded = newEdgeAdded; }
-void LoadedVertexInterval::setNewEdgeAddedCurrRound(bool newEdgeCurrRound)
-{ this->newEdgeAddedCurrRound = newEdgeCurrRound; }
 
 
 // string representation
