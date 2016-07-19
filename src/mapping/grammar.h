@@ -26,11 +26,15 @@ class Grammar{
   void mapping(raw_label_t temp);
   
   string trimStr(string str);
-	
-  inline label_t getValue(raw_label_t str);
-	
-  inline short changeShort(label_t a, label_t b);
- 
+  //add 1 for delete 0
+  //0 is using another method instead of int
+  inline label_t getValue(raw_label_t str){
+	return (find(map_info.begin(),map_info.end(),str) - map_info.begin() + 1);
+  }
+  inline short changeShort(label_t a, label_t b){
+	return (short)a << 8 | b;
+  }
+	 
  public:
 	
   Grammar();
@@ -40,7 +44,6 @@ class Grammar{
 	
   bool print_all();
 
-  //if using map_info with rules, have to subtract 1	
   inline vector<raw_label_t> getMapInfo() {
     return map_info;
   }

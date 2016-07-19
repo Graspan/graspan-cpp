@@ -1,6 +1,9 @@
 #include "grammar.h"
 
-Grammar::Grammar(){}
+Grammar::Grammar(){
+	//0 is using another method instead of int
+	map_info.push_back("");
+}
 Grammar::~Grammar(){}
 
 bool Grammar::loadGrammar(string fname){
@@ -51,14 +54,6 @@ string Grammar::trimStr(string str){
 	size_t first = str.find_first_not_of(' ');
 	size_t last = str.find_last_not_of(' ');
 	return str.substr(first,(last - first + 1));
-}
-
-inline char Grammar::getValue(string str){
-	return (find(map_info.begin(),map_info.end(),str) - map_info.begin());
-}
-
-inline short Grammar::changeShort(char a, char b){
-	return (short)a << 8 | b;
 }
 
 //ex) checkRules("a","");
