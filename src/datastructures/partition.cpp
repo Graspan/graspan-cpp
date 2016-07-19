@@ -42,7 +42,7 @@ void Partition::writeToFile(Partition & part, bool readable)
 	string str;
 	if (readable) {
 		cout << HUMA << endl;
-		str = GRAP + PART + HUMA + "." + std::to_string((long long)part.id);
+		str = GRAP + "." + PART + "." + HUMA + "." + std::to_string((long long)part.id);
 		fp = fopen(str.c_str(), "w");
 		//fprintf(fp, "%d\t%d\t%d\n", part.id, part.numVertices, part.numEdges);
 		for (int i = 0; i < part.data.size(); i++) {
@@ -55,7 +55,7 @@ void Partition::writeToFile(Partition & part, bool readable)
 	}
 	else {
 		cout << BINA << endl;
-		str = GRAP + PART + BINA + "." + std::to_string((long long)part.id);
+		str = GRAP + "." + PART + "." + BINA + "." + std::to_string((long long)part.id);
 		fp = fopen(str.c_str(), "wb");
 		fwrite((const void*)& part.id, sizeof(int), 1, fp);
 		fwrite((const void*)& part.numVertices, sizeof(int), 1, fp);

@@ -42,11 +42,11 @@ class EdgeMerger
 	EdgeMerger();
 
 	// getters
-	vector<int> getoUnUdEdges();
-	vector<char> getoUnUdVals();
+	vector<int> &getoUnUdEdges();
+	vector<char> &getoUnUdVals();
 	
-	vector<int> getDeltaEdges();
-	vector<char> getDeltaVals();
+	vector<int> &getDeltaEdges();
+	vector<char> &getDeltaVals();
 
 	int getNumNewEdges();
 

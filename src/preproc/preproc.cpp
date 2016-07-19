@@ -5,8 +5,6 @@ bool compareV(const pair<int, string> &lhs, const pair<int, string> &rhs);
 Preproc::Preproc(char *fileName, int size) {
 	clock_t begin, end;
 	vitSize = size;
-	part = "part";
-	bpart = "bpart";
 	FILE *fp;
 	char buf[512];
 	char *p_token = NULL;
@@ -70,6 +68,7 @@ void Preproc::makeVIT(char *fileName) {
 		label = ctemp[2];
 
 		data[src].push_back(std::make_pair(dst, label));
+		count++;
 		i = 0;
 	}
 	fclose(fp);
@@ -81,19 +80,20 @@ void Preproc::makeVIT(char *fileName) {
 	for (i = 0; i <= dataSize; i++) {
 		if (data[i].size() == 0)
 			continue;
+		if (startS == 0)
+			startS = i;
 		for (it_e = eRules.begin(); it_e != eRules.end(); it_e++) {	//add 
 			label = *it_e;
 			data[i].push_back(std::make_pair(i, label));
 		}
 		std::sort(data[i].begin(), data[i].end(), compareV);
 		data[i].erase(unique(data[i].begin(), data[i].end()), data[i].end());
-		count += data[i].size();
 	}
 
-	if (count % vitSize == 0)
+	if (count / vitSize < 0.5)
 		size = count / vitSize;
 	else
-		size = count / vitSize + count %vitSize;
+		size = count / vitSize + 1;
 
 	for (i = 0; i <= dataSize; i++) {
 		endS = i;
@@ -129,7 +129,7 @@ void Preproc::makePart() {
 			if (data[j].size() != 0) {
 				fprintf(f, "%d\t%d\t", j, data[j].size());
 				for (int k = 0; k < data[j].size(); k++) {
-					for (int l = 0; l < mapInfo.size(); l++) {
+					for (int l = 1; l < mapInfo.size(); l++) {
 						if (strcmp(data[j][k].second.c_str(), mapInfo[l].c_str()) == 0) {
 							fprintf(f, "%d\t%d\t", data[j][k].first, l);
 							break;
@@ -140,7 +140,7 @@ void Preproc::makePart() {
 			}
 		}
 		fclose(f);
-		start = vit.getEnd(i);
+		start = vit.getEnd(i) + 1;
 	}
 }
 

@@ -10,7 +10,7 @@ MinSet::MinSet()
 int MinSet::getMinSetID() { return minSetID; }
 int MinSet::getCurrVID() const { return currentVID; }
 int MinSet::getPtr() { return ptr; }
-std::unordered_set<char> MinSet::getEvals() { return evals; }
+std::unordered_set<char>& MinSet::getEvals() { return evals; }
 
 // setters
 void MinSet::setMinSetID(int id) { minSetID = id; }

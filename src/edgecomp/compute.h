@@ -10,7 +10,7 @@
 #include "../datastructures/vertex.h"
 #include "../datastructures/loadedvertexinterval.h"
 #include "../datastructures/computationset.h"
-#include "grammarchecker.h"
+#include "../mapping/grammar.h"
 #include "edgemerger.h"
 #include "../utilities/globalDefinitions.hpp"
 
@@ -25,6 +25,6 @@ struct Hash {
 	size_t operator()(const IDValuePair &pair) const { return 1 * 31 + pair.id; }
 };
 
-long updateEdges(int i, ComputationSet compSets[], vector<LoadedVertexInterval> &intervals);
+long updateEdges(int i, ComputationSet compSets[], vector<LoadedVertexInterval> &intervals, Grammar &gram);
 
 #endif

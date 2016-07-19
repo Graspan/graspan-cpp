@@ -19,9 +19,7 @@
 
 class Preproc {
 private:
-	char *part;
-	char *bpart;
-	int count;
+	float count;
 	int vitSize;
 	int dataSize;
 	set<string> eRules;

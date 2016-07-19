@@ -6,12 +6,13 @@ CFLAGS=-lpthread
 
 ##### source files #####
 # prepessing
-PREPROC=prep/main.cpp preproc/Preproc.cpp preproc/Preproc.h mapping/grammarChecker.cpp 
+PREPROC=prep/main.cpp preproc/Preproc.cpp mapping/grammarChecker.cpp 
 
 # edge computation
-COMPUTATION=edgecomp/engine.cpp edgecomp/compute.cpp edgecomp/grammarchecker.cpp edgecomp/edgemerger.cpp
-DATASTRUCTS=datastructures/vertex.cpp datastructures/computationset.cpp datastructures/loadedvertexinterval.cpp datastructures/minset.cpp
-TEST=../test/randomgraphgen.cpp ../test/timer.cpp
+COMPUTATION=edgecomp/engine.cpp edgecomp/compute.cpp edgecomp/edgemerger.cpp
+LOADER=loader/loader.cpp mapping/grammarChecker.cpp
+DATASTRUCTS=datastructures/vertex.cpp datastructures/computationset.cpp datastructures/loadedvertexinterval.cpp datastructures/minset.cpp datastructures/partition.cpp
+TEST=../test/rand/randomgraphgen.cpp ../test/timer.cpp
 
 
 ##### build rules #####
@@ -22,6 +23,6 @@ all: comp
 #	$(CC) $(PREPROC) -o ../bin/prep
 
 # edge computation program
-comp: $(COMPUTATION) $(DATASTRUCTS) $(TEST)
-	$(CC) $(COMPUTATION) $(DATASTRUCTS) $(TEST) -o ../bin/comp
+comp: $(LOADER) $(COMPUTATION) $(DATASTRUCTS) $(TEST)
+	$(CC) $(LOADER) $(COMPUTATION) $(DATASTRUCTS) $(TEST) -o ../bin/comp
 
