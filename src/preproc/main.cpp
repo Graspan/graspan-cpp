@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
 	cout << "makePart time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 
 	Partition p, p2;
-	Loader::loadPartition(1,p, false);
+	Loader::loadPartition(1,p, true);
 	Partition::writeToFile(p, true);
 	//Repart::repartition(p, p2);
 	//Partition::writeToFile(p, true);

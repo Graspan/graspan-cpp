@@ -19,6 +19,7 @@
 class Repart {
 private:
 public:
+	//p1 is exceeded partition and p2 is new partition
 	static void repartition(Partition &p1, Partition &p2);
 
 
