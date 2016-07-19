@@ -24,11 +24,11 @@ long updateEdges(int i, ComputationSet compSets[], vector<LoadedVertexInterval> 
 	ComputationSet *compSet = &compSets[i];
 
 	// get the list of dest vertices of the current source vertex
-	vector<int> oldEdges = compSet->getOldEdges();
-	vector<char> oldVals = compSet->getOldVals();
+	vector<int> &oldEdges = compSet->getOldEdges();
+	vector<char> &oldVals = compSet->getOldVals();
 
-	vector<int> newEdges = compSet->getNewEdges();
-	vector<char> newVals = compSet->getNewVals();
+	vector<int> &newEdges = compSet->getNewEdges();
+	vector<char> &newVals = compSet->getNewVals();
 
 	bool oldEdgesEmpty = (oldEdges.empty()) ? true : false;
 	bool newEdgesEmpty = (newEdges.empty()) ? true : false;

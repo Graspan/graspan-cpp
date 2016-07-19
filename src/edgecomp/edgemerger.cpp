@@ -9,11 +9,11 @@ EdgeMerger::EdgeMerger()
 }
 
 // getters
-vector<int> EdgeMerger::getoUnUdEdges() { return srcoUnUdEdges; }
-vector<char> EdgeMerger::getoUnUdVals() { return srcoUnUdVals; }
+vector<int> &EdgeMerger::getoUnUdEdges() { return srcoUnUdEdges; }
+vector<char> &EdgeMerger::getoUnUdVals() { return srcoUnUdVals; }
 
-vector<int> EdgeMerger::getDeltaEdges() { return srcDeltaEdges; }
-vector<char> EdgeMerger::getDeltaVals() { return srcDeltaVals; }
+vector<int> &EdgeMerger::getDeltaEdges() { return srcDeltaEdges; }
+vector<char> &EdgeMerger::getDeltaVals() { return srcDeltaVals; }
 
 int EdgeMerger::getNumNewEdges() { return deltaPtr + 1; }
 
@@ -105,31 +105,26 @@ void EdgeMerger::processMinSets(MinSet &srcMS, MinSet &tgtMS, vector<int> &srcEd
 {
 	// case 1
 	if (srcMS.getCurrVID() > tgtMS.getCurrVID()) {
-        if (currID != tgtMS.getCurrVID()) {
-            currID = tgtMS.getCurrVID();
-            currEvals.clear();
-        }
+		if (currID != tgtMS.getCurrVID()) {
+			currID = tgtMS.getCurrVID();
+			currEvals.clear();
+		}
 
-        std::unordered_set<char> &tgtVals = tgtMS.getEvals();
-        for (std::unordered_set<char>::iterator iter = tgtVals.begin(); iter != tgtVals.end(); iter++) {
+        unordered_set<char> &tgtVals = tgtMS.getEvals();
+        for (unordered_set<char>::iterator iter = tgtVals.begin(); iter != tgtVals.end(); iter++)
+		{
             if (currEvals.find(*iter) == currEvals.end()) {
                 oUnUdPtr++;
-                if (oUnUdPtr < srcoUnUdEdges.size()) {
-                    srcoUnUdEdges[oUnUdPtr] = tgtMS.getCurrVID();
-                    srcoUnUdVals[oUnUdPtr] = *iter;
-                }
-                else cout << "ERROR: oUnUdPtr out of bounds" << endl;
+				srcoUnUdEdges[oUnUdPtr] = tgtMS.getCurrVID();
+				srcoUnUdVals[oUnUdPtr] = *iter;
 
                 deltaPtr++;
-                if (deltaPtr < srcDeltaEdges.size()) {
-                    srcDeltaEdges[deltaPtr] = tgtMS.getCurrVID();
-                    srcDeltaVals[deltaPtr] = *iter;
-                    currEvals.insert(*iter);
-                }
-                else cout << "ERROR: deltaPtr out of bounds" << endl;
+				srcDeltaEdges[deltaPtr] = tgtMS.getCurrVID();
+				srcDeltaVals[deltaPtr] = *iter;
+				currEvals.insert(*iter);
             }
         }
-        if (tgtEdgesToMerge.size() > 0) updateMinSet(tgtMS, tgtEdgesToMerge, tgtValsToMerge);
+        updateMinSet(tgtMS, tgtEdgesToMerge, tgtValsToMerge);
         minEdges.push(tgtMS);
 
         return;
@@ -137,35 +132,29 @@ void EdgeMerger::processMinSets(MinSet &srcMS, MinSet &tgtMS, vector<int> &srcEd
 
 	// case 2
 	if (srcMS.getCurrVID() == tgtMS.getCurrVID()) {
-        if (currID != tgtMS.getCurrVID()) {
-            currID = tgtMS.getCurrVID();
-            currEvals.clear();
-        }
+		if (currID != tgtMS.getCurrVID()) {
+			currID = tgtMS.getCurrVID();
+			currEvals.clear();
+		}
 
-        std::unordered_set<char> &srcVals = srcMS.getEvals();
-        std::unordered_set<char> &tgtVals = tgtMS.getEvals();
-        for (std::unordered_set<char>::iterator iter = tgtVals.begin(); iter != tgtVals.end(); iter++) {
+        unordered_set<char> &srcVals = srcMS.getEvals();
+        unordered_set<char> &tgtVals = tgtMS.getEvals();
+        for (unordered_set<char>::iterator iter = tgtVals.begin(); iter != tgtVals.end(); iter++)
+		{
             if (srcVals.find(*iter) == srcVals.end()) {
                 if (currEvals.find(*iter) == currEvals.end()) {
                     oUnUdPtr++;
-                    if (oUnUdPtr < srcoUnUdEdges.size()) {
-                        srcoUnUdEdges[oUnUdPtr] = tgtMS.getCurrVID();
-                        srcoUnUdVals[oUnUdPtr] = *iter;
-                    }
-                    else cout << "ERROR: oUnUdPtr out of bounds" << endl;
+					srcoUnUdEdges[oUnUdPtr] = tgtMS.getCurrVID();
+					srcoUnUdVals[oUnUdPtr] = *iter;
 
                     deltaPtr++;
-                    if (deltaPtr < srcDeltaEdges.size()) {
-                        srcDeltaEdges[deltaPtr] = tgtMS.getCurrVID();
-                        srcDeltaVals[deltaPtr] = *iter;
-                        currEvals.insert(*iter);
-                    }
-                    else cout << "ERROR: deltaPtr out of bounds" << endl;
-
+					srcDeltaEdges[deltaPtr] = tgtMS.getCurrVID();
+					srcDeltaVals[deltaPtr] = *iter;
+					currEvals.insert(*iter);
                 }
             }
         }
-        if (tgtEdgesToMerge.size() > 0) updateMinSet(tgtMS, tgtEdgesToMerge, tgtValsToMerge);
+        updateMinSet(tgtMS, tgtEdgesToMerge, tgtValsToMerge);
         minEdges.push(tgtMS);
 
         return;
@@ -173,24 +162,22 @@ void EdgeMerger::processMinSets(MinSet &srcMS, MinSet &tgtMS, vector<int> &srcEd
 
 	// case 3
 	if (srcMS.getCurrVID() < tgtMS.getCurrVID()) {
-        if (currID != srcMS.getCurrVID()) {
-            currID = srcMS.getCurrVID();
-            currEvals.clear();
-        }
+		if (currID != srcMS.getCurrVID()) {
+			currID = srcMS.getCurrVID();
+			currEvals.clear();
+		}
 
-        std::unordered_set<char> &srcVals = srcMS.getEvals();
-        for (std::unordered_set<char>::iterator iter = srcVals.begin(); iter != srcVals.end(); iter++) {
+        unordered_set<char> &srcVals = srcMS.getEvals();
+        for (unordered_set<char>::iterator iter = srcVals.begin(); iter != srcVals.end(); iter++)
+		{
             if (currEvals.find(*iter) == currEvals.end()) {
                 oUnUdPtr++;
-                if (oUnUdPtr < srcoUnUdEdges.size()) {
-                    srcoUnUdEdges[oUnUdPtr] = srcMS.getCurrVID();
-                    srcoUnUdVals[oUnUdPtr] = *iter;
-                    currEvals.insert(*iter);
-                }
-                else cout << "ERROR: oUnUdPtr out of bounds" << endl;
+				srcoUnUdEdges[oUnUdPtr] = srcMS.getCurrVID();
+				srcoUnUdVals[oUnUdPtr] = *iter;
+				currEvals.insert(*iter);
             }
         }
-        if (srcEdgesToMerge.size() > 0) updateMinSet(srcMS, srcEdgesToMerge, srcValsToMerge);
+        updateMinSet(srcMS, srcEdgesToMerge, srcValsToMerge);
         minEdges.push(tgtMS);
 
         return;

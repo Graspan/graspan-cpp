@@ -1,3 +1,5 @@
+#ifndef DDM_H
+#define DDM_H
 //where is my #ifndef and #def?
 
 #include "../utilities/globalDefinitions.hpp"
@@ -46,3 +48,5 @@ class DDM{
   void enlarge();
   
 };
+
+#endif
