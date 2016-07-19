@@ -58,7 +58,7 @@ bool Loader::loadPartition(int id, Partition &p, bool readable)
 		str = GRAP + "." + PART + "." + BINA + "." + std::to_string((long long)id);
 		fp = fopen(str.c_str(), "rb");
 
-		while (NULL != fread(&src, 4, 1, fp)) {
+		while (0 != fread(&src, 4, 1, fp)) {
 			vector<int> outEdges;
 			vector<char> outEdgeValues;
 			fread(&degree, 4, 1, fp);
