@@ -38,7 +38,7 @@ string Vertex::toString()
 
 	output << endl << id << " ->  ";
 	for (int i = 0; i < numOutEdges; i++)
-		output << outEdges[i] << ", " << outEdgeValues[i] << ";  ";
+		output << "(" << outEdges[i] << ", " << (short)(outEdgeValues[i]) << ")  ";
 
 
 	return output.str();
