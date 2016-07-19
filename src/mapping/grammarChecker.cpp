@@ -55,7 +55,7 @@ string Grammar::trimStr(string str){
 	size_t last = str.find_last_not_of(' ');
 	return str.substr(first,(last - first + 1));
 }
-
+/*
 //ex) checkRules("a","");
 //ex) checkRules("a","b");
 char Grammar::checkRules(string srcVal, string dstVal){
@@ -71,6 +71,22 @@ char Grammar::checkRules(string srcVal, string dstVal){
 		return (it != rules.end()) ? (*it).second : char(-1);
 	}
 
+}*/
+
+//ex) checkRules("a","0");
+//ex) checkRules("a","b");
+label_t Grammar::checkRules(label_t srcVal, label_t dstVal){
+	map<short,char>::iterator it;
+	if(dstVal!=0){
+		short key = changeShort(srcVal,dstVal);
+		it = rules.find(key);
+		return (it != rules.end()) ? (*it).second : char(-1);
+	}	
+	else{
+		short key = changeShort(0,srcVal);	
+		it = rules.find(key);
+		return (it != rules.end()) ? (*it).second : char(-1);
+	}
 }
 
 bool Grammar::print_all(){

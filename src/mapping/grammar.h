@@ -52,7 +52,7 @@ class Grammar{
     return eRules;
   }
 
-	label_t checkRules(string srcVal, string dstVal);
+  //label_t checkRules(string srcVal, string dstVal);
 
   label_t checkRules(label_t srcVal, label_t dstVal);
 
