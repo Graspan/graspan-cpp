@@ -1,49 +1,31 @@
 #include "DDM.h"
 
 DDM::DDM() {
-  //to be implemented
   // the intial vector should be reserved quite big to accomondate for repartitioning
-
+  max_size = 1000;
+  
+  temp_info.partitionRate = temp_info.terminate_map =0;
+  ddmMap.assign(max_size,vector<DDM_map>(max_size,temp_info));
 }
 
 DDM::DDM(int numPartition){
 	this->numPartition = numPartition;
-	originNumPartition = numPartition;
-	partitionRate.assign(this->numPartition,vector<double>(this->numPartition,0));
-	terminate_map.assign(this->numPartition,vector<int>(this->numPartition,UNMARK));
+
+  temp_info.partitionRate = temp_info.terminate_map =0;
+  ddmMap.assign(numPartition,vector<DDM_map>(numPartition,temp_info));
 }
 
 DDM::~DDM(){}
 
-//void DDM::set(int p, int q, double rate){
-//	partitionRate[p][q] = rate;
-//}
-
-//if using this func, you should divide 2 int value -- bad way to do this
-long DDM::nextPartitionPart(){
-	double max=0;
-	long store_part=0;	//store partition
-
-	for(int i=0;i<partitionRate.size();i++){
-		for(int j=0;j<partitionRate[i].size();j++){
-			if(max<partitionRate[i][j]){
-				max=partitionRate[i][j];
-				store_part = ((long)i << 32) | j; // cast to long first otherwise you will delete value of i
-			}
-		}
-	}
-	return store_part;
-}
-
+//the meaning of adjust p is to set teminate_map[p][] and teminate_map[][p] into UNMARK
 void DDM::adjust(partitionid_t p){
-	//numPartition++;
-	//partitionRate.resize(numPartition,vector<double>(originNumPartition,0));
-	//terminate_map.resize(numPartition,vector<int>(originNumPartition,UNMARK));
-
-  //this is not correct - the meaning of adjust p is to set teminate_map[p][] and teminate_map[][p] into UNMARK
+  for(int i=0;i<ddmMap[p].size();i++)
+      ddmMap[p][i].terminate_map = false;
+  for(int i=0;i<ddmMap.size();i++)
+    ddmMap[i][p].terminate_map = false;
 }
 
-//return false iff the whole system should terminate
+//return false if the whole system should terminate
 bool DDM::nextPartitionPair(partitionid_t &p, partitionid_t &q) {
 
   //TODO: we want to favor the current loaded partition in memory: how to express that? (i.e., add bonus to the score)
@@ -51,8 +33,8 @@ bool DDM::nextPartitionPair(partitionid_t &p, partitionid_t &q) {
 
   for (int i = 0; i < numPartition; ++i) {
     for (int j = 0; j < numPartition; ++j ) {
-      if (max < partitionRate[i][j]){
-        max=partitionRate[i][j];
+      if (max < ddmMap[i][j].partitionRate){
+        max=ddmMap[i][j].partitionRate;
         p = i;
         q = j;
       }
@@ -68,6 +50,9 @@ bool DDM::nextPartitionPair(partitionid_t &p, partitionid_t &q) {
 }
 
 void DDM::enlarge() {
-  //to be implemented
+  max_size+=1000;
+  
+  temp_info.partitionRate = temp_info.terminate_map =0;
+  ddmMap.resize(max_size,vector<DDM_map>(max_size,temp_info));
 }
 

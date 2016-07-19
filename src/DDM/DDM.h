@@ -1,12 +1,10 @@
+#ifndef DDM_H
+#define DDM_H
 //where is my #ifndef and #def?
 
 #include "../utilities/globalDefinitions.hpp"
 #include <iostream>
-
-
-#define MARK 1
-#define UNMARK 0
-
+#include "DDM_map.h"
 // There should be only one DDM object in the whole execution
 // ==> implement Singleton pattern
 
@@ -14,10 +12,10 @@ class DDM{
  private:
   //TODO: merge these two vectors into 1
   //TODO: implement scheduling policy described in the paper
-	vector<vector<double> > partitionRate; //for store percentage
-	vector<vector<int> > terminate_map; //why int instead of bool??
+  int max_size;
+  DDM_map temp_info;  //for store percentage and terminate
+  vector<vector<DDM_map> > ddmMap; //array for storing ddmInfo
 	int numPartition;
-	int originNumPartition; //what's this for?
 
  public:
   
@@ -28,13 +26,12 @@ class DDM{
 
   //small methods should be inlined for efficiency
 	inline void set(partitionid_t p, partitionid_t q, double rate) {
-    partitionRate[p][q] = rate;
+    ddmMap[p][q].partitionRate = rate;
   }
-	long nextPartitionPart(); // this is a bad way to return 2 values since you spent time encoding and decoding
 	void adjust(int p);
 
 	inline void markTerminate(partitionid_t p, partitionid_t q) {
-    terminate_map[p][q] = MARK;
+    ddmMap[p][q].terminate_map = true;
   }
 
   // the indices p and q tell which partitionRate[p][q] is max: i.e., this is our scheduler
@@ -46,3 +43,5 @@ class DDM{
   void enlarge();
   
 };
+
+#endif

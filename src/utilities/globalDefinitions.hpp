@@ -6,9 +6,11 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <unordered_set>
 #include <set>
 #include <map>
 using std::vector;
+using std::unordered_set;
 using std::pair;
 using std::set;
 using std::cout;

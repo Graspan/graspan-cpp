@@ -24,11 +24,11 @@ long updateEdges(int i, ComputationSet compSets[], vector<LoadedVertexInterval> 
 	ComputationSet *compSet = &compSets[i];
 
 	// get the list of dest vertices of the current source vertex
-	vector<int> oldEdges = compSet->getOldEdges();
-	vector<char> oldVals = compSet->getOldVals();
+	vector<int> &oldEdges = compSet->getOldEdges();
+	vector<char> &oldVals = compSet->getOldVals();
 
-	vector<int> newEdges = compSet->getNewEdges();
-	vector<char> newVals = compSet->getNewVals();
+	vector<int> &newEdges = compSet->getNewEdges();
+	vector<char> &newVals = compSet->getNewVals();
 
 	bool oldEdgesEmpty = (oldEdges.empty()) ? true : false;
 	bool newEdgesEmpty = (newEdges.empty()) ? true : false;
@@ -59,28 +59,17 @@ long updateEdges(int i, ComputationSet compSets[], vector<LoadedVertexInterval> 
 	genEdgesToMergeForDRule(compSets, newRowIndsToMerge, edgeVecsToMerge, valVecsToMerge, rowToMergeID, gram, 'o');
 	genEdgesToMergeForDRule(compSets, oldUnewRowIndsToMerge, edgeVecsToMerge, valVecsToMerge, rowToMergeID, gram, 'n');
 
-
-	cout << "EDGES TO MERGE: " << endl;
-	for (int i = 0; i < edgeVecsToMerge.size(); i++)
-	{
-		cout << i << ": ";
-		for (int j = 0; j < edgeVecsToMerge[i].size(); j++)
-			cout << "(" << edgeVecsToMerge[i][j] << ", " << (short)(valVecsToMerge[i][j]) << ")  ";
-		cout << endl;
-	}
-
-	cout << endl;
-
 	EdgeMerger em;
 
-//	em.mergeVectors(edgeVecsToMerge, valVecsToMerge, 0);
-//
-//	compSet->setOldEdges(compSet->getoldUnewEdges());
-//	compSet->setOldVals(compSet->getoldUnewVals());
-//	compSet->setoldUnewEdges(em.getoUnUdEdges());
-//	compSet->setoldUnewVals(em.getoUnUdVals());
-//	compSet->setNewEdges(em.getDeltaEdges());
-//	compSet->setNewVals(em.getDeltaVals());
+	em.mergeVectors(edgeVecsToMerge, valVecsToMerge, 0);
+
+	#pragma omp barrier
+	compSet->setOldEdges(compSet->getoldUnewEdges());
+	compSet->setOldVals(compSet->getoldUnewVals());
+	compSet->setoldUnewEdges(em.getoUnUdEdges());
+	compSet->setoldUnewVals(em.getoUnUdVals());
+	compSet->setNewEdges(em.getDeltaEdges());
+	compSet->setNewVals(em.getDeltaVals());
 
 	return em.getNumNewEdges();
 }

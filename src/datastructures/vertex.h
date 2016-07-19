@@ -29,15 +29,15 @@ class Vertex
 	int getVertexID();
 	int getVertexIdx();
 	int getNumOutEdges();
-	vector<int> getOutEdges();
-	vector<char> getOutEdgeValues();
+	vector<int> &getOutEdges();
+	vector<char> &getOutEdgeValues();
 	int getOutEdge(int ind);
 	char getOutEdgeValue(int ind);
 
 	// Setters
 	void setNumOutEdges();
-	void setOutEdges(vector<int> outEdges);
-	void setOutEdgeValues(vector<char> outEdgeValues);
+	void setOutEdges(vector<int> &outEdges);
+	void setOutEdgeValues(vector<char> &outEdgeValues);
 
 	string toString();
 };
