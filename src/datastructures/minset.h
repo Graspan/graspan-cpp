@@ -24,7 +24,7 @@ class MinSet
 	int getMinSetID();
 	int getCurrVID() const;
 	int getPtr();
-	std::unordered_set<char> getEvals();
+	std::unordered_set<char> &getEvals();
 
 	// setters
 	void setMinSetID(int id);

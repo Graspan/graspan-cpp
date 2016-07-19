@@ -65,11 +65,11 @@ void EdgeMerger::mergeVectors(vector< vector<int> > &edgeVecsToMerge,
 
     cout << "oldUnewUdelta AFTER update  ->  ";
     for (int k = 0; k < srcoUnUdEdges.size(); k++)
-        cout << "(" << srcoUnUdEdges[k]  << ", " << srcoUnUdVals[k] << ")  ";
+        cout << "(" << srcoUnUdEdges[k]  << ", " << (short)srcoUnUdVals[k] << ")  ";
     cout << endl;
     cout << "delta AFTER update -> ";
     for (int l = 0; l < srcDeltaEdges.size(); l++)
-        cout << "(" << srcDeltaEdges[l] << ", " << srcDeltaVals[l] << ")  ";
+        cout << "(" << srcDeltaEdges[l] << ", " << (short)srcDeltaVals[l] << ")  ";
     cout << endl << std::endl;
 
 	mergeTime.endTimer();
@@ -82,10 +82,8 @@ void EdgeMerger::removeExtraSpace()
 	srcoUnUdEdges = vector<int>(srcoUnUdEdges.begin(), srcoUnUdEdges.begin() + oUnUdPtr + 1);
 	srcoUnUdVals = vector<char>(srcoUnUdVals.begin(), srcoUnUdVals.begin() + oUnUdPtr + 1);
 
-	if (deltaPtr >= 0) {
-		srcDeltaEdges = vector<int>(srcDeltaEdges.begin(), srcDeltaEdges.begin() + deltaPtr + 1);
-        srcDeltaVals = vector<char>(srcDeltaVals.begin(), srcDeltaVals.begin() + deltaPtr + 1);
-	}
+	srcDeltaEdges = vector<int>(srcDeltaEdges.begin(), srcDeltaEdges.begin() + deltaPtr + 1);
+	srcDeltaVals = vector<char>(srcDeltaVals.begin(), srcDeltaVals.begin() + deltaPtr + 1);
 }
 
 void EdgeMerger::updateMinSet(MinSet &minset, vector<int> &edges, vector<char> &vals)
@@ -112,7 +110,7 @@ void EdgeMerger::processMinSets(MinSet &srcMS, MinSet &tgtMS, vector<int> &srcEd
             currEvals.clear();
         }
 
-        std::unordered_set<char> tgtVals = tgtMS.getEvals();
+        std::unordered_set<char> &tgtVals = tgtMS.getEvals();
         for (std::unordered_set<char>::iterator iter = tgtVals.begin(); iter != tgtVals.end(); iter++) {
             if (currEvals.find(*iter) == currEvals.end()) {
                 oUnUdPtr++;
@@ -144,8 +142,8 @@ void EdgeMerger::processMinSets(MinSet &srcMS, MinSet &tgtMS, vector<int> &srcEd
             currEvals.clear();
         }
 
-        std::unordered_set<char> srcVals = srcMS.getEvals();
-        std::unordered_set<char> tgtVals = tgtMS.getEvals();
+        std::unordered_set<char> &srcVals = srcMS.getEvals();
+        std::unordered_set<char> &tgtVals = tgtMS.getEvals();
         for (std::unordered_set<char>::iterator iter = tgtVals.begin(); iter != tgtVals.end(); iter++) {
             if (srcVals.find(*iter) == srcVals.end()) {
                 if (currEvals.find(*iter) == currEvals.end()) {
@@ -180,7 +178,7 @@ void EdgeMerger::processMinSets(MinSet &srcMS, MinSet &tgtMS, vector<int> &srcEd
             currEvals.clear();
         }
 
-        std::unordered_set<char> srcVals = srcMS.getEvals();
+        std::unordered_set<char> &srcVals = srcMS.getEvals();
         for (std::unordered_set<char>::iterator iter = srcVals.begin(); iter != srcVals.end(); iter++) {
             if (currEvals.find(*iter) == currEvals.end()) {
                 oUnUdPtr++;

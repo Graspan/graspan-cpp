@@ -31,20 +31,23 @@ bool newEdgesPart2;
 void computeOneIteration(vector<Vertex> &vertices, ComputationSet compSets[],
 		vector<LoadedVertexInterval> &intervals, Grammar &gram)
 {
-	if (vertices[0].getNumOutEdges() != 0) {
-		cout << "Updating vertex " << vertices[2].getVertexID() << "..." << endl;
-		updateEdges(2, compSets, intervals, gram);
-	}
-	else cout << "Vertex " << vertices[0].getVertexID() << " has no edges" << endl;
-
-//	for (int i = 0; i < vertices.size(); i++)
-//	{
-//		if (vertices[i].getNumOutEdges() != 0) {
-//			cout << "Updating vertex " << vertices[i].getVertexID() << "..." << endl;
-//			newEdgesThisIter += updateEdges(i, compSets, intervals, gram);
-//		}
-//		else { cout << "Vertex " << vertices[i].getVertexID() << " has no edges" << endl << std::endl; }
+//	if (vertices[0].getNumOutEdges() != 0) {
+//		cout << "Updating vertex " << vertices[2].getVertexID() << "..." << endl;
+//		updateEdges(2, compSets, intervals, gram);
 //	}
+//	else cout << "Vertex " << vertices[0].getVertexID() << " has no edges" << endl;
+
+	#pragma omp parallel for
+	for (int i = 0; i < vertices.size(); i++)
+	{
+		if (vertices[i].getNumOutEdges() != 0) {
+			cout << "Updating vertex " << vertices[i].getVertexID() << "..." << endl;
+			
+			#pragma omp atomic
+			newEdgesThisIter += updateEdges(i, compSets, intervals, gram);
+		}
+		else { cout << "Vertex " << vertices[i].getVertexID() << " has no edges" << endl << std::endl; }
+	}
 }
 
 
@@ -64,10 +67,13 @@ void computeEdges(vector<Vertex> &vertices, ComputationSet compSets[], vector<Lo
 	
 	do {
 		iterNo++;
+		cout << "ITERATION: " << iterNo << endl;
 		newEdgesThisIter = 0;
 		computeOneIteration(vertices, compSets, intervals, gram);
 
 		totNewEdges += newEdgesThisIter;
+
+		cout << endl << endl;
 	} while (newEdgesThisIter > 0);
 }
 
@@ -83,19 +89,15 @@ int main(int argc, char *argv[])
 	compTime.startTimer();
 
 	Partition p1, p2;
-	Loader::loadPartition(0, p1, false);
-	Loader::loadPartition(1, p2, false);
+	Loader::loadPartition(0, p1, true);
+	Loader::loadPartition(1, p2, true);
 	vector<Vertex> &data1 = p1.getData(), &data2 = p2.getData();
 
 	vector<Vertex> vertices;
 	vertices.reserve(data1.size() + data2.size());
 
-	for (int i = 0; i < data1.size(); i++)
-		vertices.push_back(data1[i]);
-
-	for (int i = 0; i < data2.size(); i++)
-		vertices.push_back(data2[i]);
-
+	vertices.insert(vertices.end(), data1.begin(), data1.end());
+	vertices.insert(vertices.end(), data2.begin(), data2.end());
 
 	for (int j = 0; j < vertices.size(); j++)
 		cout << vertices[j].toString() << endl;
