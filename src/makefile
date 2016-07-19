@@ -12,7 +12,7 @@ PREPROC=prep/main.cpp preproc/Preproc.cpp mapping/grammarChecker.cpp
 COMPUTATION=edgecomp/engine.cpp edgecomp/compute.cpp edgecomp/edgemerger.cpp
 LOADER=loader/loader.cpp mapping/grammarChecker.cpp
 DATASTRUCTS=datastructures/vertex.cpp datastructures/computationset.cpp datastructures/loadedvertexinterval.cpp datastructures/minset.cpp datastructures/partition.cpp
-TEST=../test/rand/randomgraphgen.cpp ../test/timer.cpp
+TEST=../test/timer.cpp
 
 
 ##### build rules #####
@@ -24,5 +24,5 @@ all: comp
 
 # edge computation program
 comp: $(LOADER) $(COMPUTATION) $(DATASTRUCTS) $(TEST)
-	$(CC) $(LOADER) $(COMPUTATION) $(DATASTRUCTS) $(TEST) -o ../bin/comp
+	$(CC) -ggdb $(LOADER) $(COMPUTATION) $(DATASTRUCTS) $(TEST) -o ../bin/comp
 

@@ -77,3 +77,15 @@ void Partition::loadFromFile(int id, Partition &part, bool readable)
 {
 	Loader::loadPartition(id, part, readable);
 }
+
+string Partition::toString()
+{
+	std::stringstream output;
+
+	output << endl << "Partition id : " << id << "  Vertices : " << numVertices << "  Edges : " << numEdges << endl;
+
+	for (int i = 0; i < numVertices; i++)
+		output << data[i].toString();
+
+	return output.str();
+}

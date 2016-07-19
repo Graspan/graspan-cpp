@@ -2,19 +2,22 @@
 #include "../mapping/grammarChecker.cpp"
 #include "../loader/loader.h"
 #include "repart.h"
+#include "../datastructures/context.h"
 
 void delFiles();
 
 int main(int argc, char *argv[]) {
+
 	int numPart = 3;						//it will change numPart = argv[2] or else, userinput
 	clock_t begin, end;
 	delFiles();
 	Grammar g;
+	Context c(1, argv + 2);
 	if (!g.loadGrammar("../mapping/grammar")) {			//just for test need to fix
 		cout << "file is not exist" << std::endl;
 		exit(1);
 	}
-	Preproc pre(argv[1], numPart);
+	Preproc pre(argv[1], c.getNumPartitions());
 	pre.setMapInfo(g.getMapInfo(), g.getErules());
 	Loader load;
 	begin = clock();
@@ -34,6 +37,10 @@ int main(int argc, char *argv[]) {
 
 	Partition p, p2;
 	Loader::loadPartition(1,p, true);
+
+	cout << p.toString() << endl;
+	c.setNumPartitions(pre.getNumOfPartitions());
+
 	Partition::writeToFile(p, true);
 	//Repart::repartition(p, p2);
 	//Partition::writeToFile(p, true);

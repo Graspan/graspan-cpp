@@ -8,12 +8,14 @@
 #include <vector>
 #include <unordered_set>
 #include <set>
+#include <map>
 using std::vector;
 using std::unordered_set;
 using std::pair;
 using std::set;
 using std::cout;
 using std::endl;
+using std::map;
 
 #ifndef ASSERT
 #define ASSERT
@@ -30,6 +32,13 @@ const static string GRAP = "graph";
 const static string PART = "partition";
 const static string BINA = "binary";
 const static string HUMA = "human";
+
+const static string MEM_BUDGET_KEY = "memBudget";
+const static string NUM_PARTITION_KEY = "numPartitions";
+const static string MAX_EDGES_PER_PARTITION_KEY = "maxEdgesPerPartiton";
+
+const static string INSERT_SORT_FLAG = "insertionSort";
+const static string ALTER_SCHEDULE_FLAG = "alterSchedule";
 
 //----------------------------------------------------------------------------------------------------
 #ifdef ASSERT

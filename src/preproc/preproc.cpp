@@ -94,7 +94,7 @@ void Preproc::makeVIT(char *fileName) {
 		size = count / vitSize;
 	else
 		size = count / vitSize + 1;
-
+	vitSize = 0;
 	for (i = 0; i <= dataSize; i++) {
 		endS = i;
 		sum += data[i].size();
@@ -102,6 +102,7 @@ void Preproc::makeVIT(char *fileName) {
 			tempVIT.push_back(std::make_pair(startS, endS));
 			startS = i+1;
 			sum = 0;
+			vitSize++;
 		}
 	}
 	if (sum != 0)
@@ -192,6 +193,11 @@ void Preproc::setMapInfo(vector<string> mapInfo, set<char> eRules)
 }
 
 VIT Preproc::getVIT() { return vit; }
+
+int Preproc::getNumOfPartitions()
+{
+	return vitSize;
+}
 
 Preproc::~Preproc()
 {
