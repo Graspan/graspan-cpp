@@ -89,3 +89,20 @@ string Partition::toString()
 
 	return output.str();
 }
+/*
+void Partition::calc_ddr(Context& context, vector<double>& ddm_entry) {
+	
+	VIT vit = context.vit;
+
+	ddm_entry.clear();
+
+
+	for (int i = 0; i < numVertices; ++i) {
+		ddm_entry[vit.partition(data[i].getVertexID())] += 1;
+	}
+
+	for (int i = 0; i < ddm_entry.size(); ++i) {
+		ddm_entry[i] /= numEdges;
+	}
+		
+}*/

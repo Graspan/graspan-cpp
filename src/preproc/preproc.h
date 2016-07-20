@@ -14,6 +14,8 @@
 
 #include "../utilities/globalDefinitions.hpp"
 #include "../datastructures/vit.h"
+#include "../DDM//DDM.h"
+#include "../datastructures/context.h"
 
 
 
@@ -22,9 +24,11 @@ private:
 	float count;
 	int vitSize;
 	int dataSize;
+
 	set<string> eRules;
 	vector<string> mapInfo;
 	vector<pair<int, string>> *data;
+	bool *dataInfo;
 	VIT vit;
 
 
@@ -32,14 +36,18 @@ public:
 	Preproc(char *fileName, int size);
 
 	void makeVIT(char *fileName);
-	void makePart();
+	void makeDDM(DDM &ddm);
+	void makePart(Context context);
 	void makeBinaryPart();
 
 	void setMapInfo(vector<string> mapInfo, set<char> eRules);
-	VIT getVIT();
 
+	VIT getVIT();
 	int getNumOfPartitions();
+	DDM &getDDM();
 	~Preproc();
+
+	
 };
 
 

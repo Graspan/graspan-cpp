@@ -9,6 +9,7 @@
 #include "../utilities/globalDefinitions.hpp"
 #include "../datastructures/vertex.h"
 #include "../datastructures/vit.h"
+#include "../datastructures/context.h"
 
 class Partition
 {
@@ -44,6 +45,9 @@ public:
 	static void loadFromFile(int id, Partition &part, bool readable = false);
 
 	string toString();
+
+	// ddr = destination distribution ratio, i.e., a cell in DDM
+	//vector<double> calc_ddr();
 };
 
 

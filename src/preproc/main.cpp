@@ -3,6 +3,7 @@
 #include "../loader/loader.h"
 #include "repart.h"
 #include "../datastructures/context.h"
+#include "../DDM/DDM.h"
 
 void delFiles();
 
@@ -12,7 +13,7 @@ int main(int argc, char *argv[]) {
 	clock_t begin, end;
 	delFiles();
 	Grammar g;
-	Context c(1, argv + 2);
+	Context c(argc - 2, argv + 2);
 	if (!g.loadGrammar("../mapping/grammar")) {			//just for test need to fix
 		cout << "file is not exist" << std::endl;
 		exit(1);
@@ -24,9 +25,11 @@ int main(int argc, char *argv[]) {
 	pre.makeVIT(argv[1]);		//need to fix input file
 	end = clock();
 	cout << "makeVIT time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
+	c.ddm.setNumPartition(pre.getNumOfPartitions());
+	c.ddm.enlarge();
 
 	begin = clock();
-	pre.makePart();
+	pre.makePart(c);
 	end = clock();
 	cout << "makePart time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 
@@ -35,6 +38,7 @@ int main(int argc, char *argv[]) {
 	end = clock();
 	cout << "makeBinaryPart time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 
+	cout << c.ddm.toString();
 	Partition p, p2;
 	Loader::loadPartition(1,p, true);
 

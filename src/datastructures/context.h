@@ -11,6 +11,9 @@
 #include <map>
 
 #include "../utilities/globalDefinitions.hpp"
+#include "vit.h"
+#include "../DDM/DDM.h"
+#include "../mapping/grammar.h"
 
 class Context
 {
@@ -21,10 +24,21 @@ private:
 
 
 public:
+
+	Grammar grammar;
+	VIT vit;
+	DDM ddm;
+
 	//constructor
+	//user input format is memBudget=10 numPartitions=3 insertionSort=true 
+	//if user don't input data then default values are in these things
 	Context(int argc, char** argv);
 
 	//getters
+	Grammar getGrammer();
+	VIT getVIT();
+	DDM getDDM();
+
 	int getMemBudget();
 	int getNumPartitions();
 	int getMaxEdges();
@@ -38,6 +52,8 @@ public:
 
 	void setInsertFlag(bool flag);
 	void setAlterScheduleFlag(bool flag);
+
+
 };
 
 
