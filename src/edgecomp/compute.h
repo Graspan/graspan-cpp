@@ -4,8 +4,7 @@
 #include <iostream>
 #include <string>
 #include <ctime>
-#include <thread>
-#include <unordered_set>
+#include <utility>
 
 #include "../datastructures/vertex.h"
 #include "../datastructures/loadedvertexinterval.h"
@@ -25,6 +24,6 @@ struct Hash {
 	size_t operator()(const IDValuePair &pair) const { return 31 * pair.id + 1; }
 };
 
-long updateEdges(int i, ComputationSet compSets[], LoadedVertexInterval intervals[], Grammar &gram);
+long updateEdges(int vertInd, ComputationSet compSets[], LoadedVertexInterval intervals[], Grammar &gram);
 
 #endif

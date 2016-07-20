@@ -44,6 +44,10 @@ void computeOneIteration(ComputationSet compSets[], int setSize, LoadedVertexInt
 		long newEdges = 0;
 
 		newEdges += updateEdges(i, compSets, intervals, gram);
+		if (newEdges > 0 && (i >= intervals[0].getIndexStart() && i <= intervals[0].getIndexEnd()))
+			intervals[0].setNewEdgeAdded(true);
+		else if (newEdges > 0 && (i >= intervals[1].getIndexStart() && i <= intervals[1].getIndexEnd()))
+			intervals[1].setNewEdgeAdded(true);
 
 		#pragma omp atomic
 		newEdgesThisIter += newEdges;
@@ -94,14 +98,13 @@ int main(int argc, char *argv[])
 	Loader::loadPartition(4, p2, true);
 	vector<Vertex> &part1 = p1.getData(), &part2 = p2.getData();
 
-//	vector<Vertex> vertices;
-//	vertices.reserve(part1.size() + part2.size());
-//
-//	vertices.insert(vertices.end(), part1.begin(), part1.end());
-//	vertices.insert(vertices.end(), part2.begin(), part2.end());
-//
-//	for (int j = 0; j < vertices.size(); j++)
-//		cout << vertices[j].toString() << endl;
+	cout << "PART 1:";
+	for (int i = 0; i < part1.size(); i++)
+		cout << part1[i].toString();
+
+	cout << endl << endl << "PART 2:";
+	for (int j = 0; j < part2.size(); j++)
+		cout << part2[j].toString();
 
 	// load grammar into memory
 	Grammar gram;
