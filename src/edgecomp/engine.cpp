@@ -27,23 +27,17 @@ void initLVIs(LoadedVertexInterval intervals[], vector<Vertex> &part1, vector<Ve
  * compute the new edges of each vertex simultaneously
  *
  * @param vertices
- * @param compSets
+ * @param compsets
  * @param intervals
  */
-void computeOneIteration(ComputationSet compSets[], int setSize, LoadedVertexInterval intervals[], Grammar &gram)
+void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Grammar &gram)
 {
-//	if (vertices[0].getNumOutEdges() != 0) {
-//		cout << "Updating vertex " << vertices[2].getVertexID() << "..." << endl;
-//		updateEdges(2, compSets, intervals, gram);
-//	}
-//	else cout << "Vertex " << vertices[0].getVertexID() << " has no edges" << endl;
-
 	#pragma omp parallel for
 	for (int i = 0; i < setSize; i++)
 	{
 		long newEdges = 0;
 
-		newEdges += updateEdges(i, compSets, intervals, gram);
+		newEdges += updateEdges(i, compsets, intervals, gram);
 		if (newEdges > 0 && (i >= intervals[0].getIndexStart() && i <= intervals[0].getIndexEnd()))
 			intervals[0].setNewEdgeAdded(true);
 		else if (newEdges > 0 && (i >= intervals[1].getIndexStart() && i <= intervals[1].getIndexEnd()))
@@ -59,10 +53,10 @@ void computeOneIteration(ComputationSet compSets[], int setSize, LoadedVertexInt
  * Get start and end indices of each partition
  *
  * @param vertices
- * @param compSets
+ * @param compsets
  * @param intervals
  */
-void computeEdges(ComputationSet compSets[], int setSize, LoadedVertexInterval intervals[], Grammar &gram)
+void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Grammar &gram)
 {
 	iterNo = 0;
 	totNewEdges = 0;
@@ -71,7 +65,7 @@ void computeEdges(ComputationSet compSets[], int setSize, LoadedVertexInterval i
 		iterNo++;
 		cout << "ITERATION: " << iterNo << endl;
 		newEdgesThisIter = 0;
-		computeOneIteration(compSets, setSize, intervals, gram);
+		computeOneIteration(compsets, setSize, intervals, gram);
 
 		totNewEdges += newEdgesThisIter;
 
@@ -110,10 +104,10 @@ int main(int argc, char *argv[])
 	Grammar gram;
 	gram.loadGrammar("grammar");
 
-	ComputationSet *compSets = new ComputationSet[part1.size() + part2.size()];
+	ComputationSet *compsets = new ComputationSet[part1.size() + part2.size()];
 	int setSize = part1.size() + part2.size();
 
-	initCompSets(compSets, part1, part2);
+	initCompSets(compsets, part1, part2);
 	
 	// replace with primitive array
 	LoadedVertexInterval intervals[2] = {LoadedVertexInterval{0}, LoadedVertexInterval{1}};
@@ -125,9 +119,11 @@ int main(int argc, char *argv[])
 		cout << lvi.toString() << endl;
 	}
 
-	computeEdges(compSets, setSize, intervals, gram);
+	computeEdges(compsets, setSize, intervals, gram);
 
-	delete[] compSets;
+//	saveNewEdges(compsets, intervals, part1, part2);
+
+	delete[] compsets;
 
 	compTime.endTimer();
 
@@ -135,6 +131,22 @@ int main(int argc, char *argv[])
 	cout << "TOTAL TIME: " << compTime.toString() << endl;
 
 	return 0;
+}
+
+void saveNewEdges(ComputationSet compsets[], vector<Vertex> &part1, vector<Vertex> &part2)
+{
+	for (int i = 0; i < part1.size(); i++)
+	{
+		part1[i].setOutEdges(compsets[i].getoldUnewEdges());
+		part1[i].setOutEdgeValues(compsets[i].getoldUnewVals());
+	}
+
+	int offset = part1.size();
+	for (int j = 0; j < part2.size(); j++)
+	{
+		part2[j].setOutEdges(compsets[j+offset].getoldUnewEdges());
+		part2[j].setOutEdgeValues(compsets[j].getoldUnewVals());
+	}
 }
 
 void initCompSets(ComputationSet compsets[], vector<Vertex> &part1, vector<Vertex> &part2)
