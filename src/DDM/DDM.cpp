@@ -4,29 +4,23 @@ DDM::DDM() {
   // the intial vector should be reserved quite big to accomondate for repartitioning
   max_size = 1000;
   
-  temp_info.partitionRate = temp_info.terminate_map = 0;
-  ddmMap.assign(max_size,vector<DDM_map>(max_size,temp_info));
+  ddmMap.assign(max_size,vector<double>(max_size,0));
 }
 
 DDM::DDM(int numPartition){
 	this->numPartition = numPartition;
 
-	temp_info.partitionRate = temp_info.terminate_map = 0;
-  ddmMap.assign(numPartition,vector<DDM_map>(numPartition,temp_info));
+ 	ddmMap.assign(numPartition,vector<double>(numPartition,0));
 }
 
 DDM::~DDM(){}
 
-vector<vector<DDM_map> >& DDM::getDdmMap() {
-	return ddmMap;
-}
-
 //the meaning of adjust p is to set teminate_map[p][] and teminate_map[][p] into UNMARK
 void DDM::adjust(partitionid_t p){
   for(int i=0;i<ddmMap[p].size();i++)
-      ddmMap[p][i].terminate_map = false;
+    ddmMap[p][i] = 0;
   for(int i=0;i<ddmMap.size();i++)
-    ddmMap[i][p].terminate_map = false;
+	ddmMap[i][p] = 0;
 }
 
 //return false if the whole system should terminate
@@ -37,8 +31,8 @@ bool DDM::nextPartitionPair(partitionid_t &p, partitionid_t &q) {
 
   for (int i = 0; i < numPartition; ++i) {
     for (int j = 0; j < numPartition; ++j ) {
-      if (max < ddmMap[i][j].partitionRate){
-        max=ddmMap[i][j].partitionRate;
+      if (max < ddmMap[i][j]){
+        max=ddmMap[i][j];
         p = i;
         q = j;
       }
@@ -53,17 +47,47 @@ bool DDM::nextPartitionPair(partitionid_t &p, partitionid_t &q) {
   return true;
 }
 
-void DDM::setNumPartition(int numPartition) {
-	this->numPartition = numPartition;
-}
-
 void DDM::enlarge() {
-  
-	temp_info.partitionRate = temp_info.terminate_map = 0;
-
 	ddmMap.resize(numPartition);
 	for (int i = 0; i < numPartition; ++i)
-		ddmMap[i].resize(numPartition, temp_info);
+		ddmMap[i].resize(numPartition, 0);
+}
+
+bool DDM::load_DDM(string name){
+	std::ifstream fin;
+	fin.open("../resources/DDM");
+	if(!fin){
+		cout << "can't read file" << endl;
+		return false;
+	}
+	int sizeDDM;
+	fin >> sizeDDM;
+	for(int i=0;i<sizeDDM;i++){
+		for(int j=0;j<sizeDDM;j++){
+			fin >> ddmMap[i][j];
+		}
+	}
+	
+	return true;
+}
+bool DDM::save_DDM(){
+	std::ofstream fout;
+	fout.open("../resources/DDM");
+	if(!fout){
+		cout << "can't make file" << endl;
+		return false;
+	}
+
+	//store numPartition
+	fout << numPartition << endl;
+	for(int i=0;i<numPartition;i++){
+		for(int j=0;j<numPartition;j++){
+			fout.precision(2);
+			fout << ddmMap[i][j] << " ";
+		}
+		fout << endl;
+	}
+	return true;
 }
 
 string DDM::toString() {
@@ -72,7 +96,7 @@ string DDM::toString() {
 	for (int i = 0; i < numPartition; i++) {
 		for (int j = 0; j < numPartition; j++) {
 			if (i != j)
-				output << endl << "Partition p : " << i << "  Partition q : " << j << "  rate : " << ddmMap[i][j].partitionRate << endl;
+				output << endl << "Partition p : " << i << "  Partition q : " << j << "  rate : " << ddmMap[i][j] << endl;
 		}
 	}
 	return output.str();
