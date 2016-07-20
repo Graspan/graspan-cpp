@@ -22,9 +22,9 @@ struct IDValuePair {
 }; 
 
 struct Hash {
-	size_t operator()(const IDValuePair &pair) const { return 1 * 31 + pair.id; }
+	size_t operator()(const IDValuePair &pair) const { return 31 * pair.id + 1; }
 };
 
-long updateEdges(int i, ComputationSet compSets[], vector<LoadedVertexInterval> &intervals, Grammar &gram);
+long updateEdges(int i, ComputationSet compSets[], LoadedVertexInterval intervals[], Grammar &gram);
 
 #endif

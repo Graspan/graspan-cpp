@@ -1,0 +1,5 @@
+g++ -std=c++0x *.cpp
+
+./a.out
+
+rm -f a.out

@@ -1,10 +1,8 @@
 #include "loadedvertexinterval.h"
 
 // Constructor
-LoadedVertexInterval::LoadedVertexInterval(int firstVertex, int lastVertex, int partitionID)
+LoadedVertexInterval::LoadedVertexInterval(int partitionID)
 {
-	this->firstVertex = firstVertex;
-	this->lastVertex = lastVertex;
 	this->partitionID = partitionID;
 }
 
