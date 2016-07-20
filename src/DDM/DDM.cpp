@@ -82,7 +82,6 @@ bool DDM::save_DDM(){
 	fout << numPartition << endl;
 	for(int i=0;i<numPartition;i++){
 		for(int j=0;j<numPartition;j++){
-			fout.precision(2);
 			fout << ddmMap[i][j] << " ";
 		}
 		fout << endl;
