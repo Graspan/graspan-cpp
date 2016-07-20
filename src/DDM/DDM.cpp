@@ -97,7 +97,7 @@ string DDM::toString() {
 		for (int j = 0; j < numPartition; j++) {
 			if (i != j)
 				output << endl << "Partition p : " << i << "  Partition q : " << j << "  rate : " << ddmMap[i][j] << endl;
-
+		}
 	}
 	return output.str();
 }
