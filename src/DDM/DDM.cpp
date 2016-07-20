@@ -53,17 +53,18 @@ void DDM::enlarge() {
 		ddmMap[i].resize(numPartition, 0);
 }
 
-bool DDM::load_DDM(string name){
+bool DDM::load_DDM(){
 	std::ifstream fin;
 	fin.open("../resources/DDM");
 	if(!fin){
 		cout << "can't read file" << endl;
 		return false;
 	}
-	int sizeDDM;
-	fin >> sizeDDM;
-	for(int i=0;i<sizeDDM;i++){
-		for(int j=0;j<sizeDDM;j++){
+
+	fin >> numPartition;
+	enlarge();
+	for(int i=0;i<numPartition;i++){
+		for(int j=0;j<numPartition;j++){
 			fin >> ddmMap[i][j];
 		}
 	}
@@ -82,7 +83,7 @@ bool DDM::save_DDM(){
 	fout << numPartition << endl;
 	for(int i=0;i<numPartition;i++){
 		for(int j=0;j<numPartition;j++){
-			fout.precision(2);
+		
 			fout << ddmMap[i][j] << " ";
 		}
 		fout << endl;

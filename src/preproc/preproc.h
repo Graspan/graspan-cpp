@@ -36,8 +36,7 @@ public:
 	Preproc(char *fileName, int size);
 
 	void makeVIT(char *fileName);
-	void makeDDM(DDM &ddm);
-	void makePart(Context context);
+	void makePart(Context &context);
 	void makeBinaryPart();
 
 	void setMapInfo(vector<string> mapInfo, set<char> eRules);

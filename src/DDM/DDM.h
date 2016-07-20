@@ -41,7 +41,7 @@ class DDM{
   // you should figure out how to implement this resizing logic efficiently
   void enlarge();
 
-  bool load_DDM(string name);
+  bool load_DDM();
   bool save_DDM();
 
   string toString();

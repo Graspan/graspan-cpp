@@ -33,6 +33,7 @@ int main(int argc, char *argv[]) {
 	end = clock();
 	cout << "makePart time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 
+	c.ddm.save_DDM();
 	begin = clock();
 	pre.makeBinaryPart();
 	end = clock();
@@ -43,8 +44,9 @@ int main(int argc, char *argv[]) {
 	Loader::loadPartition(1,p, true);
 
 	cout << p.toString() << endl;
-	c.setNumPartitions(pre.getNumOfPartitions());
+	c.ddm.load_DDM();
 
+	cout << c.ddm.toString();
 	Partition::writeToFile(p, true);
 	//Repart::repartition(p, p2);
 	//Partition::writeToFile(p, true);

@@ -138,24 +138,8 @@ void Preproc::makeVIT(char *fileName) {
 
 }
 
-
-void Preproc::makeDDM(DDM & ddm)
-{
-	vector<vector<DDM_map> > &ddmMap = ddm.getDdmMap();
-	for (int i = 0; i <= dataSize; i++) {
-		if (data[i].size() == 0)
-			continue;
-		for (int j = 0; j < data[i].size(); j++) {
-			if (vit.partition(i) != vit.partition(data[i][j].first)) {
-				ddmMap[vit.partition(i)][vit.partition(data[i][j].first)].partitionRate += 1 / (double)vit.getDegree(vit.partition(i));
-			}
-		}
-	}
-}
-
-void Preproc::makePart(Context context) {
-	DDM ddm = context.getDDM();
-	vector<vector<DDM_map> > &ddmMap = ddm.getDdmMap();
+void Preproc::makePart(Context &context) {
+	vector<vector<double> > &ddmMap = context.ddm.getDdmMap();
 	vector<string>::iterator it_m;
 	FILE *f;
 	string str;
@@ -178,11 +162,8 @@ void Preproc::makePart(Context context) {
 							break;
 						}
 					}
-
-
-					cout << data[j][k].first << " " << i << " " << vit.partition(data[j][k].first) << endl;
 					if (i != vit.partition(data[j][k].first)) {
-						ddmMap[i][vit.partition(data[j][k].first)].partitionRate += 1 / (double)vit.getDegree(i);
+						ddmMap[i][vit.partition(data[j][k].first)] += 1 / (double)vit.getDegree(i);
 					}
 
 
