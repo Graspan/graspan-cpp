@@ -139,36 +139,36 @@ void getEdgesToMerge(ComputationSet *compSet, ComputationSet compsets[],
  * @param edges				@param flag
  * @param vals
  */
-void getRowIndsToMerge(ComputationSet compsets[], LoadedVertexInterval intervals[],
-		vector<int> &edges, vector<char> &vals, bool edgesEmpty, vector< pair<int, char> > &newRowInds,
-		char flag)
-{
-	int targetRowIndex = -1;
-
-	int newTgt = 0;
-	char val = 0;
-
-	if (!edgesEmpty) {
-		for (int i = 0; i < edges.size(); i++) {
-			newTgt = edges[i];
-			val = vals[i];
-
-			for (int j = 0; j < 2; j++) {
-				targetRowIndex = -1;
-				LoadedVertexInterval *interval = &intervals[j];
-				if (newTgt >= interval->getFirstVertex() && newTgt <= interval->getLastVertex()) {
-					targetRowIndex = newTgt - interval->getFirstVertex() + interval->getIndexStart();
-					break;
-				}
-			}
-			if (targetRowIndex == -1) continue;
-
-			if ((flag == 'o' && compsets[targetRowIndex].getNewEdges().size() > 0) ||
-				(flag == 'n' && compsets[targetRowIndex].getoldUnewEdges().size() > 0))
-					newRowInds.push_back({targetRowIndex, val});
-		}
-	}
-}
+//void getRowIndsToMerge(ComputationSet compsets[], LoadedVertexInterval intervals[],
+//		vector<int> &edges, vector<char> &vals, bool edgesEmpty, vector< pair<int, char> > &newRowInds,
+//		char flag)
+//{
+//	int targetRowIndex = -1;
+//
+//	int newTgt = 0;
+//	char val = 0;
+//
+//	if (!edgesEmpty) {
+//		for (int i = 0; i < edges.size(); i++) {
+//			newTgt = edges[i];
+//			val = vals[i];
+//
+//			for (int j = 0; j < 2; j++) {
+//				targetRowIndex = -1;
+//				LoadedVertexInterval *interval = &intervals[j];
+//				if (newTgt >= interval->getFirstVertex() && newTgt <= interval->getLastVertex()) {
+//					targetRowIndex = newTgt - interval->getFirstVertex() + interval->getIndexStart();
+//					break;
+//				}
+//			}
+//			if (targetRowIndex == -1) continue;
+//
+//			if ((flag == 'o' && compsets[targetRowIndex].getNewEdges().size() > 0) ||
+//				(flag == 'n' && compsets[targetRowIndex].getoldUnewEdges().size() > 0))
+//					newRowInds.push_back({targetRowIndex, val});
+//		}
+//	}
+//}
 
 /**
  * For each edge in the outgoing edges list, check if the grammar for a "S Rules" (single
@@ -248,30 +248,30 @@ void checkEdges(int dstInd, char dstVal, ComputationSet compsets[],
  * @param IDsToMerge			@param rowMergeID
  * @param edgeVecsToMerge		@param flag
  */
-void genEdgesToMergeForDRule(ComputationSet compsets[], std::unordered_set<IDValuePair, Hash> &IDsToMerge,
-		vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge,
-		int &rowMergeID, Grammar &gram, char flag)
-{
-	for (std::unordered_set<IDValuePair, Hash>::iterator iter = IDsToMerge.begin(); iter != IDsToMerge.end(); iter++) {
-		// the outgoing edges and values (of each outgoing edge from the source vertex)
-		vector<int> edges = (flag == 'o') ? compsets[iter->id].getNewEdges() : compsets[iter->id].getoldUnewEdges();
-		vector<char> vals = (flag == 'o') ? compsets[iter->id].getNewVals() : compsets[iter->id].getoldUnewVals();
-
-//		vector<int> newEdgesVec;
-//		vector<char> newValsVec;
-		char newEdgeVal;
-		for (int i = 0; i < edges.size(); i++) {
-			newEdgeVal = gram.checkRules(iter->val, vals[i]);
-			if (newEdgeVal != (char)-1) {
-				edgeVecsToMerge[rowMergeID].push_back(edges[i]);
-				valVecsToMerge[rowMergeID].push_back(newEdgeVal);
-//				newEdgesVec.push_back(edges[i]);
-//				newValsVec.push_back(vals[i]);
-			}
-		}
-
-		rowMergeID++;
+//void genEdgesToMergeForDRule(ComputationSet compsets[], std::unordered_set<IDValuePair, Hash> &IDsToMerge,
+//		vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge,
+//		int &rowMergeID, Grammar &gram, char flag)
+//{
+//	for (std::unordered_set<IDValuePair, Hash>::iterator iter = IDsToMerge.begin(); iter != IDsToMerge.end(); iter++) {
+//		// the outgoing edges and values (of each outgoing edge from the source vertex)
+//		vector<int> edges = (flag == 'o') ? compsets[iter->id].getNewEdges() : compsets[iter->id].getoldUnewEdges();
+//		vector<char> vals = (flag == 'o') ? compsets[iter->id].getNewVals() : compsets[iter->id].getoldUnewVals();
+//
+////		vector<int> newEdgesVec;
+////		vector<char> newValsVec;
+//		char newEdgeVal;
+//		for (int i = 0; i < edges.size(); i++) {
+//			newEdgeVal = gram.checkRules(iter->val, vals[i]);
+//			if (newEdgeVal != (char)-1) {
+//				edgeVecsToMerge[rowMergeID].push_back(edges[i]);
+//				valVecsToMerge[rowMergeID].push_back(newEdgeVal);
+////				newEdgesVec.push_back(edges[i]);
+////				newValsVec.push_back(vals[i]);
+//			}
+//		}
+//
+//		rowMergeID++;
 //		edgeVecsToMerge[rowMergeID] = newEdgesVec;
 //		valVecsToMerge[rowMergeID++] = newValsVec;
-	}
-}
+//	}
+//}

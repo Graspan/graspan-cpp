@@ -13,17 +13,17 @@
 #include "edgemerger.h"
 #include "../utilities/globalDefinitions.hpp"
 
-struct IDValuePair {
-	int id;
-	char val;
+//struct IDValuePair {
+//	int id;
+//	char val;
+//
+//	bool operator==(const IDValuePair &pair) const { return pair.id == id && pair.val == val; }
+//}; 
+//
+//struct Hash {
+//	size_t operator()(const IDValuePair &pair) const { return 31 * pair.id + 1; }
+//};
 
-	bool operator==(const IDValuePair &pair) const { return pair.id == id && pair.val == val; }
-}; 
-
-struct Hash {
-	size_t operator()(const IDValuePair &pair) const { return 31 * pair.id + 1; }
-};
-
-long updateEdges(int vertInd, ComputationSet compSets[], LoadedVertexInterval intervals[], Grammar &gram);
+long updateEdges(int vertInd, ComputationSet compsets[], LoadedVertexInterval intervals[], Grammar &gram);
 
 #endif

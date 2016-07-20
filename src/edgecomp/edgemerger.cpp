@@ -23,8 +23,6 @@ void EdgeMerger::mergeVectors(vector< vector<int> > &edgeVecsToMerge,
 	Timer mergeTime;
 	mergeTime.startTimer();
 
-//	vector<MinSet> minsets(edgeVecsToMerge.size());
-
 	MinSet srcMS;
 	srcMS.setMinSetID(0);
 	updateMinSet(srcMS, edgeVecsToMerge[srcID], valVecsToMerge[srcID]);
