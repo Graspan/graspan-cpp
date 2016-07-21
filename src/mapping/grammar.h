@@ -2,16 +2,13 @@
 #define GRAMMAR_H
 
 #include "../utilities/globalDefinitions.hpp"
-#include <iostream>
 #include <algorithm>
 #include <fstream>
-#include <set>
 #include <cstring>
-#include <vector>
-#include <map>
 
-using std::set;
-using std::map;
+// TODO: just like input graph, what if we can reuse the result from previous run
+// even though the grammar is small, reusing might be required for consistency
+// 
 
 class Grammar{
   
@@ -26,15 +23,17 @@ class Grammar{
   void mapping(raw_label_t temp);
   
   string trimStr(string str);
+
   //add 1 for delete 0
   //0 is using another method instead of int
   inline label_t getValue(raw_label_t str){
-	return (find(map_info.begin(),map_info.end(),str) - map_info.begin() + 1);
+    return (find(map_info.begin(),map_info.end(),str) - map_info.begin() + 1);
   }
+
   inline short changeShort(label_t a, label_t b){
-	return (short)a << 8 | b;
+    return (short)a << 8 | b;
   }
-	 
+  
  public:
 	
   Grammar();

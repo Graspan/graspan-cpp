@@ -1,5 +1,5 @@
 #include "preproc.h"
-#include "../mapping/grammarChecker.cpp"
+#include "../mapping/grammar.cpp"
 #include "../loader/loader.h"
 #include "repart.h"
 #include "../datastructures/context.h"
