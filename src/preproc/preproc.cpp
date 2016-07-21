@@ -75,7 +75,7 @@ void Preproc::makeVIT(char *fileName, Context &context) {
 		label = ctemp[2];
 
 		data[src].push_back(std::make_pair(dst, label));
-		dataInfo[dst] = true;
+		dataInfo[src] = true;
 		count++;
 		i = 0;
 	}

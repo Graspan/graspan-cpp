@@ -70,8 +70,8 @@ void Repart::run(Partition &p1, Partition &p2, Context &context) {
 
 
 
-	p1.clac_ddr(context);
-	p2.clac_ddr(context);
-	p12.clac_ddr(context);
-	p22.clac_ddr(context);
+	p1.calc_ddr(context);
+	p2.calc_ddr(context);
+	p12.calc_ddr(context);
+	p22.calc_ddr(context);
 }
