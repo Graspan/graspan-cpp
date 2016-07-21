@@ -8,6 +8,7 @@ Partition::Partition(int id, int numVertices, int numEdges, vector<Vertex> data)
 	this->numVertices = numVertices;
 	this->numEdges = numEdges;
 	this->data = data;
+	this->exist = true;
 }
 
 // Getters
@@ -22,6 +23,11 @@ int Partition::getNumEdges()
 }
 vector<Vertex> &Partition::getData() { return data; }
 
+bool Partition::getExist()
+{
+	return exist;
+}
+
 // Setters
 void Partition::setID(int id) { this->id = id; }
 void Partition::setNumVertices(int numVertices)
@@ -34,18 +40,26 @@ void Partition::setNumEdges(int numEdges)
 }
 void Partition::setData(vector<Vertex> data) { this->data = data; }
 
+void Partition::setExist(bool exist)
+{
+	this->exist = exist;
+}
+
 void Partition::writeToFile(Partition & part, bool readable)
 {
-	cout << "write partition file" << endl;
-	
+	if (!part.exist)
+		return;
+	//cout << "write partition file" << endl;
+	//cout << part.id << endl;
 	FILE *fp;
 	string str;
 	if (readable) {
-		cout << HUMA << endl;
+		//cout << HUMA << endl;
 		str = GRAP + "." + PART + "." + HUMA + "." + std::to_string((long long)part.id);
 		fp = fopen(str.c_str(), "w");
 		//fprintf(fp, "%d\t%d\t%d\n", part.id, part.numVertices, part.numEdges);
 		for (int i = 0; i < part.data.size(); i++) {
+			//cout << part.data[i].getVertexID() << " " << part.data[i].getNumOutEdges() << endl;
 			fprintf(fp, "%d\t%d\t", part.data[i].getVertexID(), part.data[i].getNumOutEdges());
 			for (int j = 0; j < part.data[i].getNumOutEdges(); j++)
 				fprintf(fp, "%d\t%d\t", part.data[i].getOutEdge(j), part.data[i].getOutEdgeValue(j));
@@ -54,7 +68,7 @@ void Partition::writeToFile(Partition & part, bool readable)
 		fclose(fp);
 	}
 	else {
-		cout << BINA << endl;
+		//cout << BINA << endl;
 		str = GRAP + "." + PART + "." + BINA + "." + std::to_string((long long)part.id);
 		fp = fopen(str.c_str(), "wb");
 		fwrite((const void*)& part.id, sizeof(int), 1, fp);
@@ -88,6 +102,25 @@ string Partition::toString()
 		output << data[i].toString();
 
 	return output.str();
+}
+void Partition::clac_ddr(Context &context)	{
+	if (!exist)
+		return;
+	vector<vector<double> > &ddmMap = context.ddm.getDdmMap();
+	vector<double> tempDdm;
+	//cout << "ddmMap[id].size " << ddmMap[id].size() << endl;
+	tempDdm.resize(ddmMap[id].size(), 0);
+
+	for (int i = 0; i < data.size(); i++) {
+		for (int j = 0; j < data[i].getNumOutEdges(); j++) {
+			if (id != context.vit.partition(data[i].getOutEdge(j)))
+				tempDdm[context.vit.partition(data[i].getOutEdge(j))] += 1 / (double)numEdges;
+		}
+	}
+	for (int i = 0; i < tempDdm.size(); i++) {
+		//cout << "id = " << id << " value = " << tempDdm[i] << endl;
+		ddmMap[id][i] = tempDdm[i];
+	}
 }
 /*
 void Partition::calc_ddr(Context& context, vector<double>& ddm_entry) {

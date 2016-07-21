@@ -15,13 +15,14 @@
 #include "../utilities/globalDefinitions.hpp"
 #include "../datastructures/partition.h"
 #include "../datastructures/vertex.h"
+#include "../datastructures/context.h"
 
 class Repart {
 private:
 public:
 	//p1 is exceeded partition and p2 is new partition
-	static void repartition(Partition &p1, Partition &p2);
-
+	static void repartition(Partition &p1, Partition &p2, Context &context);
+	static void run(Partition &p1, Partition &p2, Context &context);
 
 };
 

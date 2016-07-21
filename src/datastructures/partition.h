@@ -19,10 +19,12 @@ private:
 	int numEdges;
 
 	vector<Vertex> data;
+	//for check partition exists. it is for repartition part
+	bool exist;
 		
 public:
 	//Constructors
-	Partition() {};
+	Partition() { this->exist = true; };
 	Partition(int id, int numVertices, int numEdges, vector<Vertex> data);
 
 	//Getters
@@ -30,12 +32,14 @@ public:
 	int getNumVertices();
 	int getNumEdges();
 	vector<Vertex> &getData();
+	bool getExist();
 
 	//Setters
 	void setID(int id);
 	void setNumVertices(int numVertices);
 	void setNumEdges(int numEdges);
 	void setData(vector<Vertex> data);
+	void setExist(bool exist);
 
 	//if user want save the partition to the disk use this function
 	//readable == true then text format readable == false binary format
@@ -48,6 +52,7 @@ public:
 
 	// ddr = destination distribution ratio, i.e., a cell in DDM
 	//vector<double> calc_ddr();
+	void clac_ddr(Context &context);
 };
 
 

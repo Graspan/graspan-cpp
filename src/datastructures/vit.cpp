@@ -8,7 +8,7 @@ vector<pair<vertexid_t, vertexid_t>> &VIT::getVIT() { return vit; }
 int VIT::getStart(int pid) { return vit[pid].first; }
 int VIT::getEnd(int pid) { return vit[pid].second; }
 
-int *VIT::getDegree()
+vector<int> &VIT::getDegree()
 {
 	return degree;
 }
@@ -23,7 +23,9 @@ void VIT::setVIT(vector<pair<int, int>> vit) { this->vit = vit; }
 
 void VIT::setDegree(int numPartition)
 {
-	degree = new int[numPartition];
+	if (numPartition > degree.size())
+		for (int i = 0; i < numPartition - degree.size(); i++)
+			degree.push_back(0);
 }
 
 void VIT::setVITID(int id, vertexid_t start, vertexid_t end)

@@ -18,11 +18,11 @@ int main(int argc, char *argv[]) {
 		cout << "file is not exist" << std::endl;
 		exit(1);
 	}
-	Preproc pre(argv[1], c.getNumPartitions());
+	Preproc pre(argv[1], c);
 	pre.setMapInfo(g.getMapInfo(), g.getErules());
 	Loader load;
 	begin = clock();
-	pre.makeVIT(argv[1]);		//need to fix input file
+	pre.makeVIT(argv[1], c);		//need to fix input file
 	end = clock();
 	cout << "makeVIT time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 	c.ddm.setNumPartition(pre.getNumOfPartitions());
@@ -35,22 +35,20 @@ int main(int argc, char *argv[]) {
 
 	c.ddm.save_DDM();
 	begin = clock();
-	pre.makeBinaryPart();
+	pre.makeBinaryPart(c);
 	end = clock();
 	cout << "makeBinaryPart time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 
-	cout << c.ddm.toString();
-	Partition p, p2;
-	Loader::loadPartition(1,p, true);
+	//cout << c.ddm.toString();
+	Partition p1, p2;
+	Loader::loadPartition(1,p1, true);
+	Loader::loadPartition(2, p2, true);
 
-	cout << p.toString() << endl;
+	cout << p1.toString() << endl;
 	c.ddm.load_DDM();
 
-	cout << c.ddm.toString();
-	Partition::writeToFile(p, true);
-	//Repart::repartition(p, p2);
-	//Partition::writeToFile(p, true);
-	//Partition::writeToFile(p2, true);
+	Repart::run(p1, p2, c);
+	//cout << c.ddm.toString();
 	return 0;
 }
 

@@ -39,21 +39,6 @@ Context::Context(int argc, char** argv) {
 	}	
 }
 
-Grammar Context::getGrammer() {
-	return grammar;
-}
-
-VIT Context::getVIT() {
-	return vit;
-}
-
-DDM Context::getDDM() {
-	return ddm;
-}
-
-
-
-
 int Context::getMemBudget() {
 	return parameters[MEM_BUDGET_KEY];
 }

@@ -29,25 +29,19 @@ private:
 	vector<string> mapInfo;
 	vector<pair<int, string>> *data;
 	bool *dataInfo;
-	VIT vit;
 
 
 public:
-	Preproc(char *fileName, int size);
+	Preproc(char *fileName, Context &context);
 
-	void makeVIT(char *fileName);
+	void makeVIT(char *fileName, Context &context);
 	void makePart(Context &context);
-	void makeBinaryPart();
+	void makeBinaryPart(Context &context);
 
 	void setMapInfo(vector<string> mapInfo, set<char> eRules);
 
-	VIT getVIT();
 	int getNumOfPartitions();
-	DDM &getDDM();
-	~Preproc();
-
-	
+	~Preproc();	
 };
-
 
 #endif

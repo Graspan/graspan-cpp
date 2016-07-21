@@ -35,10 +35,6 @@ public:
 	Context(int argc, char** argv);
 
 	//getters
-	Grammar getGrammer();
-	VIT getVIT();
-	DDM getDDM();
-
 	int getMemBudget();
 	int getNumPartitions();
 	int getMaxEdges();

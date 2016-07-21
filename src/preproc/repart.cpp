@@ -1,32 +1,35 @@
 #include "repart.h"
 
-void Repart::repartition(Partition &p1, Partition &p2) {
-	int size = p1.getNumEdges() / 2;
+void Repart::repartition(Partition &p1, Partition &p2, Context &context) {
+	int size = context.getMaxEdges();
 	int sum = 0;
 	int i = 0;
 	int end = 0;
 	vector<Vertex> data;
-	VIT vit;
-	VIT::loadFromFile(vit);
-	vector<pair<vertexid_t, vertexid_t>> &tempVIT = vit.getVIT();
+	vector<pair<vertexid_t, vertexid_t>> &tempVIT = context.vit.getVIT();
 
 	vector<Vertex> &dataTemp = p1.getData();
 	
 	for (i ; i < p1.getNumVertices(); i++) {
-		cout << "getVertex = " << i << " " << dataTemp[i].getVertexID() << endl;
+	//	cout << "getVertex = " << i << " " << dataTemp[i].getVertexID() << endl;
 		sum += dataTemp[i].getNumOutEdges();
 		if (sum >= size) {
 			break;
 		}
 	}
-	cout << i << endl;
-	vit.setVITID(p1.getID(), vit.getStart(p1.getID()), dataTemp[i].getVertexID());
+	if (sum < size) {
+		p2.setExist(false);
+		return;
+	}
+
+//	cout << i << endl;
+	context.vit.setVITID(p1.getID(), context.vit.getStart(p1.getID()), dataTemp[i].getVertexID());
 	i++;
 	tempVIT.push_back(std::make_pair(dataTemp[i].getVertexID(), dataTemp[p1.getNumVertices() - 1].getVertexID()));
-	VIT::writeToFile(vit);
-	data.resize(i);
+
+	data.resize(p1.getNumVertices() - i);
 	std::copy(dataTemp.begin() + i, dataTemp.end(), data.begin());
-	cout << i << " " << (int)dataTemp.size() << endl;
+	//cout << i << " " << (int)dataTemp.size() << endl;
 	vector<Vertex>::iterator it_v = dataTemp.begin();
 
 	for (int j = 0; j < i; j++) {
@@ -37,11 +40,38 @@ void Repart::repartition(Partition &p1, Partition &p2) {
 
 
 	p2.setData(data);
-	p2.setID(3);
+	//cout << "test = " << context.getNumPartitions() << endl;
+	
+	p2.setID(context.getNumPartitions());
+	context.setNumPartitions(context.getNumPartitions() + 1);
+	//cout << "test = " << context.getNumPartitions() << endl;
 	p2.setNumEdges(p1.getNumEdges() - sum);
 	p2.setNumVertices(p1.getNumVertices() - i);
 
 	p1.setNumEdges(sum);
 	p1.setNumVertices(i);
 
+	VIT::writeToFile(context.vit);
+}
+
+void Repart::run(Partition &p1, Partition &p2, Context &context) {
+
+	Partition p12, p22;
+	repartition(p1, p12, context);
+	repartition(p2, p22, context);
+
+	context.ddm.setNumPartition(context.getNumPartitions());
+	context.ddm.enlarge();
+
+	Partition::writeToFile(p1, true);
+	Partition::writeToFile(p2, true);
+	Partition::writeToFile(p12, true);
+	Partition::writeToFile(p22, true);
+
+
+
+	p1.clac_ddr(context);
+	p2.clac_ddr(context);
+	p12.clac_ddr(context);
+	p22.clac_ddr(context);
 }

@@ -2,13 +2,13 @@
 
 bool compareV(const pair<int, string> &lhs, const pair<int, string> &rhs);
 
-Preproc::Preproc(char *fileName, int size) {
+Preproc::Preproc(char *fileName, Context &context) {
 	clock_t begin, end;
-	vitSize = size;
+	vitSize = context.getNumPartitions();
 	FILE *fp;
 	char buf[512];
 	char *p_token = NULL;
-	char *context = NULL;
+	char *text = NULL;
 	int src , dst;
 	dataSize = 0;
 	count = 0;
@@ -17,10 +17,10 @@ Preproc::Preproc(char *fileName, int size) {
 	//for memory allocation it takes 19s
 	fp = fopen(fileName, "r");
 	while (NULL != fgets(buf, sizeof(buf), fp)) {
-		p_token = strtok_r(buf, "\n", &context);
-		p_token = strtok_r(buf, "\t", &context);
+		p_token = strtok_r(buf, "\n", &text);
+		p_token = strtok_r(buf, "\t", &text);
 		src = atoi(p_token);
-		p_token = strtok_r(NULL, "\t", &context);
+		p_token = strtok_r(NULL, "\t", &text);
 		dst = atoi(p_token);
 		if (src > dataSize)
 			dataSize = src;
@@ -41,7 +41,7 @@ Preproc::Preproc(char *fileName, int size) {
 	cout << "memory allocation time : " << ((end - begin) / CLOCKS_PER_SEC) << endl;
 }
 
-void Preproc::makeVIT(char *fileName) {
+void Preproc::makeVIT(char *fileName, Context &context) {
 	clock_t begin, end;
 	int src, dst, degree;
 	int size;
@@ -51,22 +51,24 @@ void Preproc::makeVIT(char *fileName) {
 	int i = 0, j = 0;
 	int startS = 0, endS = 0;
 	char *p_token = NULL;
-	char *context = NULL;
+	char *text = NULL;
 	int sum = 0;
 	FILE *fp;
 	set<string>::iterator it_e; //for eRules
-	vector<pair<vertexid_t, vertexid_t>> &tempVIT = vit.getVIT();
+	vector<pair<vertexid_t, vertexid_t>> &tempVIT = context.vit.getVIT();
 
 										  //second file scan for get the data and put in the 
 										  //data (vector of array) it takes 275s need to fix for improve the time complexity
 	begin = clock();
 	fp = fopen(fileName, "r");
+
+	//read file and save on the memory
 	while (NULL != fgets(buf, sizeof(buf), fp)) {
-		p_token = strtok_r(buf, "\n", &context);
-		p_token = strtok_r(buf, "\t", &context);
+		p_token = strtok_r(buf, "\n", &text);
+		p_token = strtok_r(buf, "\t", &text);
 		while (p_token != NULL) {
 			ctemp[i++] = p_token;
-			p_token = strtok_r(NULL, "\t", &context);
+			p_token = strtok_r(NULL, "\t", &text);
 		}
 		src = atoi(ctemp[0]);
 		dst = atoi(ctemp[1]);
@@ -81,7 +83,7 @@ void Preproc::makeVIT(char *fileName) {
 	end = clock();
 	cout << "makeVIT data input time : " << ((end - begin) / CLOCKS_PER_SEC) << endl;
 
-	//sorting the vector of array and make VIT, it takes 88s
+	//sorting the vector of array
 	begin = clock();
 	for (i = 0; i <= dataSize; i++) {
 		if (data[i].size() == 0 && !dataInfo[i])
@@ -96,6 +98,7 @@ void Preproc::makeVIT(char *fileName) {
 		data[i].erase(unique(data[i].begin(), data[i].end()), data[i].end());
 	}
 
+	//make vit
 	if (count / vitSize < 0.5)
 		size = count / vitSize;
 	else
@@ -115,9 +118,10 @@ void Preproc::makeVIT(char *fileName) {
 		tempVIT.push_back(std::make_pair(startS, endS));
 		vitSize++;
 	}
+	context.setNumPartitions(vitSize);
+	context.vit.setDegree(vitSize);
 
-	vit.setDegree(vitSize);
-	int *vitDegree = vit.getDegree();
+	vector<int> &vitDegree = context.vit.getDegree();
 
 	sum = 0;
 	j = 0;
@@ -133,7 +137,7 @@ void Preproc::makeVIT(char *fileName) {
 		vitDegree[j] = sum;
 	}
 	end = clock();
-	VIT::writeToFile(vit);
+	VIT::writeToFile(context.vit);
 	cout << "makeVIT sorting time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 
 }
@@ -152,7 +156,7 @@ void Preproc::makePart(Context &context) {
 		name = GRAP + "." + PART + "." + HUMA + "." + str.c_str();
 
 		f = fopen(name.c_str(), "a");
-		for (int j = start; j <= vit.getEnd(i); j++) {
+		for (int j = start; j <= context.vit.getEnd(i); j++) {
 			if (data[j].size() != 0) {
 				fprintf(f, "%d\t%d\t", j, data[j].size());
 				for (int k = 0; k < data[j].size(); k++) {
@@ -162,8 +166,8 @@ void Preproc::makePart(Context &context) {
 							break;
 						}
 					}
-					if (i != vit.partition(data[j][k].first)) {
-						ddmMap[i][vit.partition(data[j][k].first)] += 1 / (double)vit.getDegree(i);
+					if (i != context.vit.partition(data[j][k].first)) {
+						ddmMap[i][context.vit.partition(data[j][k].first)] += 1 / (double)context.vit.getDegree(i);
 					}
 
 
@@ -172,11 +176,11 @@ void Preproc::makePart(Context &context) {
 			}
 		}
 		fclose(f);
-		start = vit.getEnd(i) + 1;
+		start = context.vit.getEnd(i) + 1;
 	}
 }
 
-void Preproc::makeBinaryPart() {
+void Preproc::makeBinaryPart(Context &context) {
 	FILE *f;
 	string str;
 	string name;
@@ -189,7 +193,7 @@ void Preproc::makeBinaryPart() {
 		name = GRAP + "." + PART + "." + BINA + "." + str.c_str();
 
 		f = fopen(name.c_str(), "ab");
-		for (int j = start; j <= vit.getEnd(i); j++) {
+		for (int j = start; j <= context.vit.getEnd(i); j++) {
 			if (data[j].size() != 0) {
 
 				fwrite((const void*)& j, sizeof(int), 1, f);
@@ -209,7 +213,7 @@ void Preproc::makeBinaryPart() {
 			}
 		}
 		fclose(f);
-		start = vit.getEnd(i);
+		start = context.vit.getEnd(i);
 	}
 }
 
@@ -224,7 +228,6 @@ void Preproc::setMapInfo(vector<string> mapInfo, set<char> eRules)
 }
 
 
-VIT Preproc::getVIT() { return vit; }
 
 int Preproc::getNumOfPartitions()
 {

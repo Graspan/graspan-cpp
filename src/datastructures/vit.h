@@ -17,7 +17,7 @@ private:
 
 	// each entry is pair of [low, high] of vertices in the partition
 	vector<pair<vertexid_t, vertexid_t>> vit;
-	int *degree;
+	vector<int>degree;
 
 public:
 	//Constructors
@@ -29,7 +29,7 @@ public:
 	vector<pair<vertexid_t, vertexid_t>> &getVIT();
 	int getStart(int pid);
 	int getEnd(int pid);
-	int *getDegree();
+	vector<int> &getDegree();
 	int getDegree(int pid);
 
 	//Setters
