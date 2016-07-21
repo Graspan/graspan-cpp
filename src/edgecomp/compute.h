@@ -10,10 +10,10 @@
 #include "../datastructures/vertex.h"
 #include "../datastructures/loadedvertexinterval.h"
 #include "../datastructures/computationset.h"
-#include "../mapping/grammar.h"
+#include "../datastructures/context.h"
 #include "../utilities/globalDefinitions.hpp"
 
 
-long updateEdges(int vertInd, ComputationSet compsets[], LoadedVertexInterval intervals[], Grammar &gram);
+long updateEdges(int vertInd, ComputationSet compsets[], LoadedVertexInterval intervals[], Context &context);
 
 #endif

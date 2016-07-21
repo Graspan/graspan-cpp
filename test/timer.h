@@ -32,7 +32,7 @@ class Timer
 	// return a string of the total time in seconds
 	std::string timeInSecs();
 
-	// return a string of the time in milliseconds "[TIME] s"
+	// return a string of the time in milliseconds "[MILISECS] ms"
 	std::string toString();
 };
 

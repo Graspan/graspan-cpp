@@ -2,3 +2,4 @@ push
 pull
 src/comp_repeat
 bin/*
+src/edgecomp/grammarchecker*

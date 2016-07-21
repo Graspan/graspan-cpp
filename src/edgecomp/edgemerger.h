@@ -39,6 +39,8 @@ class EdgeMerger
 		vector<char> &srcValsToMerge, vector<int> &tgtEdgesToMerge,
 		vector<char> &tgtValsToMerge);
 
+	void updateVector(int vid, char val, vector<int> &edges, vector<char> &vals, int &ptr);
+
 	public:
 	// constructor
 	EdgeMerger();

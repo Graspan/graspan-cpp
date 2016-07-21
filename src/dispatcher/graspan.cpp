@@ -1,4 +1,7 @@
+#include "../../test/timer.h"
 #include "../edgecomp/engine.h"
+
+#include "../utilities/globalDefinitions.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -14,7 +17,15 @@ int main(int argc, char *argv[])
 		return 12;
 	}
 
+
+	// COMPUTATION
+	Timer compTime;
+	compTime.startTimer();
+
 	run_computation(c);
+
+	compTime.endTimer();
+	cout << compTime.toString() << endl;
 
 	return 0;
 }

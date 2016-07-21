@@ -14,9 +14,9 @@ void initCompSets(ComputationSet compsets[], vector<Vertex> &part1, vector<Verte
 
 void initLVIs(LoadedVertexInterval intervals[], vector<Vertex> &part1, vector<Vertex> &part2);
 
-void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Grammar &gram);
+void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context);
 
-void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Grammar &gram);
+void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context);
 
 
 /**
@@ -31,23 +31,16 @@ int run_computation(Context &context)
 	
 	Loader::loadPartition(p, p1, false);
 	Loader::loadPartition(q, p2, false);
+	cout << p1.toString() << endl;
+	cout << p2.toString() << endl;
+
 	vector<Vertex> &part1 = p1.getData(), &part2 = p2.getData();
-
-	cout << "PART 1:";
-	for (int i = 0; i < part1.size(); i++)
-		cout << part1[i].toString();
-
-	cout << endl << endl << "PART 2:";
-	for (int j = 0; j < part2.size(); j++)
-		cout << part2[j].toString();
 
 	ComputationSet *compsets = new ComputationSet[part1.size() + part2.size()];
 	int setSize = part1.size() + part2.size();
-
 	initCompSets(compsets, part1, part2);
 	
-	// replace with primitive array
-	LoadedVertexInterval intervals[2] = {LoadedVertexInterval{0}, LoadedVertexInterval{1}};
+	LoadedVertexInterval intervals[2] = {LoadedVertexInterval{p}, LoadedVertexInterval{q}};
 	initLVIs(intervals, part1, part2);
 
 	for (int i = 0; i < 2; i++)
@@ -56,7 +49,7 @@ int run_computation(Context &context)
 		cout << lvi.toString() << endl;
 	}
 
-//	computeEdges(compsets, setSize, intervals, gram);
+	computeEdges(compsets, setSize, intervals, context);
 
 //	saveNewEdges(compsets, intervals, part1, part2);
 
@@ -110,39 +103,13 @@ void initLVIs(LoadedVertexInterval intervals[], vector<Vertex> &part1, vector<Ve
 }
 
 /**
- * compute the new edges of each vertex simultaneously
- *
- * @param vertices
- * @param compsets
- * @param intervals
- */
-void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Grammar &gram)
-{
-	#pragma omp parallel for
-	for (int i = 0; i < setSize; i++)
-	{
-		long newEdges = 0;
-
-		newEdges += updateEdges(i, compsets, intervals, gram);
-		if (newEdges > 0 && (i >= intervals[0].getIndexStart() && i <= intervals[0].getIndexEnd()))
-			intervals[0].setNewEdgeAdded(true);
-		else if (newEdges > 0 && (i >= intervals[1].getIndexStart() && i <= intervals[1].getIndexEnd()))
-			intervals[1].setNewEdgeAdded(true);
-
-		#pragma omp atomic
-		newEdgesThisIter += newEdges;
-	}
-}
-
-
-/**
  * Get start and end indices of each partition
  *
  * @param vertices
  * @param compsets
  * @param intervals
  */
-void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Grammar &gram)
+void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context)
 {
 	iterNo = 0;
 	totNewEdges = 0;
@@ -151,7 +118,7 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 		iterNo++;
 		cout << "ITERATION: " << iterNo << endl;
 		newEdgesThisIter = 0;
-		computeOneIteration(compsets, setSize, intervals, gram);
+		computeOneIteration(compsets, setSize, intervals, context);
 
 		totNewEdges += newEdgesThisIter;
 
@@ -159,6 +126,31 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 
 		if (totNewEdges > MAX_NEW_EDGES) break;
 	} while (newEdgesThisIter > 0);
+}
+
+/**
+ * compute the new edges of each vertex simultaneously
+ *
+ * @param vertices
+ * @param compsets
+ * @param intervals
+ */
+void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context)
+{
+	#pragma omp parallel for
+	for (int i = 0; i < setSize; i++)
+	{
+		long newEdges = 0;
+
+		newEdges += updateEdges(i, compsets, intervals, context);
+		if (newEdges > 0 && (i >= intervals[0].getIndexStart() && i <= intervals[0].getIndexEnd()))
+			intervals[0].setNewEdgeAdded(true);
+		else if (newEdges > 0 && (i >= intervals[1].getIndexStart() && i <= intervals[1].getIndexEnd()))
+			intervals[1].setNewEdgeAdded(true);
+
+		#pragma omp atomic
+		newEdgesThisIter += newEdges;
+	}
 }
 
 /**

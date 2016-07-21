@@ -83,6 +83,8 @@ bool DDM::save_DDM(){
 		}
 		fout << endl;
 	}
+	fout.close();
+
 	return true;
 }
 
