@@ -7,7 +7,7 @@ Context::Context(int argc, char** argv) {
 
 	parameters.insert(std::make_pair(MEM_BUDGET_KEY, 1000));
 	parameters.insert(std::make_pair(NUM_PARTITION_KEY, 3));
-	parameters.insert(std::make_pair(MAX_EDGES_PER_PARTITION_KEY, 15));
+	parameters.insert(std::make_pair(MAX_EDGES_PER_PARTITION_KEY, 20));
 
 	flags.insert(std::make_pair(INSERT_SORT_FLAG, false));
 	flags.insert(std::make_pair(ALTER_SCHEDULE_FLAG, false));

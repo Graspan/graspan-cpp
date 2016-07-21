@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
 	cout << p1.toString() << endl;
 	c.ddm.load_DDM();
 
-	//Repart::run(p1, p2, c);
+	Repart::run(p1, p2, c);
 	//cout << c.ddm.toString();
 	return 0;
 }
