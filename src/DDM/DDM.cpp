@@ -7,12 +7,6 @@ DDM::DDM() {
   ddmMap.assign(max_size,vector<double>(max_size,0));
 }
 
-DDM::DDM(int numPartition){
-	this->numPartition = numPartition;
-
- 	ddmMap.assign(numPartition,vector<double>(numPartition,0));
-}
-
 DDM::~DDM(){}
 
 //the meaning of adjust p is to set teminate_map[p][] and teminate_map[][p] into UNMARK

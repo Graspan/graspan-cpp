@@ -19,7 +19,6 @@ class DDM{
  public:
   //default constructor, the numPartition should be obtained thru the Context object
   DDM(); 
-  DDM(int numPartition); 
 	~DDM();
   inline vector<vector<double> >& getDdmMap(){
 	return ddmMap;
