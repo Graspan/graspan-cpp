@@ -52,7 +52,7 @@ public:
 
 	// ddr = destination distribution ratio, i.e., a cell in DDM
 	//vector<double> calc_ddr();
-	void clac_ddr(Context &context);
+	void calc_ddr(Context &context);
 };
 
 

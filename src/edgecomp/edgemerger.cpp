@@ -17,6 +17,10 @@ vector<char> &EdgeMerger::getDeltaVals() { return srcDeltaVals; }
 
 int EdgeMerger::getNumNewEdges() { return deltaPtr + 1; }
 
+/**
+ * given the vectors and vals to merge, as well as the ID of the source edges,
+ * merge edges into a new list
+ */
 void EdgeMerger::mergeVectors(vector< vector<int> > &edgeVecsToMerge,
 		vector< vector<char> > &valVecsToMerge, int srcID)
 {
@@ -27,24 +31,10 @@ void EdgeMerger::mergeVectors(vector< vector<int> > &edgeVecsToMerge,
 	srcMS.setMinSetID(0);
 	updateMinSet(srcMS, edgeVecsToMerge[srcID], valVecsToMerge[srcID]);
 	
-	MinSet newminset;
-	int totTgtRowSize = 0;
-    for (int i = 1; i < edgeVecsToMerge.size(); i++)
-    {
-        newminset.setMinSetID(i);
-        updateMinSet(newminset, edgeVecsToMerge[i], valVecsToMerge[i]);
-
-		totTgtRowSize += edgeVecsToMerge[i].size();
-		minEdges.push(newminset);
-    }
-
-    srcDeltaEdges.reserve(totTgtRowSize);
-    srcDeltaVals.reserve(totTgtRowSize);
-
-    srcoUnUdEdges.reserve(edgeVecsToMerge[srcID].size() + totTgtRowSize);
-    srcoUnUdVals.reserve(edgeVecsToMerge[srcID].size() + totTgtRowSize);
-
+	fillPriorityQueue(edgeVecsToMerge, valVecsToMerge, srcID);
+	
     MinSet tgt;
+	int max = std::numeric_limits<int>::max();
     while (1)
     {
         if (!minEdges.empty()) {
@@ -52,7 +42,6 @@ void EdgeMerger::mergeVectors(vector< vector<int> > &edgeVecsToMerge,
             minEdges.pop();
         }
 
-        int max = std::numeric_limits<int>::max();
         if (srcMS.getCurrVID() == max && tgt.getCurrVID() == max) {
             break;
         }
@@ -78,6 +67,29 @@ void EdgeMerger::mergeVectors(vector< vector<int> > &edgeVecsToMerge,
 
 
 // PRIVATE
+void fillPriorityQueue(vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge, int srcID)
+{
+	MinSet newminset;
+	int totTgtRowSize = 0;
+    for (int i = 1; i < edgeVecsToMerge.size(); i++)
+    {
+        newminset.setMinSetID(i);
+        updateMinSet(newminset, edgeVecsToMerge[i], valVecsToMerge[i]);
+
+		totTgtRowSize += edgeVecsToMerge[i].size();
+		minEdges.push(newminset);
+    }
+
+    srcDeltaEdges.reserve(totTgtRowSize);
+    srcDeltaVals.reserve(totTgtRowSize);
+
+    srcoUnUdEdges.reserve(edgeVecsToMerge[srcID].size() + totTgtRowSize);
+    srcoUnUdVals.reserve(edgeVecsToMerge[srcID].size() + totTgtRowSize);
+}
+
+/**
+ * remove the excess space created when duplicate values were removed
+ */
 void EdgeMerger::removeExtraSpace()
 {
 	srcoUnUdEdges = vector<int>(srcoUnUdEdges.begin(), srcoUnUdEdges.begin() + oUnUdPtr + 1);
@@ -87,6 +99,9 @@ void EdgeMerger::removeExtraSpace()
 	srcDeltaVals = vector<char>(srcDeltaVals.begin(), srcDeltaVals.begin() + deltaPtr + 1);
 }
 
+/**
+ * for the given minset, find the next minimum value and any corresponding values
+ */
 void EdgeMerger::updateMinSet(MinSet &minset, vector<int> &edges, vector<char> &vals)
 {
 	minset.setCurrVID(std::numeric_limits<int>::max());
@@ -100,6 +115,9 @@ void EdgeMerger::updateMinSet(MinSet &minset, vector<int> &edges, vector<char> &
 	}
 }
 
+/**
+ * compare the next smallest target minset with the source minset to determine which vector to update
+ */
 void EdgeMerger::processMinSets(MinSet &srcMS, MinSet &tgtMS, vector<int> &srcEdgesToMerge,
 		vector<char> &srcValsToMerge, vector<int> &tgtEdgesToMerge,
 		vector<char> &tgtValsToMerge)
@@ -185,3 +203,9 @@ void EdgeMerger::processMinSets(MinSet &srcMS, MinSet &tgtMS, vector<int> &srcEd
     }
 }
 
+//void updateVector(int vid, char val, vector<int> &edges, vector<char> &vals, int &ptr)
+//{
+//	ptr++;
+//	edges[ptr] = vid;
+//	vals[ptr] = val;
+//}

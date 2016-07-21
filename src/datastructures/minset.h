@@ -37,6 +37,7 @@ class MinSet
 	string toString();
 };
 
+// sort minsets in a priority queue
 class compare
 {
 	public:

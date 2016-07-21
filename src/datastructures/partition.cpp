@@ -103,7 +103,7 @@ string Partition::toString()
 
 	return output.str();
 }
-void Partition::clac_ddr(Context &context)	{
+void Partition::calc_ddr(Context &context)	{
 	if (!exist)
 		return;
 	vector<vector<double> > &ddmMap = context.ddm.getDdmMap();

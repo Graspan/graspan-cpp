@@ -11,7 +11,7 @@ PREPROC=prep/main.cpp preproc/Preproc.cpp mapping/grammarChecker.cpp
 # edge computation
 COMPUTATION=edgecomp/engine.cpp edgecomp/compute.cpp edgecomp/edgemerger.cpp
 LOADER=loader/loader.cpp mapping/grammarChecker.cpp
-DATASTRUCTS=datastructures/vertex.cpp datastructures/computationset.cpp datastructures/loadedvertexinterval.cpp datastructures/minset.cpp datastructures/partition.cpp
+DATASTRUCTS=datastructures/vertex.cpp datastructures/computationset.cpp datastructures/loadedvertexinterval.cpp datastructures/minset.cpp datastructures/partition.cpp datastructures/context.cpp datastructures/vit.cpp DDM/DDM.cpp
 TEST=../test/timer.cpp
 
 
@@ -23,6 +23,6 @@ all: comp
 #	$(CC) $(PREPROC) -o ../bin/prep
 
 # edge computation program
-comp: $(LOADER) $(COMPUTATION) $(DATASTRUCTS) $(TEST)
-	$(CC) -ggdb $(LOADER) $(COMPUTATION) $(DATASTRUCTS) $(TEST) -o ../bin/comp
+comp: dispatcher/graspan.cpp $(LOADER) $(COMPUTATION) $(DATASTRUCTS) $(TEST)
+	$(CC) -ggdb dispatcher/graspan.cpp $(LOADER) $(COMPUTATION) $(DATASTRUCTS) $(TEST) -o ../bin/comp
 

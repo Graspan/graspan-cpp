@@ -29,6 +29,8 @@ class EdgeMerger
 
 
 	// FUNCTIONS
+	void fillPriorityQueue(vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge, int srcID);
+
 	void removeExtraSpace();
 
 	void updateMinSet(MinSet &minset, vector<int> &edges, vector<char> &vals);
@@ -50,7 +52,8 @@ class EdgeMerger
 
 	int getNumNewEdges();
 
-	// given all new edges and their values 
+	// given all new edges and their values, merge with the source creating a vector of old U new edges
+	// and only new edges
 	void mergeVectors(vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge, int srcID);
 };
 

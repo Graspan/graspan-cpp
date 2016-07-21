@@ -62,6 +62,7 @@ bool DDM::load_DDM(){
 			fin >> ddmMap[i][j];
 		}
 	}
+	fin.close();
 	
 	return true;
 }
