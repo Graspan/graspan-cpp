@@ -46,8 +46,8 @@ class DDM{
   // you should figure out how to implement this resizing logic efficiently
   void enlarge();
 
-  bool load_DDM();
-  bool save_DDM();
+  bool load_DDM(string fname);
+  bool save_DDM(string fname); //assist computation
 
   string toString();
   

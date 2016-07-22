@@ -11,7 +11,6 @@ DDM::~DDM(){}
 
 //the meaning of adjust p is to set teminate_map[p][] and teminate_map[][p] into UNMARK
 void DDM::adjust(partitionid_t p){
-  //remember, DDM is a *square* matrix
   for(int i = 0; i < numPartition; ++i) {
     ddmMap[p][i] = 0;
     ddmMap[i][p] = 0;
@@ -49,9 +48,9 @@ void DDM::enlarge() {
 		ddmMap[i].resize(numPartition, 0);
 }
 
-bool DDM::load_DDM(){
+bool DDM::load_DDM(string fname){
 	std::ifstream fin;
-	fin.open("../resources/DDM"); // this is not right to assume hard-coded place
+	fin.open(fname);
 	if(!fin){
 		cout << "can't read file" << endl;
 		return false;
@@ -69,9 +68,9 @@ bool DDM::load_DDM(){
 	return true;
 }
 
-bool DDM::save_DDM(){
+bool DDM::save_DDM(string fname){
 	std::ofstream fout;
-	fout.open("../resources/DDM"); // this is not right - 1) why save to ../resources/DDM? DDM assists computation and 2) why hard-code this?
+	fout.open(fname); // this is not right - 1) why save to ../resources/DDM? DDM assists computation and 2) why hard-code this?
 	if(!fout){
 		cout << "can't make file" << endl;
 		return false;
