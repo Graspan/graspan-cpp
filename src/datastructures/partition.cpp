@@ -54,6 +54,9 @@ void Partition::writeToFile(Partition & part, bool readable)
 	//cout << part.id << endl;
 	FILE *fp;
 	string str;
+	int src, degree, dst;
+	char label;
+	//cout << readable << endl;
 	if (readable) {
 		//cout << HUMA << endl;
 		str = GRAP + "." + PART + "." + HUMA + "." + std::to_string((long long)part.id);
@@ -74,11 +77,16 @@ void Partition::writeToFile(Partition & part, bool readable)
 		fp = fopen(str.c_str(), "wb");
 
 		for (int i = 0; i < part.data.size(); i++) {
-			fwrite((const void*)part.data[i].getVertexID(), sizeof(int), 1, fp);
-			fwrite((const void*)part.data[i].getNumOutEdges(), sizeof(int), 1, fp);
+			src = part.data[i].getVertexID();
+			degree = part.data[i].getNumOutEdges();
+
+			fwrite((const void*) & src, sizeof(int), 1, fp);
+			fwrite((const void*) & degree, sizeof(int), 1, fp);
 			for (int j = 0; j < part.data[i].getNumOutEdges(); j++) {
-				fwrite((const void*)part.data[i].getOutEdge(j), sizeof(int), 1, fp);
-				fwrite((const void*)part.data[i].getOutEdgeValue(j), sizeof(char), 1, fp);
+				dst = part.data[i].getOutEdge(j);
+				label = part.data[i].getOutEdgeValue(j);
+				fwrite((const void*) & dst, sizeof(int), 1, fp);
+				fwrite((const void*) & label, sizeof(char), 1, fp);
 			}
 		}
 		fclose(fp);
