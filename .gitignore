@@ -1,8 +1,6 @@
-bin/comp
 bin/*
-/bin/*
 .cproject
 .project
 .gitignore
 *.out
-*comp
+*.[oa]
