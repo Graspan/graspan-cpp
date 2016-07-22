@@ -4,7 +4,7 @@ DDM::DDM() {
   // the intial vector should be reserved quite big to accomondate for repartitioning
   // This should be configurable by user thru command line, not this hard-coded value
   cout << "input the init size : ";
-  cin >>  max_size;
+  std::cin >>  max_size;
   ddmMap.assign(max_size,vector<double>(max_size,0));
 }
 

@@ -27,7 +27,7 @@ class Grammar{
   //add 1 for delete 0
   //0 is using another method instead of int
   inline label_t getValue(raw_label_t str){
-    return (find(map_info.begin(),map_info.end(),str) - map_info.begin() + 1);
+    return (find(map_info.begin(),map_info.end(),str) - map_info.begin());
   }
 
   inline short changeShort(label_t a, label_t b){
