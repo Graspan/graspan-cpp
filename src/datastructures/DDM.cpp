@@ -3,7 +3,8 @@
 DDM::DDM() {
   // the intial vector should be reserved quite big to accomondate for repartitioning
   // This should be configurable by user thru command line, not this hard-coded value
-  max_size = 1000;
+  cout << "input the init size : ";
+  cin >>  max_size;
   ddmMap.assign(max_size,vector<double>(max_size,0));
 }
 
@@ -42,7 +43,7 @@ bool DDM::nextPartitionPair(partitionid_t &p, partitionid_t &q) {
 }
 
 // I have a feeling this is not quite right
-void DDM::enlarge() {
+void DDM::reSize() {
 	ddmMap.resize(numPartition);
 	for (int i = 0; i < numPartition; ++i)
 		ddmMap[i].resize(numPartition, 0);
@@ -57,7 +58,7 @@ bool DDM::load_DDM(string fname){
 	}
 
 	fin >> numPartition;
-	enlarge();
+	reSize();
 	for(int i=0;i<numPartition;i++){
 		for(int j=0;j<numPartition;j++){
 			fin >> ddmMap[i][j];
@@ -70,7 +71,7 @@ bool DDM::load_DDM(string fname){
 
 bool DDM::save_DDM(string fname){
 	std::ofstream fout;
-	fout.open(fname); // this is not right - 1) why save to ../resources/DDM? DDM assists computation and 2) why hard-code this?
+	fout.open(fname); 
 	if(!fout){
 		cout << "can't make file" << endl;
 		return false;
