@@ -19,7 +19,7 @@ void Repart::repartition(Partition &p1, Partition &p2, Context &context) {
 			break;
 		}
 	}
-	if (check <= size) {
+	if (check <=size) {
 		p2.setExist(false);
 		return;
 	}
