@@ -72,15 +72,13 @@ void Partition::writeToFile(Partition & part, bool readable)
 		//cout << BINA << endl;
 		str = GRAP + "." + PART + "." + BINA + "." + std::to_string((long long)part.id);
 		fp = fopen(str.c_str(), "wb");
-		fwrite((const void*)& part.id, sizeof(int), 1, fp);
-		fwrite((const void*)& part.numVertices, sizeof(int), 1, fp);
-		fwrite((const void*)& part.numEdges, sizeof(int), 1, fp);
+
 		for (int i = 0; i < part.data.size(); i++) {
 			fwrite((const void*)part.data[i].getVertexID(), sizeof(int), 1, fp);
 			fwrite((const void*)part.data[i].getNumOutEdges(), sizeof(int), 1, fp);
 			for (int j = 0; j < part.data[i].getNumOutEdges(); j++) {
 				fwrite((const void*)part.data[i].getOutEdge(j), sizeof(int), 1, fp);
-				fwrite((const void*)part.data[i].getOutEdgeValue(j), sizeof(int), 1, fp);
+				fwrite((const void*)part.data[i].getOutEdgeValue(j), sizeof(char), 1, fp);
 			}
 		}
 		fclose(fp);
