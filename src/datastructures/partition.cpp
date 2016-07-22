@@ -1,5 +1,5 @@
 #include "partition.h"
-#include "../loader/loader.h"
+#include "../datastructures/loader.h"
 
 //Constructor
 Partition::Partition(int id, int numVertices, int numEdges, vector<Vertex> data) // this will lead to copy of the vector
@@ -121,7 +121,7 @@ void Partition::calc_ddr(Context &context)	{
 
 	for (int i = 0; i < data.size(); i++) {
 		for (int j = 0; j < data[i].getNumOutEdges(); j++) {
-			if (id != context.vit.partition(data[i].getOutEdge(j)))
+			if (id != context.vit.partition(data[i].getOutEdge(j)) && context.vit.partition(data[i].getOutEdge(j)) != -1)
 				tempDdm[context.vit.partition(data[i].getOutEdge(j))] += 1 / (double)numEdges;
 		}
 	}

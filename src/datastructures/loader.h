@@ -6,9 +6,9 @@
 #include <stdio.h>
 #include <time.h>
 
-#include "../datastructures/vertex.h"
-#include "../datastructures/partition.h"
 #include "../utilities/globalDefinitions.hpp"
+#include "vertex.h"
+#include "partition.h"
 
 
 class Loader {

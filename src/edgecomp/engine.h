@@ -10,7 +10,7 @@
 #include "../datastructures/vertex.h"
 #include "../datastructures/loadedvertexinterval.h"
 #include "../datastructures/computationset.h"
-#include "../loader/loader.h"
+#include "../datastructures/loader.h"
 #include "../../test/timer.h"
 
 int run_computation(Context &context);

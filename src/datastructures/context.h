@@ -12,8 +12,8 @@
 
 #include "../utilities/globalDefinitions.hpp"
 #include "vit.h"
-#include "../DDM/DDM.h"
-#include "../mapping/grammar.h"
+#include "DDM.h"
+#include "../edgecomp/grammar.h"
 
 class Context
 {

@@ -75,7 +75,4 @@ void Repart::run(Partition &p1, Partition &p2, Context &context) {
 	p2.calc_ddr(context);
 	p12.calc_ddr(context);
 	p22.calc_ddr(context);
-
-	Loader::loadPartition(1, p1, false);
-	Loader::loadPartition(2, p2, false);
 }

@@ -1,0 +1,5 @@
+#! /bin/bash
+
+rm -f resources/*
+
+cp -r originalTest/* resources/

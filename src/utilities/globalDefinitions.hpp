@@ -4,6 +4,7 @@
 // This file holds all globally used constants & types, class (forward)
 // declarations and a few frequently used utility functions.
 #include <string>
+#include <string.h>
 #include <iostream>
 #include <vector>
 #include <unordered_set>
