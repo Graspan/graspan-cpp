@@ -18,6 +18,8 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 
 void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context);
 
+void updatePartitions(ComputationSet compsets[], Partition &p1, Partition &p2, vector<Vertex> &part1, vector<Vertex> &part2);
+
 
 /**
  * runs the edge computation for graspan
@@ -29,8 +31,8 @@ int run_computation(Context &context)
 	partitionid_t p, q;
 	context.ddm.nextPartitionPair(p, q);
 	
-	Loader::loadPartition(p, p1, false);
-	Loader::loadPartition(q, p2, false);
+	Loader::loadPartition(p, p1, true);
+	Loader::loadPartition(q, p2, true);
 	cout << p1.toString() << endl;
 	cout << p2.toString() << endl;
 
@@ -51,9 +53,18 @@ int run_computation(Context &context)
 
 	computeEdges(compsets, setSize, intervals, context);
 
-//	saveNewEdges(compsets, intervals, part1, part2);
+	updatePartitions(compsets, p1, p2, part1, part2);
+
+	cout << p1.toString();
+	cout << p2.toString();
 
 	delete[] compsets;
+
+	Repart::run(p1, p2, context);
+
+	context.ddm.nextPartitionPair(p, q);
+
+	cout << p << ", " << q << endl;
 
 	return 0;
 }
@@ -156,18 +167,26 @@ void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInt
 /**
  * save newly computed Edges back to their respective vertices
  */
-void saveNewEdges(ComputationSet compsets[], vector<Vertex> &part1, vector<Vertex> &part2)
+void updatePartitions(ComputationSet compsets[], Partition &p1, Partition &p2, vector<Vertex> &part1, vector<Vertex> &part2)
 {
+	int p1Edges = 0;
 	for (int i = 0; i < part1.size(); i++)
 	{
+		p1Edges += compsets[i].getoldUnewEdges().size();
+		part1[i].setNumOutEdges(compsets[i].getoldUnewEdges().size());
 		part1[i].setOutEdges(compsets[i].getoldUnewEdges());
 		part1[i].setOutEdgeValues(compsets[i].getoldUnewVals());
 	}
 
-	int offset = part1.size();
+	int offset = part1.size(), p2Edges = 0;
 	for (int j = 0; j < part2.size(); j++)
 	{
+		p2Edges += compsets[j+offset].getoldUnewEdges().size();
+		part2[j].setNumOutEdges(compsets[j+offset].getoldUnewEdges().size());
 		part2[j].setOutEdges(compsets[j+offset].getoldUnewEdges());
-		part2[j].setOutEdgeValues(compsets[j].getoldUnewVals());
+		part2[j].setOutEdgeValues(compsets[j+offset].getoldUnewVals());
 	}
+
+	p1.setNumEdges(p1Edges);
+	p2.setNumEdges(p2Edges);
 }

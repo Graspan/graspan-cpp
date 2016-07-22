@@ -35,7 +35,7 @@ class Vertex
 	char getOutEdgeValue(int ind);
 
 	// Setters
-	void setNumOutEdges();
+	void setNumOutEdges(int numEdges);
 	void setOutEdges(vector<int> &outEdges);
 	void setOutEdgeValues(vector<char> &outEdgeValues);
 

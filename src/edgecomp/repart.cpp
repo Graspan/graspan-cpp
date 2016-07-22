@@ -2,7 +2,6 @@
 
 void Repart::repartition(Partition &p1, Partition &p2, Context &context) {
 	int size = context.getMaxEdges();
-	cout << "size = " << size << endl;
 	int sum = 0;
 	int i = 0;
 	int end = 0;
@@ -23,15 +22,12 @@ void Repart::repartition(Partition &p1, Partition &p2, Context &context) {
 		return;
 	}
 	i--;
-//	cout << i << endl;
 	context.vit.setVITID(p1.getID(), context.vit.getStart(p1.getID()), dataTemp[i].getVertexID());
-	cout << context.vit.getStart(p1.getID()) << " " << dataTemp[i].getVertexID() << endl;
 	i++;
 	tempVIT.push_back(std::make_pair(dataTemp[i].getVertexID(), dataTemp[p1.getNumVertices() - 1].getVertexID()));
 
 	data.resize(p1.getNumVertices() - i);
 	std::copy(dataTemp.begin() + i, dataTemp.end(), data.begin());
-	//cout << i << " " << (int)dataTemp.size() << endl;
 	vector<Vertex>::iterator it_v = dataTemp.begin();
 
 	for (int j = 0; j < i; j++) {

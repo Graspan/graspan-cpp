@@ -4,6 +4,7 @@
 #include <ctime>
 
 #include "compute.h"
+#include "repart.h"
 
 #include "../datastructures/context.h"
 #include "../datastructures/vertex.h"

@@ -1,5 +1,6 @@
 #include "../../test/timer.h"
 #include "../edgecomp/engine.h"
+#include "../datastructures/vit.h"
 
 #include "../utilities/globalDefinitions.hpp"
 
@@ -16,6 +17,8 @@ int main(int argc, char *argv[])
 		cout << "execution failed: couldn't load grammar" << endl;
 		return 12;
 	}
+
+	VIT::loadFromFile(c.vit);
 
 
 	// COMPUTATION

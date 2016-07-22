@@ -22,7 +22,7 @@ int Vertex::getOutEdge(int ind) { return outEdges[ind]; }
 char Vertex::getOutEdgeValue(int ind) { return outEdgeValues[ind]; }
 
 // Setters
-void Vertex::setNumOutEdges() {}
+void Vertex::setNumOutEdges(int numEdges) { this->numOutEdges = numEdges; }
 void Vertex::setOutEdges(vector<int> &outEdges) { this->outEdges = outEdges; }
 void Vertex::setOutEdgeValues(vector<char> &outEdgeValues) { this->outEdgeValues = outEdgeValues; }
 

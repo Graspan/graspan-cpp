@@ -56,7 +56,7 @@ void VIT::writeToFile(VIT & v)
 {
 	FILE *fp;
 	string str;
-	str = GRAP + ".vit";
+	str = "../resources/" + GRAP + ".vit";
 
 	fp = fopen(str.c_str(), "w");
 	for (int i = 0; i < v.vit.size(); i++) {
@@ -69,7 +69,7 @@ void VIT::loadFromFile(VIT &v)
 {
 	FILE *fp;
 	string str;
-	str = GRAP + ".vit";
+	str = "../resources/" + GRAP + ".vit";
 	v.vit.clear();
 	char buf[512];
 	char *ctemp[3];
