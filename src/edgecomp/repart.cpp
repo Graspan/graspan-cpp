@@ -65,7 +65,7 @@ void Repart::run(Partition &p1, Partition &p2, Context &context) {
 	repartition(p2, p22, context);
 
 	context.ddm.setNumPartition(context.getNumPartitions());
-	context.ddm.enlarge();
+	context.ddm.reSize();
 
 	Partition::writeToFile(p1, true);
 	Partition::writeToFile(p2, true);

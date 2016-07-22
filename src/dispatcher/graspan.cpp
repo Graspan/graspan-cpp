@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
 {
 	Context c(argc, argv);
 
-	if (!c.ddm.load_DDM()) {
+	if (!c.ddm.load_DDM("DDM")) {
 		cout << "execution failed: couldn't load DDM" << endl;
 		return 12;
 	}
