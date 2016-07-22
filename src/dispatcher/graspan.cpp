@@ -18,6 +18,8 @@ int main(int argc, char *argv[])
 		return 12;
 	}
 
+	c.grammar.print_all();
+
 	VIT::loadFromFile(c.vit);
 
 

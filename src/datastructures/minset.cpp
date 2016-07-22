@@ -15,7 +15,7 @@ std::unordered_set<char>& MinSet::getEvals() { return evals; }
 // setters
 void MinSet::setMinSetID(int id) { minSetID = id; }
 void MinSet::setCurrVID(int vid) { currentVID = vid; }
-
+void MinSet::resetPtr() { ptr = 0; }
 
 void MinSet::incPtr() { ptr++; }
 
@@ -29,7 +29,7 @@ string MinSet::toString()
 	
 	output << currentVID << ": ";
 	for (std::unordered_set<char>::iterator it = evals.begin(); it != evals.end(); it++)
-		output << *it << ", ";
+		output << (short)*it << ", ";
 
 	output << endl;
 

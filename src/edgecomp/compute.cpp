@@ -67,8 +67,6 @@ long updateEdges(int vertInd, ComputationSet compsets[], LoadedVertexInterval in
 
 	getEdgesToMerge(compSet, compsets, intervals, edgeVecsToMerge, valVecsToMerge, rowMergeID, context);
 
-//	print_edges(edgeVecsToMerge, valVecsToMerge);
-
 	EdgeMerger em;
 
 	em.mergeVectors(edgeVecsToMerge, valVecsToMerge, 0);

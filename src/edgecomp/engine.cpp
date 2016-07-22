@@ -31,39 +31,34 @@ int run_computation(Context &context)
 	partitionid_t p, q;
 	context.ddm.nextPartitionPair(p, q);
 
-	for (int i = 0; i < 5; i++)
+	Loader::loadPartition(p, p1, false);
+	Loader::loadPartition(q, p2, false);
+	cout << p1.toString() << endl;
+	cout << p2.toString() << endl;
+
+	vector<Vertex> &part1 = p1.getData(), &part2 = p2.getData();
+
+	ComputationSet *compsets = new ComputationSet[part1.size() + part2.size()];
+	int setSize = part1.size() + part2.size();
+	initCompSets(compsets, part1, part2);
+	
+	LoadedVertexInterval intervals[2] = {LoadedVertexInterval{p}, LoadedVertexInterval{q}};
+	initLVIs(intervals, part1, part2);
+
+	for (int i = 0; i < 2; i++)
 	{
-		Loader::loadPartition(p, p1, false);
-		Loader::loadPartition(q, p2, false);
-		cout << p1.toString() << endl;
-		cout << p2.toString() << endl;
-
-		vector<Vertex> &part1 = p1.getData(), &part2 = p2.getData();
-
-		ComputationSet *compsets = new ComputationSet[part1.size() + part2.size()];
-		int setSize = part1.size() + part2.size();
-		initCompSets(compsets, part1, part2);
-		
-		LoadedVertexInterval intervals[2] = {LoadedVertexInterval{p}, LoadedVertexInterval{q}};
-		initLVIs(intervals, part1, part2);
-
-		for (int i = 0; i < 2; i++)
-		{
-			LoadedVertexInterval lvi = intervals[i];
-			cout << lvi.toString() << endl;
-		}
-
-		computeEdges(compsets, setSize, intervals, context);
-
-		updatePartitions(compsets, p1, p2, part1, part2);
-
-		cout << p1.toString();
-		cout << p2.toString();
-
-		delete[] compsets;
-
-		Repart::run(p1, p2, context);
+		LoadedVertexInterval lvi = intervals[i];
+		cout << lvi.toString() << endl;
 	}
+
+	computeEdges(compsets, setSize, intervals, context);
+
+	updatePartitions(compsets, p1, p2, part1, part2);
+
+	cout << p1.toString();
+	cout << p2.toString();
+
+	delete[] compsets;
 
 
 	return 0;

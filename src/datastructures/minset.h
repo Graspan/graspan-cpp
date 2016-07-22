@@ -29,6 +29,7 @@ class MinSet
 	// setters
 	void setMinSetID(int id);
 	void setCurrVID(int vid);
+	void resetPtr();
 
 	void incPtr();
 	void addEval(char eval);

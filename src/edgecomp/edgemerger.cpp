@@ -68,11 +68,14 @@ void EdgeMerger::fillPriorityQueue(vector< vector<int> > &edgeVecsToMerge, vecto
 	int totTgtRowSize = 0;
     for (int i = 1; i < edgeVecsToMerge.size(); i++)
     {
-        newminset.setMinSetID(i);
-        updateMinSet(newminset, edgeVecsToMerge[i], valVecsToMerge[i]);
+		if (edgeVecsToMerge[i].size() > 0) {
+			newminset.setMinSetID(i);
+			updateMinSet(newminset, edgeVecsToMerge[i], valVecsToMerge[i]);
 
-		totTgtRowSize += edgeVecsToMerge[i].size();
-		minEdges.push(newminset);
+			totTgtRowSize += edgeVecsToMerge[i].size();
+			minEdges.push(newminset);
+			newminset.resetPtr();
+		}
     }
 
     srcDeltaEdges.reserve(totTgtRowSize);
