@@ -49,7 +49,7 @@ void Partition::writeToFile(Partition & part, bool readable)
 {
 	if (!part.exist)
 		return;
-	cout << part.getID() << endl;
+	//cout << part.getID() << endl;
 	//cout << "write partition file" << endl;
 	//cout << part.id << endl;
 	FILE *fp;

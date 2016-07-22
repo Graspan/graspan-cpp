@@ -16,6 +16,7 @@
 #include "../datastructures/partition.h"
 #include "../datastructures/vertex.h"
 #include "../datastructures/context.h"
+#include "../loader/loader.h"
 
 class Repart {
 private:

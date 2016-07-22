@@ -61,15 +61,17 @@ void Repart::run(Partition &p1, Partition &p2, Context &context) {
 	context.ddm.setNumPartition(context.getNumPartitions());
 	context.ddm.enlarge();
 
-	Partition::writeToFile(p1, true);
-	Partition::writeToFile(p2, true);
-	Partition::writeToFile(p12, true);
-	Partition::writeToFile(p22, true);
-
+	Partition::writeToFile(p1, false);
+	Partition::writeToFile(p2, false);
+	Partition::writeToFile(p12, false);
+	Partition::writeToFile(p22, false);
 
 
 	p1.calc_ddr(context);
 	p2.calc_ddr(context);
 	p12.calc_ddr(context);
 	p22.calc_ddr(context);
+
+	Loader::loadPartition(1, p1, false);
+	Loader::loadPartition(2, p2, false);
 }

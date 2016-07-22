@@ -4,6 +4,8 @@ bool Loader::loadPartition(int id, Partition &p, bool readable)
 {
 	static char s[32 + 1] = { '0', };
 	vector<Vertex>& data=p.getData();
+	data.clear();
+
 	FILE *fp;
 	char label;
 	int size = 0;
