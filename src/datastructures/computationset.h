@@ -1,9 +1,6 @@
 #ifndef COMPUTATIONSET_H
 #define COMPUTATIONSET_H
 
-#include <iostream>
-#include <vector>
-
 #include "../utilities/globalDefinitions.hpp"
 
 class ComputationSet
@@ -21,6 +18,8 @@ class ComputationSet
 	public:
 	// Constructor
 	ComputationSet();
+
+  //TODO: Small methods should be inlined 
 
 	// old getters and setters
 	vector<int> &getOldEdges();	

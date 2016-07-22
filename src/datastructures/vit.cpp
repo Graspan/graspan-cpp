@@ -1,7 +1,12 @@
 #include "vit.h"
 
 //Constructor
-VIT::VIT(vector<pair<int, int>> vit) { this->vit = vit; }
+VIT::VIT(vector<pair<int, int>> vit) { 
+  assert (false, "should not call this - pass by value"); 
+  this->vit = vit; 
+}
+
+//ALL small methods should be inlined instead!!!
 
 //Getters
 vector<pair<vertexid_t, vertexid_t>> &VIT::getVIT() { return vit; }
@@ -56,7 +61,7 @@ void VIT::writeToFile(VIT & v)
 {
 	FILE *fp;
 	string str;
-	str = "../resources/" + GRAP + ".vit";
+	str = "../resources/" + GRAP + ".vit"; // this should not be hard coded like this, when you run the system, the path is not same as us
 
 	fp = fopen(str.c_str(), "w");
 	for (int i = 0; i < v.vit.size(); i++) {
@@ -69,7 +74,7 @@ void VIT::loadFromFile(VIT &v)
 {
 	FILE *fp;
 	string str;
-	str = "../resources/" + GRAP + ".vit";
+	str = "../resources/" + GRAP + ".vit"; // this should not be hard coded like this, when you run the system, the path is not same as us
 	v.vit.clear();
 	char buf[512];
 	char *ctemp[3];

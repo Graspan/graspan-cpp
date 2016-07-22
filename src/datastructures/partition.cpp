@@ -2,7 +2,7 @@
 #include "../loader/loader.h"
 
 //Constructor
-Partition::Partition(int id, int numVertices, int numEdges, vector<Vertex> data)
+Partition::Partition(int id, int numVertices, int numEdges, vector<Vertex> data) // this will lead to copy of the vector
 {
 	this->id = id;
 	this->numVertices = numVertices;
@@ -110,11 +110,12 @@ string Partition::toString()
 
 	return output.str();
 }
+
 void Partition::calc_ddr(Context &context)	{
 	if (!exist)
 		return;
 	vector<vector<double> > &ddmMap = context.ddm.getDdmMap();
-	vector<double> tempDdm;
+	vector<double> tempDdm; // TODO: why don't you just get the vector[id] from ddmMap? it would save the copying  later
 	//cout << "ddmMap[id].size " << ddmMap[id].size() << endl;
 	tempDdm.resize(ddmMap[id].size(), 0);
 
@@ -129,6 +130,7 @@ void Partition::calc_ddr(Context &context)	{
 		ddmMap[id][i] = tempDdm[i];
 	}
 }
+
 /*
 void Partition::calc_ddr(Context& context, vector<double>& ddm_entry) {
 	

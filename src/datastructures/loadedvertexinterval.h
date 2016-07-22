@@ -23,7 +23,8 @@ class LoadedVertexInterval
 	// Constructor
 	LoadedVertexInterval(int partitionID);
 
-	// Getters
+  // Small methods should be inlined and given the implementation here (no linking needed)
+	// Getters 
 	int getFirstVertex();
 	int getLastVertex();
 	int getIndexStart();

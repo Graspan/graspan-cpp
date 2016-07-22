@@ -1,5 +1,7 @@
 #include "loader.h"
 
+
+//TODO: this method is too long, make it shorter by refactoring
 bool Loader::loadPartition(int id, Partition &p, bool readable)
 {
 	static char s[32 + 1] = { '0', };
@@ -23,8 +25,8 @@ bool Loader::loadPartition(int id, Partition &p, bool readable)
 		fp = fopen(str.c_str(), "r");
 
 		while (NULL != fgets(buf, sizeof(buf), fp)) {
-			vector<int> outEdges;
-			vector<char> outEdgeValues;
+			vector<vertexid_t> outEdges;
+			vector<label_t> outEdgeValues;
 
 			p_token = strtok_r(buf, "\n", &context);
 			p_token = strtok_r(buf, "\t", &context);
@@ -40,12 +42,15 @@ bool Loader::loadPartition(int id, Partition &p, bool readable)
 				ctemp[i++] = p_token;
 				p_token = strtok_r(NULL, "\t", &context);
 
+        // you don't have to do this right? you know which vector to push 
+        // one vector has only elements whose index is odd, the other, even
+        // that eliminate the char[2]
 				if (i == 2) {
 					outEdges.push_back(atoi(ctemp[0]));
 					outEdgeValues.push_back(atoi(ctemp[1]));
 					label = atoi(ctemp[1]);
 					i = 0;
-				}
+				} 
 			}
 			Vertex v(0, src, outEdges, outEdgeValues);
 			data.push_back(v);
@@ -60,9 +65,10 @@ bool Loader::loadPartition(int id, Partition &p, bool readable)
 		str = GRAP + "." + PART + "." + BINA + "." + std::to_string((long long)id);
 		fp = fopen(str.c_str(), "rb");
 
+    // wouldnt this cause problem with hard-coded value 4 and 1???
 		while (0 != fread(&src, 4, 1, fp)) {
-			vector<int> outEdges;
-			vector<char> outEdgeValues;
+			vector<vertexid_t> outEdges;
+			vector<label_t> outEdgeValues;
 			fread(&degree, 4, 1, fp);
 			size += degree;
 			numVertices++;
@@ -83,5 +89,5 @@ bool Loader::loadPartition(int id, Partition &p, bool readable)
 		fclose(fp);
 		return 1;
 	}
-	return 0;
+	return 0; // this is dead code!!!
 }

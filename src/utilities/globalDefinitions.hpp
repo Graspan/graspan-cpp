@@ -28,6 +28,12 @@ typedef int partitionid_t;
 typedef std::string raw_label_t;
 typedef std::string string;
 
+// constant value
+const int BytesPerVertexid = sizeof(vertexid_t);
+const int BytesPerLabel = sizeof(label_t);
+const int BytesPerPartitionid = sizeof(partitionid_t);
+ 
+// keys for parameters
 const static string GRAP = "graph";
 const static string PART = "partition";
 const static string BINA = "binary";
@@ -38,6 +44,13 @@ const static string GRAMMAR_FILE_KEY = "grammar";
 const static string MEM_BUDGET_KEY = "memBudget";
 const static string NUM_PARTITION_KEY = "numPartitions";
 const static string MAX_EDGES_PER_PARTITION_KEY = "maxEdgesPerPartiton";
+
+// more user arguments:
+// intial size of DDM, the default size can be 2x numPartition
+// a temporary directory for storing things when you do comptutation
+// instead of a graph, a directory that has VIT and intial partition files
+// graphname to distinguish graph instances: we have that GRAP already
+// whether edge should contain label (no label in case of data flow analysis) -> Vertex structure has no 2nd vector
 
 const static string INSERT_SORT_FLAG = "insertionSort";
 const static string ALTER_SCHEDULE_FLAG = "alterSchedule";

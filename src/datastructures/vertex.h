@@ -1,22 +1,19 @@
 #ifndef VERTEX_H
 #define VERTEX_H
 
-#include <iostream>
 #include <sstream>
-#include <vector>
-#include <string>
-
 #include "../utilities/globalDefinitions.hpp"
 
+//TODO: clean this up
 class Vertex
 {
 	int idx;
 
-	int id;
+	vertexid_t id;
 	int numOutEdges;
 
-	vector<int> outEdges;
-	vector<char> outEdgeValues;
+	vector<vertexid_t> outEdges;
+	vector<label_t> outEdgeValues;
 	
 
 	public:
@@ -25,6 +22,7 @@ class Vertex
 	Vertex(int id, int outDegree);
 	Vertex(int idx, int id, vector<int> outEdges, vector<char> outEdgeValues);
 
+  //ALL small methods should be inlined!!!
 	// Getters
 	int getVertexID();
 	int getVertexIdx();

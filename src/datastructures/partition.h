@@ -1,12 +1,8 @@
 #ifndef PARTITION_H
 #define PARTITION_H
 
-#include <iostream>
 #include <sstream>
-#include <vector>
-#include <string>
 
-#include "../utilities/globalDefinitions.hpp"
 #include "../datastructures/vertex.h"
 #include "../datastructures/vit.h"
 #include "../datastructures/context.h"
@@ -19,7 +15,7 @@ private:
 	int numEdges;
 
 	vector<Vertex> data;
-	//for check partition exists. it is for repartition part
+	//for check partition exists. it is for repartition part ???? the fact you have obj means it exists already
 	bool exist;
 		
 public:
@@ -27,6 +23,7 @@ public:
 	Partition() { this->exist = true; };
 	Partition(int id, int numVertices, int numEdges, vector<Vertex> data);
 
+  // Again, all small methods should be inlined
 	//Getters
 	int getID();
 	int getNumVertices();
@@ -42,7 +39,7 @@ public:
 	void setExist(bool exist);
 
 	//if user want save the partition to the disk use this function
-	//readable == true then text format readable == false binary format
+	//readable == true then text format, readable == false binary format
 	static void writeToFile(Partition& part, bool readable = false);
 
 	//read the partition from the harddisk
@@ -51,7 +48,6 @@ public:
 	string toString();
 
 	// ddr = destination distribution ratio, i.e., a cell in DDM
-	//vector<double> calc_ddr();
 	void calc_ddr(Context &context);
 };
 
