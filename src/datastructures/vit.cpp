@@ -49,7 +49,7 @@ int VIT::partition(vertexid_t vid)
 		if (vid >= vit[i].first && vid <= vit[i].second)
 			return i;
 	}
-	return 0;
+	return -1;
 }
 
 void VIT::writeToFile(VIT & v)

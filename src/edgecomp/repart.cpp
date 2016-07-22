@@ -2,22 +2,24 @@
 
 void Repart::repartition(Partition &p1, Partition &p2, Context &context) {
 	int size = context.getMaxEdges();
-	int sum = 0;
+	int sum = 0, check = 0;
+
 	int i = 0;
 	int end = 0;
 	vector<Vertex> data;
 	vector<pair<vertexid_t, vertexid_t>> &tempVIT = context.vit.getVIT();
 
 	vector<Vertex> &dataTemp = p1.getData();
-	
-	for (i ; i < p1.getNumVertices(); i++) {
+	check += dataTemp[0].getNumOutEdges();
+	for (i ; i < p1.getNumVertices() - 1; i++) {
 	//	cout << "getVertex = " << i << " " << dataTemp[i].getVertexID() << endl;
-		sum += dataTemp[i].getNumOutEdges();
-		if (sum >= size) {
+		if (check >= size) {
 			break;
 		}
+		sum += dataTemp[i].getNumOutEdges();
+		check += dataTemp[i + 1].getNumOutEdges();
 	}
-	if (sum < size) {
+	if (check < size) {
 		p2.setExist(false);
 		return;
 	}
@@ -49,6 +51,8 @@ void Repart::repartition(Partition &p1, Partition &p2, Context &context) {
 	p1.setNumEdges(sum);
 	p1.setNumVertices(i);
 
+
+	cout << "p1 numEdges = " << p1.getNumEdges() << "p2 numEdges = " << p2.getNumEdges() << endl;
 	VIT::writeToFile(context.vit);
 }
 

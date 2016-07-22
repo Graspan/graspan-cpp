@@ -1,7 +1,7 @@
 #include "preproc.h"
 #include "../mapping/grammar.cpp"
 #include "../loader/loader.h"
-#include "repart.h"
+#include "../edgecomp/repart.h"
 #include "../datastructures/context.h"
 #include "../DDM/DDM.h"
 
@@ -40,15 +40,23 @@ int main(int argc, char *argv[]) {
 	cout << "makeBinaryPart time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 
 	//cout << c.ddm.toString();
+	int p, q;
 	Partition p1, p2;
-	Loader::loadPartition(1,p1, true);
-	Loader::loadPartition(2, p2, true);
 
-	cout << p1.toString() << endl;
 	c.ddm.load_DDM();
+	cout << c.ddm.toString();
 
-	Repart::run(p1, p2, c);
-	//cout << c.ddm.toString();
+	while (c.ddm.nextPartitionPair(p, q)) {
+
+		cout << "HI!!" << endl;
+		cout << "p = " << p << " q = " << q << endl;
+		Loader::loadPartition(1, p1, true);
+		Loader::loadPartition(2, p2, true);
+		Repart::run(p1, p2, c);
+		cout << c.ddm.toString();
+	}
+
+	//
 	return 0;
 }
 

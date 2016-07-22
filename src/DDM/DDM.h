@@ -32,7 +32,7 @@ class DDM{
 
   // the indices p and q tell which partitionRate[p][q] is max: i.e., this is our scheduler
   // the bool return value indicate whether or not we should terminate the whole system
-  bool nextPartitionPair(int& p, int &q);
+  bool nextPartitionPair(partitionid_t& p, partitionid_t &q);
   inline void setNumPartition(int numPartition){
 	this->numPartition = numPartition;
   };
