@@ -29,10 +29,11 @@ int run_computation(Context &context)
 	// load partitions into memory
 	Partition p1, p2;
 	partitionid_t p, q;
-	context.ddm.nextPartitionPair(p, q);
+  //while (context.ddm.nextPartitionPair(p, q)) {
+  context.ddm.nextPartitionPair(p, q);
 
-	Loader::loadPartition(p, p1, false);
-	Loader::loadPartition(q, p2, false);
+	Loader::loadPartition(p, p1, true);
+	Loader::loadPartition(q, p2, true);
 	cout << p1.toString() << endl;
 	cout << p2.toString() << endl;
 
@@ -58,9 +59,17 @@ int run_computation(Context &context)
 	cout << p1.toString();
 	cout << p2.toString();
 
+  /* TODO:
+  if (p1.hasNewEdges() || p2.hasNewEdges()) {
+  }
+  else {
+    contex.ddm.markTerminate(p,q);
+  }
+  */
 	delete[] compsets;
-
-
+  
+  Repart::run(p1, p2, context);
+  //} //end of while
 	return 0;
 }
 

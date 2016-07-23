@@ -33,6 +33,9 @@ class DDM{
 
   void adjust(int p);
 
+  inline void markTerminate(partitionid_t p, partitionid_t q) {
+    ddmMap[p][q] *= -1;
+  }
 
   // the indices p and q tell which partitionRate[p][q] is max: i.e., this is our scheduler
   // the bool return value indicate whether or not we should terminate the whole system
