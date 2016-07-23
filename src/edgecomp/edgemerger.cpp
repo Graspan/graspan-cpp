@@ -31,7 +31,7 @@ void EdgeMerger::mergeVectors(vector< vector<int> > &edgeVecsToMerge,
 	fillPriorityQueue(edgeVecsToMerge, valVecsToMerge, srcID);
 	
     MinSet tgt;
-	int max = std::numeric_limits<int>::max();
+    int max = std::numeric_limits<int>::max();
     while (1)
     {
         if (!minEdges.empty()) {
