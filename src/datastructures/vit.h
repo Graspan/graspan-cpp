@@ -41,6 +41,8 @@ public:
 	// return the partition id which vetex vid is in
 	int partition(vertexid_t vid);
 
+  string toString();
+
 	// TODO:when partition whose id is partition_id is repartitioned, its VIT entry needs to be changed
 	// also VIT adds new entry for the newly-created partition
 	//void modify(partitionid_t pid); 

@@ -1,3 +1,5 @@
+./reset
+
 cd resources
 
 ../../bin/comp

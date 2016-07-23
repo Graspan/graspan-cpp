@@ -60,8 +60,7 @@ int VIT::partition(vertexid_t vid)
 void VIT::writeToFile(VIT & v)
 {
 	FILE *fp;
-	string str;
-	str = "../resources/" + GRAP + ".vit"; // this should not be hard coded like this, when you run the system, the path is not same as us
+	string str = "../resources/" + GRAP + ".vit"; // this should not be hard coded like this, when you run the system, the path is not same as us
 
 	fp = fopen(str.c_str(), "w");
 	for (int i = 0; i < v.vit.size(); i++) {
@@ -73,24 +72,29 @@ void VIT::writeToFile(VIT & v)
 void VIT::loadFromFile(VIT &v)
 {
 	FILE *fp;
-	string str;
-	str = "../resources/" + GRAP + ".vit"; // this should not be hard coded like this, when you run the system, the path is not same as us
+	string str = "../resources/" + GRAP + ".vit"; // this should not be hard coded like this, when you run the system, the path is not same as us
 	v.vit.clear();
-	char buf[512];
-	char *ctemp[3];
-	char *p_token = NULL;
-	char *context = NULL;
-	int i = 0;
+	int i,start,end;
 	fp = fopen(str.c_str(), "r");
-	while (NULL != fgets(buf, sizeof(buf), fp)) {
-		p_token = strtok_r(buf, "\n", &context);
-		p_token = strtok_r(buf, "\t", &context);
-		while (p_token != NULL) {
-			ctemp[i++] = p_token;
-			p_token = strtok_r(NULL, "\t", &context);
-		}
-		v.vit.push_back(std::make_pair(atoi(ctemp[1]), atoi(ctemp[2])));
-		i = 0;
-	}
-	fclose(fp);
+  if (fp != NULL) { 
+    while (fscanf(fp, "%d\t%d\t%d\n", &i, &start, &end) != EOF) {
+      v.vit.push_back(std::make_pair(start, end));
+    }
+    fclose(fp);
+  } else {
+    assert (false, "cannot open vit_file");
+  }
+	
 }
+
+string VIT::toString() {
+  
+  std::stringstream output;
+  
+  for (int i = 0; i < vit.size(); i++) {
+    output << i << " " <<  vit[i].first << " " <<  vit[i].second <<endl;
+  }
+  
+  return output.str();
+}
+
