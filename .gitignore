@@ -1,4 +1,6 @@
 bin/*
+src/resources/*
+src/originalTest/*
 .cproject
 .project
 .gitignore
