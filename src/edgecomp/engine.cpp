@@ -29,92 +29,42 @@ int run_computation(Context &context)
 	// load partitions into memory
 	Partition p1, p2;
 	partitionid_t p, q;
-  //while (context.ddm.nextPartitionPair(p, q)) {
-  context.ddm.nextPartitionPair(p, q);
-
-	Loader::loadPartition(p, p1, true);
-	Loader::loadPartition(q, p2, true);
-	cout << p1.toString() << endl;
-	cout << p2.toString() << endl;
-
-	vector<Vertex> &part1 = p1.getData(), &part2 = p2.getData();
-
-	ComputationSet *compsets = new ComputationSet[part1.size() + part2.size()];
-	int setSize = part1.size() + part2.size();
-	initCompSets(compsets, part1, part2);
-	
-	LoadedVertexInterval intervals[2] = {LoadedVertexInterval{p}, LoadedVertexInterval{q}};
-	initLVIs(intervals, part1, part2);
-
-	for (int i = 0; i < 2; i++)
+	while (context.ddm.nextPartitionPair(p, q))
 	{
-		LoadedVertexInterval lvi = intervals[i];
-		cout << lvi.toString() << endl;
+		Loader::loadPartition(p, p1, true);
+		Loader::loadPartition(q, p2, true);
+		cout << "===== DDM BEFORE COMP =====" << endl << context.ddm.toString() << endl;
+		cout << "##### LOADED PARTITIONS TO COMPUTE #####" << endl;
+		cout << p1.toString() << endl;
+		cout << p2.toString() << endl << endl;;
+
+		vector<Vertex> &part1 = p1.getData(), &part2 = p2.getData();
+
+		ComputationSet *compsets = new ComputationSet[part1.size() + part2.size()];
+		int setSize = part1.size() + part2.size();
+		initCompSets(compsets, part1, part2);
+		
+		LoadedVertexInterval intervals[2] = {LoadedVertexInterval{p}, LoadedVertexInterval{q}};
+		initLVIs(intervals, part1, part2);
+
+		computeEdges(compsets, setSize, intervals, context);
+
+		updatePartitions(compsets, p1, p2, part1, part2);
+
+	  /* TODO:
+	  if (p1.hasNewEdges() || p2.hasNewEdges()) {
+	  }
+	  else {
+		contex.ddm.markTerminate(p,q);
+	  }
+	  */
+		delete[] compsets;
+	  
+		Repart::run(p1, p2, context);
+		cout << "NEW EDGES THIS ROUND: " << totNewEdges << endl;
+		if (totNewEdges <= 0) context.ddm.markTerminate(p, q);
 	}
-
-	computeEdges(compsets, setSize, intervals, context);
-
-	updatePartitions(compsets, p1, p2, part1, part2);
-
-	cout << p1.toString();
-	cout << p2.toString();
-
-  /* TODO:
-  if (p1.hasNewEdges() || p2.hasNewEdges()) {
-  }
-  else {
-    contex.ddm.markTerminate(p,q);
-  }
-  */
-	delete[] compsets;
-  
-  Repart::run(p1, p2, context);
-  //} //end of while
 	return 0;
-}
-
-
-/**
- * load both partitions into a list of ComputationSet
- *
- * @param compsets[]		-list of ComputationSet
- * @param part1				-vector of Vertex representing partition 1
- * @param part2				-vector of Vertex representing partition 2
- */
-void initCompSets(ComputationSet compsets[], vector<Vertex> &part1, vector<Vertex> &part2)
-{
-	for (int i = 0; i < part1.size(); i++)
-	{
-		compsets[i].setNewEdges(part1[i].getOutEdges());
-		compsets[i].setNewVals(part1[i].getOutEdgeValues());
-		compsets[i].setoldUnewEdges(part1[i].getOutEdges());
-		compsets[i].setoldUnewVals(part1[i].getOutEdgeValues());
-	}
-
-	int offset = part1.size();
-	for (int j = part1.size(); j < part1.size() + part2.size(); j++)
-	{
-		compsets[j].setNewEdges(part2[j - offset].getOutEdges());
-		compsets[j].setNewVals(part2[j - offset].getOutEdgeValues());
-		compsets[j].setoldUnewEdges(part2[j - offset].getOutEdges());
-		compsets[j].setoldUnewVals(part2[j - offset].getOutEdgeValues());
-	}
-}
-
-/**
- * initialize the LoadedVertexInterval list using the partition information
- */
-void initLVIs(LoadedVertexInterval intervals[], vector<Vertex> &part1, vector<Vertex> &part2)
-{
-	intervals[0].setFirstVertex(part1[0].getVertexID());
-	intervals[0].setLastVertex(part1[part1.size() - 1].getVertexID());
-	intervals[0].setIndexStart(0);
-	intervals[0].setIndexEnd(part1.size()-1);
-
-	intervals[1].setFirstVertex(part2[0].getVertexID());
-	intervals[1].setLastVertex(part2[part2.size() - 1].getVertexID());
-	intervals[1].setIndexStart(part1.size());
-	intervals[1].setIndexEnd(part1.size() + part2.size()-1);
 }
 
 /**
@@ -166,6 +116,49 @@ void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInt
 		#pragma omp atomic
 		newEdgesThisIter += newEdges;
 	}
+}
+
+/**
+ * load both partitions into a list of ComputationSet
+ *
+ * @param compsets[]		-list of ComputationSet
+ * @param part1				-vector of Vertex representing partition 1
+ * @param part2				-vector of Vertex representing partition 2
+ */
+void initCompSets(ComputationSet compsets[], vector<Vertex> &part1, vector<Vertex> &part2)
+{
+	for (int i = 0; i < part1.size(); i++)
+	{
+		compsets[i].setNewEdges(part1[i].getOutEdges());
+		compsets[i].setNewVals(part1[i].getOutEdgeValues());
+		compsets[i].setoldUnewEdges(part1[i].getOutEdges());
+		compsets[i].setoldUnewVals(part1[i].getOutEdgeValues());
+	}
+
+	int offset = part1.size();
+	for (int j = part1.size(); j < part1.size() + part2.size(); j++)
+	{
+		compsets[j].setNewEdges(part2[j - offset].getOutEdges());
+		compsets[j].setNewVals(part2[j - offset].getOutEdgeValues());
+		compsets[j].setoldUnewEdges(part2[j - offset].getOutEdges());
+		compsets[j].setoldUnewVals(part2[j - offset].getOutEdgeValues());
+	}
+}
+
+/**
+ * initialize the LoadedVertexInterval list using the partition information
+ */
+void initLVIs(LoadedVertexInterval intervals[], vector<Vertex> &part1, vector<Vertex> &part2)
+{
+	intervals[0].setFirstVertex(part1[0].getVertexID());
+	intervals[0].setLastVertex(part1[part1.size() - 1].getVertexID());
+	intervals[0].setIndexStart(0);
+	intervals[0].setIndexEnd(part1.size()-1);
+
+	intervals[1].setFirstVertex(part2[0].getVertexID());
+	intervals[1].setLastVertex(part2[part2.size() - 1].getVertexID());
+	intervals[1].setIndexStart(part1.size());
+	intervals[1].setIndexEnd(part1.size() + part2.size()-1);
 }
 
 /**

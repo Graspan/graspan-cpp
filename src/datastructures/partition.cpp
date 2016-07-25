@@ -9,7 +9,6 @@ Partition::Partition(int id, int numVertices, int numEdges, vector<Vertex> data)
 	this->numEdges = numEdges;
 	this->data = data;
 	this->exist = true;
-  this->newEdges = false;
 }
 
 // Getters

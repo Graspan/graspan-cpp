@@ -24,13 +24,14 @@ int main(int argc, char *argv[])
 
 
 	// COMPUTATION
-	Timer compTime;
-	compTime.startTimer();
+//	Timer compTime;
+//	compTime.startTimer();
 
+	cout << "###### STARTING COMPUTATION #####" << endl;
 	run_computation(c);
 
-	compTime.endTimer();
-	cout << compTime.toString() << endl;
+//	compTime.endTimer();
+//	cout << compTime.toString() << endl;
 
 	return 0;
 }
