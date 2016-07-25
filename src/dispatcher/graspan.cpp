@@ -18,20 +18,18 @@ int main(int argc, char *argv[])
 		return 12;
 	}
 
-	c.grammar.print_all();
-
 	VIT::loadFromFile(c.vit);
 
 
 	// COMPUTATION
-//	Timer compTime;
-//	compTime.startTimer();
+	Timer compTime;
+	compTime.startTimer();
 
 	cout << "###### STARTING COMPUTATION #####" << endl;
 	run_computation(c);
 
-//	compTime.endTimer();
-//	cout << compTime.toString() << endl;
+	compTime.endTimer();
+	cout << "TOTAL TIME: " << compTime.toString() << endl;
 
 	return 0;
 }

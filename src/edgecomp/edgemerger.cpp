@@ -50,14 +50,14 @@ void EdgeMerger::mergeVectors(vector< vector<int> > &edgeVecsToMerge,
 
     removeExtraSpace();
 
-    cout << "oldUnewUdelta AFTER update  ->  ";
-    for (int k = 0; k < srcoUnUdEdges.size(); k++)
-        cout << "(" << srcoUnUdEdges[k]  << ", " << (short)srcoUnUdVals[k] << ")  ";
-    cout << endl;
-    cout << "delta AFTER update -> ";
-    for (int l = 0; l < srcDeltaEdges.size(); l++)
-        cout << "(" << srcDeltaEdges[l] << ", " << (short)srcDeltaVals[l] << ")  ";
-    cout << endl << std::endl;
+//    cout << "oldUnewUdelta AFTER update  ->  ";
+//    for (int k = 0; k < srcoUnUdEdges.size(); k++)
+//        cout << "(" << srcoUnUdEdges[k]  << ", " << (short)srcoUnUdVals[k] << ")  ";
+//    cout << endl;
+//    cout << "delta AFTER update -> ";
+//    for (int l = 0; l < srcDeltaEdges.size(); l++)
+//        cout << "(" << srcDeltaEdges[l] << ", " << (short)srcDeltaVals[l] << ")  ";
+//    cout << endl << std::endl;
 }
 
 

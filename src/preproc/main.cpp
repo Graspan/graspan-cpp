@@ -1,9 +1,9 @@
 #include "preproc.h"
-#include "../mapping/grammar.cpp"
-#include "../loader/loader.h"
+#include "../edgecomp/grammar.cpp"
+#include "../datastructures/loader.h"
 #include "../edgecomp/repart.h"
 #include "../datastructures/context.h"
-#include "../DDM/DDM.h"
+#include "../datastructures/DDM.h"
 
 void delFiles();
 
@@ -14,26 +14,28 @@ int main(int argc, char *argv[]) {
 	delFiles();
 	Grammar g;
 	Context c(argc - 2, argv + 2);
-	if (!g.loadGrammar("../mapping/grammar")) {			//just for test need to fix
+	if (!g.loadGrammar("../resources/grammar")) {			//just for test need to fix
 		cout << "file is not exist" << std::endl;
 		exit(1);
 	}
 	Preproc pre(argv[1], c);
+	cout << "makePreproc " << endl;
 	pre.setMapInfo(g.getMapInfo(), g.getErules());
 	Loader load;
 	begin = clock();
 	pre.makeVIT(argv[1], c);		//need to fix input file
 	end = clock();
 	cout << "makeVIT time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
+	cout << pre.getNumOfPartitions() << endl;
 	c.ddm.setNumPartition(pre.getNumOfPartitions());
-	c.ddm.enlarge();
+	c.ddm.reSize();
 
 	begin = clock();
 	pre.makePart(c);
 	end = clock();
 	cout << "makePart time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 
-	c.ddm.save_DDM();
+	c.ddm.save_DDM("DDM");
 	begin = clock();
 	pre.makeBinaryPart(c);
 	end = clock();
@@ -43,20 +45,6 @@ int main(int argc, char *argv[]) {
 	int p, q;
 	Partition p1, p2;
 
-	c.ddm.load_DDM();
-	cout << c.ddm.toString();
-
-	while (c.ddm.nextPartitionPair(p, q)) {
-
-		cout << "HI!!" << endl;
-		cout << "p = " << p << " q = " << q << endl;
-		Loader::loadPartition(1, p1, true);
-		Loader::loadPartition(2, p2, true);
-		Repart::run(p1, p2, c);
-		cout << c.ddm.toString();
-	}
-
-	//
 	return 0;
 }
 

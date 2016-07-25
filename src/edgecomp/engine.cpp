@@ -27,16 +27,21 @@ void updatePartitions(ComputationSet compsets[], Partition &p1, Partition &p2, v
 int run_computation(Context &context)
 {
 	// load partitions into memory
+	Timer loadTimer, compTimer, repartTimer;
 	Partition p1, p2;
 	partitionid_t p, q;
+	int roundNo = 0;
 	while (context.ddm.nextPartitionPair(p, q))
 	{
+		cout << "##### STARTING ROUND " << ++roundNo << " #####" << endl;
+		loadTimer.startTimer();
 		Loader::loadPartition(p, p1, true);
 		Loader::loadPartition(q, p2, true);
-		cout << "===== DDM BEFORE COMP =====" << endl << context.ddm.toString() << endl;
-		cout << "##### LOADED PARTITIONS TO COMPUTE #####" << endl;
-		cout << p1.toString() << endl;
-		cout << p2.toString() << endl << endl;;
+		loadTimer.endTimer();
+//		cout << "===== DDM BEFORE COMP =====" << endl << context.ddm.toString() << endl;
+//		cout << "##### LOADED PARTITIONS TO COMPUTE #####" << endl;
+//		cout << p1.toString() << endl;
+//		cout << p2.toString() << endl << endl;;
 
 		vector<Vertex> &part1 = p1.getData(), &part2 = p2.getData();
 
@@ -47,7 +52,11 @@ int run_computation(Context &context)
 		LoadedVertexInterval intervals[2] = {LoadedVertexInterval{p}, LoadedVertexInterval{q}};
 		initLVIs(intervals, part1, part2);
 
+		cout << "== COMP START ==" << endl;
+		compTimer.startTimer();
 		computeEdges(compsets, setSize, intervals, context);
+		compTimer.endTimer();
+		cout << "== COMP END ==" << endl;
 
 		updatePartitions(compsets, p1, p2, part1, part2);
 
@@ -59,10 +68,20 @@ int run_computation(Context &context)
 	  }
 	  */
 		delete[] compsets;
-	  
+
+		cout << "== REPA START ==" << endl;
+		repartTimer.startTimer();	  
 		Repart::run(p1, p2, context);
-		cout << "NEW EDGES THIS ROUND: " << totNewEdges << endl;
+		repartTimer.endTimer();
+		cout << "== REPA END ==" << endl;
+
 		if (totNewEdges <= 0) context.ddm.markTerminate(p, q);
+
+		cout << "===== ROUND INFO =====" << endl;
+		cout << "NEW EDGES: " << totNewEdges << endl;
+		cout << "LOAD TIME: " << loadTimer.hmsFormat() << endl;
+		cout << "COMP TIME: " << compTimer.hmsFormat() << endl;
+		cout << "REPA TIME: " << repartTimer.hmsFormat() << endl <<  endl << endl;
 	}
 	return 0;
 }
@@ -81,13 +100,10 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 	
 	do {
 		iterNo++;
-		cout << "ITERATION: " << iterNo << endl;
 		newEdgesThisIter = 0;
 		computeOneIteration(compsets, setSize, intervals, context);
 
 		totNewEdges += newEdgesThisIter;
-
-		cout << endl << endl;
 
 		if (totNewEdges > MAX_NEW_EDGES) break;
 	} while (newEdgesThisIter > 0);

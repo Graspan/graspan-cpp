@@ -20,12 +20,8 @@ Preproc::Preproc(char *fileName, Context &context) {
 		p_token = strtok_r(buf, "\n", &text);
 		p_token = strtok_r(buf, "\t", &text);
 		src = atoi(p_token);
-		p_token = strtok_r(NULL, "\t", &text);
-		dst = atoi(p_token);
 		if (src > dataSize)
 			dataSize = src;
-		if (dst > dataSize)
-			dataSize = dst;
 	}
 	fclose(fp);
 	end = clock();
@@ -49,13 +45,14 @@ void Preproc::makeVIT(char *fileName, Context &context) {
 	char buf[512];
 	char *ctemp[3];
 	int i = 0, j = 0;
-	int startS = 0, endS = 0;
+	int startS = -1, endS = 0;
 	char *p_token = NULL;
 	char *text = NULL;
 	int sum = 0;
 	FILE *fp;
 	set<string>::iterator it_e; //for eRules
 	vector<pair<vertexid_t, vertexid_t>> &tempVIT = context.vit.getVIT();
+	vector<int> &vitDegree = context.vit.getDegree();
 
 										  //second file scan for get the data and put in the 
 										  //data (vector of array) it takes 275s need to fix for improve the time complexity
@@ -77,7 +74,6 @@ void Preproc::makeVIT(char *fileName, Context &context) {
 		data[src].push_back(std::make_pair(dst, label));
 		//dataInfo[dst] = true;
 		dataInfo[src] = true;
-		count++;
 		i = 0;
 	}
 	fclose(fp);
@@ -89,26 +85,33 @@ void Preproc::makeVIT(char *fileName, Context &context) {
 	for (i = 0; i <= dataSize; i++) {
 		if (data[i].size() == 0 && !dataInfo[i])
 			continue;
-		if (startS == 0)
+		if (startS == -1)
 			startS = i;
 		for (it_e = eRules.begin(); it_e != eRules.end(); it_e++) {	//add 
 			label = *it_e;
 			data[i].push_back(std::make_pair(i, label));
+			count++;
 		}
 		std::sort(data[i].begin(), data[i].end(), compareV);
 		data[i].erase(unique(data[i].begin(), data[i].end()), data[i].end());
 	}
+	for (i = 0; i <= dataSize; i++)
+		count += data[i].size();
 
 	//make vit
-	if (count / vitSize < 0.5)
+	cout << count - vitSize*(int)(count / vitSize) << endl;
+	if (count - vitSize*(int)(count / vitSize) < vitSize / (float)2)
 		size = count / vitSize;
 	else
 		size = count / vitSize + 1;
 	vitSize = 0;
+	cout << "count =" << count << " size =" << size << endl;
 	for (i = 0; i <= dataSize; i++) {
 		endS = i;
 		sum += data[i].size();
 		if (sum >= size) {
+			cout << "sum =" << sum << "size =" << size << endl;
+			vitDegree.push_back(0);
 			tempVIT.push_back(std::make_pair(startS, endS));
 			startS = i+1;
 			sum = 0;
@@ -117,12 +120,12 @@ void Preproc::makeVIT(char *fileName, Context &context) {
 	}
 	if (sum != 0) {
 		tempVIT.push_back(std::make_pair(startS, endS));
+		vitDegree.push_back(0);
 		vitSize++;
 	}
 	context.setNumPartitions(vitSize);
 	context.vit.setDegree(vitSize);
 
-	vector<int> &vitDegree = context.vit.getDegree();
 
 	sum = 0;
 	j = 0;

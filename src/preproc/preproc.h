@@ -14,14 +14,14 @@
 
 #include "../utilities/globalDefinitions.hpp"
 #include "../datastructures/vit.h"
-#include "../DDM//DDM.h"
+#include "../datastructures/DDM.h"
 #include "../datastructures/context.h"
 
 
 
 class Preproc {
 private:
-	float count;
+	int count;
 	int vitSize;
 	int dataSize;
 

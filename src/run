@@ -1,5 +1,9 @@
-./reset
+#! /bin/bash
 
+echo "resetting..."
+rm -f resources/*
+cp originalTest/* resources/
+
+echo "running..."
 cd resources
-
 ../../bin/comp

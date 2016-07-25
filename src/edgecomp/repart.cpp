@@ -23,10 +23,10 @@ void Repart::repartition(Partition &p1, Partition &p2, Context &context) {
 		p2.setExist(false);
 		return;
 	}
-	cout << "sum = " << sum << " check = " << check << " p1 first = " << context.vit.getStart(p1.getID()) << " p1 end = " << dataTemp[i].getVertexID() << endl;
+//	cout << "sum = " << sum << " check = " << check << " p1 first = " << context.vit.getStart(p1.getID()) << " p1 end = " << dataTemp[i].getVertexID() << endl;
 	context.vit.setVITID(p1.getID(), context.vit.getStart(p1.getID()), dataTemp[i].getVertexID());
 	i++;
-	cout << " p2 first = " << dataTemp[i].getVertexID() << " p2 end = " << dataTemp[p1.getNumVertices() - 1].getVertexID() << endl;
+//	cout << " p2 first = " << dataTemp[i].getVertexID() << " p2 end = " << dataTemp[p1.getNumVertices() - 1].getVertexID() << endl;
 
 	tempVIT.push_back(std::make_pair(dataTemp[i].getVertexID(), dataTemp[p1.getNumVertices() - 1].getVertexID()));
 
@@ -54,7 +54,7 @@ void Repart::repartition(Partition &p1, Partition &p2, Context &context) {
 	p1.setNumVertices(i);
 
 
-	cout << "p1 numEdges = " << p1.getNumEdges() << " p2 numEdges = " << p2.getNumEdges() << endl << endl;
+//	cout << "p1 numEdges = " << p1.getNumEdges() << " p2 numEdges = " << p2.getNumEdges() << endl << endl;
 	VIT::writeToFile(context.vit);
 }
 
