@@ -119,10 +119,16 @@ void Partition::calc_ddr(Context &context)	{
 	//cout << "ddmMap[id].size " << ddmMap[id].size() << endl;
 	tempDdm.resize(ddmMap[id].size(), 0);
 
+
+
 	for (int i = 0; i < data.size(); i++) {
 		for (int j = 0; j < data[i].getNumOutEdges(); j++) {
-			if (id != context.vit.partition(data[i].getOutEdge(j)) && context.vit.partition(data[i].getOutEdge(j)) != -1)
-				tempDdm[context.vit.partition(data[i].getOutEdge(j))] += 1 / (double)numEdges;
+			if (id != context.vit.partition(data[i].getOutEdge(j)) && context.vit.partition(data[i].getOutEdge(j)) != -1) {
+				if (ddmMap[id][context.vit.partition(data[i].getOutEdge(j))] < 0)
+					tempDdm[context.vit.partition(data[i].getOutEdge(j))] -= 1 / (double)numEdges;
+				else
+					tempDdm[context.vit.partition(data[i].getOutEdge(j))] += 1 / (double)numEdges;
+			}
 		}
 	}
 	for (int i = 0; i < tempDdm.size(); i++) {
