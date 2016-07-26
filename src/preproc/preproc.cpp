@@ -43,7 +43,7 @@ void Preproc::makeVIT(char *fileName, Context &context) {
 	int size;
 	string label;
 	char buf[512];
-	char *ctemp[3];
+	char ctemp[10];
 	int i = 0, j = 0;
 	int startS = -1, endS = 0;
 	char *p_token = NULL;
@@ -60,8 +60,23 @@ void Preproc::makeVIT(char *fileName, Context &context) {
 	fp = fopen(fileName, "r");
 
 	//read file and save on the memory
+	if (fp != NULL) {
+		while (fscanf(fp, "%d\t%d\t%s\n", &src, &dst, ctemp) != EOF) {
+			label += ctemp;
+			data[src].push_back(std::make_pair(dst, label));
+			dataInfo[src] = true;
+			label = "";
+		}
+		fclose(fp);
+	}
+	else {
+		assert(false, "cannot open vit_file");
+	}
+	/*
 	while (NULL != fgets(buf, sizeof(buf), fp)) {
 		p_token = strtok_r(buf, "\n", &text);
+		if (buf == NULL)
+			cout << "TTTTTTTT!" << endl;
 		p_token = strtok_r(buf, "\t", &text);
 		while (p_token != NULL) {
 			ctemp[i++] = p_token;
@@ -75,8 +90,9 @@ void Preproc::makeVIT(char *fileName, Context &context) {
 		//dataInfo[dst] = true;
 		dataInfo[src] = true;
 		i = 0;
+		cout << src << " " << dst << endl;
 	}
-	fclose(fp);
+	fclose(fp);*/
 	end = clock();
 	cout << "makeVIT data input time : " << ((end - begin) / CLOCKS_PER_SEC) << endl;
 
