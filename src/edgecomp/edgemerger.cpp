@@ -8,15 +8,6 @@ EdgeMerger::EdgeMerger()
 	currID = -1;
 }
 
-// getters
-vector<int> &EdgeMerger::getoUnUdEdges() { return srcoUnUdEdges; }
-vector<char> &EdgeMerger::getoUnUdVals() { return srcoUnUdVals; }
-
-vector<int> &EdgeMerger::getDeltaEdges() { return srcDeltaEdges; }
-vector<char> &EdgeMerger::getDeltaVals() { return srcDeltaVals; }
-
-int EdgeMerger::getNumNewEdges() { return deltaPtr + 1; }
-
 /**
  * given the vectors and vals to merge, as well as the ID of the source edges,
  * merge edges into a new list

@@ -46,13 +46,13 @@ class EdgeMerger
 	EdgeMerger();
 
 	// getters
-	vector<int> &getoUnUdEdges();
-	vector<char> &getoUnUdVals();
-	
-	vector<int> &getDeltaEdges();
-	vector<char> &getDeltaVals();
+	inline vector<int> &getoUnUdEdges() { return srcoUnUdEdges; }
+	inline vector<char> &getoUnUdVals() { return srcoUnUdVals; }
 
-	int getNumNewEdges();
+	inline vector<int> &getDeltaEdges() { return srcDeltaEdges; }
+	inline vector<char> &getDeltaVals() { return srcDeltaVals; }
+
+	inline int getNumNewEdges() { return deltaPtr + 1; }
 
 	// given all new edges and their values, merge with the source creating a vector of old U new edges
 	// and only new edges

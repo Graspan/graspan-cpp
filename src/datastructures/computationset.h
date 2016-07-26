@@ -17,30 +17,30 @@ class ComputationSet
 
 	public:
 	// Constructor
-	ComputationSet();
+	ComputationSet() {}
 
   //TODO: Small methods should be inlined 
 
 	// old getters and setters
-	vector<int> &getOldEdges();	
-	vector<char> &getOldVals();
+	inline vector<int> &getOldEdges() { return oldEdges; }
+	inline vector<char> &getOldVals() { return oldVals; }
 
-	void setOldEdges(vector<int> &oldEdges);
-	void setOldVals(vector<char> &oldVals);
-	
-	// new getters and setters
-	vector<int> &getNewEdges();
-	vector<char> &getNewVals();
+	inline void setOldEdges(vector<int> &oldEdges) { this->oldEdges = oldEdges;
+	inline void setOldVals(vector<char> &oldVals) { this->oldVals = oldVals;
+	 
+	 // new getters and setters
+	inline vector<int> &getNewEdges() { return newEdges; }
+	inline vector<char> &getNewVals() { return newVals; }
 
-	void setNewEdges(vector<int> &newEdges);
-	void setNewVals(vector<char> &newVals);
+	inline void setNewEdges(vector<int> &newEdges) { this->nwEdges = newEdges; }
+	inline void setNewVals(vector<char> &newVals) { this->newVals = newVals; }
 
 	// old U new getters and setters
-	vector<int> &getoldUnewEdges();
-	vector<char> &getoldUnewVals();
+	inline vector<int> &getoldUnewEdges() { return oldUnewEdges; }
+	inline vector<char> &getoldUnewVals() { return oldUnewVals; }
 
-	void setoldUnewEdges(vector<int> &oldUnewEdges);
-	void setoldUnewVals(vector<char> &oldUnewVals);
+	inline void setoldUnewEdges(vector<int> &oldUnewEdges) { this->oldUnewEdges = oldUnewEdges; }
+	inline void setoldUnewVals(vector<char> &oldUnewVals) { this->oldUnewVals = oldUnewVals; }
 };
 
 #endif

@@ -21,19 +21,19 @@ class MinSet
 	MinSet();
 
 	// getters
-	int getMinSetID();
-	int getCurrVID() const;
-	int getPtr();
-	std::unordered_set<char> &getEvals();
+	inline int getMinSetID() { return minSetID; }
+	inline int getCurrVID() const { return currentVID; }
+	inline int getPtr() { return ptr; }
+	inline std::unordered_set<char> &getEvals() { return evals; }
 
 	// setters
-	void setMinSetID(int id);
-	void setCurrVID(int vid);
-	void resetPtr();
+	inline void setMinSetID(int id) { minSetID = id; }
+	inline void setCurrVID(int vid) { currentVID = vid; }
+	inline void resetPtr() { ptr = 0; }
 
-	void incPtr();
-	void addEval(char eval);
-	void clearEvalSet();
+	inline void incPtr() { ptr++; }
+	inline void addEval(char eval) { evals.insert(eval); }
+	inline void clearEvalSet() { evals.clear(); }
 	
 	string toString();
 };

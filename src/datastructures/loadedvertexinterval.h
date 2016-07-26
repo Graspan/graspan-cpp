@@ -25,22 +25,22 @@ class LoadedVertexInterval
 
   // Small methods should be inlined and given the implementation here (no linking needed)
 	// Getters 
-	int getFirstVertex();
-	int getLastVertex();
-	int getIndexStart();
-	int getIndexEnd();
-	int getPartitionID();
+	inline int getFirstVertex() { return firstVertex; }
+	inline int getLastVertex() { return lastVertex; }
+	inline int getIndexStart() { return indexStart; }
+	inline int getIndexEnd() { return indexEnd; }
+	inline int getPartitionID() { return partitionID; }
 
-	bool hasNewEdges();
+	inline bool hasNewEdges() { return newEdgeAdded; }
 
 	// Setters
-	void setFirstVertex(int firstVertex);
-	void setLastVertex(int lastVertex);
-	void setIndexStart(int indexStart);
-	void setIndexEnd(int indexEnd);
-	void setPartitionID(int partitionID);
+	inline void setFirstVertex(int firstVertex) { this->firstVertex = firstVertex; }
+	inline void setLastVertex(int lastVertex) { this->lastVertex = lastVertex; }
+	inline void setIndexStart(int indexStart) { this->indexStart = indexStart; }
+	inline void setIndexEnd(int indexEnd) { this->indexEnd = indexEnd; }
+	inline void setPartitionID(int partitionID) { this->partitionID = partitionID; }
 
-	void setNewEdgeAdded(bool newEdgeAdded);
+	inline void setNewEdgeAdded(bool newEdgeAdded) { this->newEdgeAdded = newEdgeAdded; }
 
 
 	string toString();

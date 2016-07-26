@@ -24,18 +24,18 @@ class Vertex
 
   //ALL small methods should be inlined!!!
 	// Getters
-	int getVertexID();
-	int getVertexIdx();
-	int getNumOutEdges();
-	vector<int> &getOutEdges();
-	vector<char> &getOutEdgeValues();
-	int getOutEdge(int ind);
-	char getOutEdgeValue(int ind);
+	inline int getVertexID() { return id; }
+	inline int getVertexIdx() { return idx; }
+	inline int getNumOutEdges() { return numOutEdges; }
+	inline vector<int> &getOutEdges() { return outEdges; }
+	inline vector<char> &getOutEdgeValues() { return outEdgeValues; }
+	inline int getOutEdge(int ind) { return outEdges[ind]; }
+	inline char getOutEdgeValue(int ind) { return outEdgeValues[ind]; }
 
 	// Setters
-	void setNumOutEdges(int numEdges);
-	void setOutEdges(vector<int> &outEdges);
-	void setOutEdgeValues(vector<char> &outEdgeValues);
+	inline void setNumOutEdges(int numEdges) { this->numOutEdges = numEdges; }
+	inline void setOutEdges(vector<int> &outEdges) { this->outEdges = outEdges; }
+	inline void setOutEdgeValues(vector<char> &outEdgeValues) { this->outEdgeValues = outEdgeValues; }
 
 	string toString();
 };
