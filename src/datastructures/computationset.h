@@ -25,14 +25,14 @@ class ComputationSet
 	inline vector<int> &getOldEdges() { return oldEdges; }
 	inline vector<char> &getOldVals() { return oldVals; }
 
-	inline void setOldEdges(vector<int> &oldEdges) { this->oldEdges = oldEdges;
-	inline void setOldVals(vector<char> &oldVals) { this->oldVals = oldVals;
+	inline void setOldEdges(vector<int> &oldEdges) { this->oldEdges = oldEdges; }
+	inline void setOldVals(vector<char> &oldVals) { this->oldVals = oldVals; }
 	 
 	 // new getters and setters
 	inline vector<int> &getNewEdges() { return newEdges; }
 	inline vector<char> &getNewVals() { return newVals; }
 
-	inline void setNewEdges(vector<int> &newEdges) { this->nwEdges = newEdges; }
+	inline void setNewEdges(vector<int> &newEdges) { this->newEdges = newEdges; }
 	inline void setNewVals(vector<char> &newVals) { this->newVals = newVals; }
 
 	// old U new getters and setters
