@@ -71,7 +71,7 @@ bool VIT::writeToFile(string fname)
 		fclose(fp);
 	}
 	else {
-		assert(false, "cannot write vit_file");
+		//assert(false, "cannot write vit_file");
 		return false;
 	}
 	return true;
@@ -92,7 +92,7 @@ bool VIT::loadFromFile(string fname)
 		}
 		fclose(fp);
 	}else {
-		assert(false, "cannot open vit_file");
+		//assert(false, "cannot open vit_file");
 		return false;
 	}
 	return true;	

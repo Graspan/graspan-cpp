@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 
 	if (!c.ddm.load_DDM("DDM")) {
 		cout << "execution failed: couldn't load DDM" << endl;
-		return 12;
+		//return 12;
 	}
 
 	if (!c.grammar.loadGrammar("grammar")) {
@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 	
 	if (!c.vit.loadFromFile("grammar.vit")) {
 		cout << "execution failed: couldn't load VIT" << endl;
-		return 12;
+		//return 12;
 	}
 	
 	// PREPROCESSING
@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
 	compTime.startTimer();
 
 	cout << "###### STARTING PREPROCESSING #####" << endl;
-	if (c.ddm.getNumPartition() != c.vit.getNumVertex()) {
+	if (c.ddm.getNumPartition() != c.vit.getNumVertex() | c.vit.getNumVertex() == 0) {
 		run_preprocessing(c);
 	}
 
@@ -39,7 +39,6 @@ int main(int argc, char *argv[])
 
 
 	// COMPUTATION
-	Timer compTime;
 	compTime.startTimer();
 
 	cout << "###### STARTING COMPUTATION #####" << endl;

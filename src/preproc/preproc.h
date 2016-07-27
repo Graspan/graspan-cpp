@@ -32,9 +32,9 @@ private:
 
 
 public:
-	Preproc(char *fileName, Context &context);
+	Preproc(string fileName, Context &context);
 
-	void makeVIT(char *fileName, Context &context);
+	void makeVIT(string fileName, Context &context);
 	void makePart(Context &context);
 	void makeBinaryPart(Context &context);
 

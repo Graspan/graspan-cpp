@@ -2,7 +2,7 @@
 
 bool compareV(const pair<int, string> &lhs, const pair<int, string> &rhs);
 
-Preproc::Preproc(char *fileName, Context &context) {
+Preproc::Preproc(string fileName, Context &context) {
 	clock_t begin, end;
 	vitSize = context.getNumPartitions();
 	FILE *fp;
@@ -15,7 +15,7 @@ Preproc::Preproc(char *fileName, Context &context) {
 	begin = clock();
 	//fisrt file scan for count how many src is in the file
 	//for memory allocation it takes 19s
-	fp = fopen(fileName, "r");
+	fp = fopen(fileName.c_str(), "r");
 	while (NULL != fgets(buf, sizeof(buf), fp)) {
 		p_token = strtok_r(buf, "\n", &text);
 		p_token = strtok_r(buf, "\t", &text);
@@ -37,7 +37,7 @@ Preproc::Preproc(char *fileName, Context &context) {
 	//cout << "memory allocation time : " << ((end - begin) / CLOCKS_PER_SEC) << endl;
 }
 
-void Preproc::makeVIT(char *fileName, Context &context) {
+void Preproc::makeVIT(string fileName, Context &context) {
 	clock_t begin, end;
 	int src, dst, degree;
 	int size;
@@ -57,7 +57,7 @@ void Preproc::makeVIT(char *fileName, Context &context) {
 										  //second file scan for get the data and put in the 
 										  //data (vector of array) it takes 275s need to fix for improve the time complexity
 	begin = clock();
-	fp = fopen(fileName, "r");
+	fp = fopen(fileName.c_str(), "r");
 
 	//read file and save on the memory
 	if (fp != NULL) {
@@ -126,7 +126,7 @@ void Preproc::makeVIT(char *fileName, Context &context) {
 		endS = i;
 		sum += data[i].size();
 		if (sum >= size) {
-			cout << "sum =" << sum << "size =" << size << endl;
+		//	cout << "sum =" << sum << "size =" << size << endl;
 			vitDegree.push_back(0);
 			tempVIT.push_back(std::make_pair(startS, endS));
 			startS = i+1;

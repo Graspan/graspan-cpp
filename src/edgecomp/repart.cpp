@@ -10,7 +10,7 @@ void Repart::repartition(Partition &p1, Partition &p2, Context &context) {
 	vector<pair<vertexid_t, vertexid_t>> &tempVIT = context.vit.getVIT();
 
 	vector<Vertex> &dataTemp = p1.getData();
-	cout << "===" << p1.getID() << "CHECK START ===" << endl;
+//	cout << "===" << p1.getID() << "CHECK START ===" << endl;
 	check += dataTemp[0].getNumOutEdges();
 	for (i ; i < p1.getNumVertices() - 1; i++) {
 	//	cout << "getVertex = " << i << " " << dataTemp[i].getVertexID() << endl;
@@ -24,7 +24,7 @@ void Repart::repartition(Partition &p1, Partition &p2, Context &context) {
 		p2.setExist(false);
 		return;
 	}
-	cout << "===" << p1.getID() << "REP START ===" << endl;
+	//cout << "===" << p1.getID() << "REP START ===" << endl;
 //	cout << "sum = " << sum << " check = " << check << " p1 first = " << context.vit.getStart(p1.getID()) << " p1 end = " << dataTemp[i].getVertexID() << endl;
 	context.vit.setVITID(p1.getID(), context.vit.getStart(p1.getID()), dataTemp[i].getVertexID());
 	i++;
@@ -33,15 +33,15 @@ void Repart::repartition(Partition &p1, Partition &p2, Context &context) {
 	tempVIT.push_back(std::make_pair(dataTemp[i].getVertexID(), dataTemp[p1.getNumVertices() - 1].getVertexID()));
 
 	data.resize(p1.getNumVertices() - i);
-	cout << "coping from " << i << " to " << dataTemp.size() << endl;
+	//cout << "coping from " << i << " to " << dataTemp.size() << endl;
 	std::copy(dataTemp.begin() + i, dataTemp.end(), data.begin());
 
 
 	
 
 	
-	cout << "=== ERASE START === " << endl;
-	cout << "erasing from " << dataTemp.size() << " down to " << i << endl;
+	//cout << "=== ERASE START === " << endl;
+	//cout << "erasing from " << dataTemp.size() << " down to " << i << endl;
 	for (int idx = dataTemp.size()-1; idx >= i; --idx) {
 		//cout << "erase " << idx << "\t" ;
 		dataTemp.erase(dataTemp.begin() + idx);
@@ -49,7 +49,7 @@ void Repart::repartition(Partition &p1, Partition &p2, Context &context) {
 	//dataTemp.erase(dataTemp.end(), dataTemp.begin() + i - 1);
 	dataTemp.resize(i);
 
-	cout << "===" << p1.getID() << "ERASE DONE ===" << endl;
+	//cout << "===" << p1.getID() << "ERASE DONE ===" << endl;
 
 	p2.setData(data);
 	//cout << "test = " << context.getNumPartitions() << endl;
@@ -65,7 +65,7 @@ void Repart::repartition(Partition &p1, Partition &p2, Context &context) {
 
 
 //	cout << "p1 numEdges = " << p1.getNumEdges() << " p2 numEdges = " << p2.getNumEdges() << endl << endl;
-	VIT::writeToFile(context.vit);
+	context.vit.writeToFile("graph.vit");
 }
 
 void Repart::run(Partition &p1, Partition &p2, Context &context) {
@@ -77,10 +77,10 @@ void Repart::run(Partition &p1, Partition &p2, Context &context) {
 	context.ddm.setNumPartition(context.getNumPartitions());
 	context.ddm.reSize();
 
-	Partition::writeToFile(p1, true);
-	Partition::writeToFile(p2, true);
-	Partition::writeToFile(p12, true);
-	Partition::writeToFile(p22, true);
+	Partition::writeToFile(p1, false);
+	Partition::writeToFile(p2, false);
+	Partition::writeToFile(p12, false);
+	Partition::writeToFile(p22, false);
 
 
 	p1.calc_ddr(context);

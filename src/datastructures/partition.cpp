@@ -125,15 +125,15 @@ void Partition::calc_ddr(Context &context)	{
 		for (int j = 0; j < data[i].getNumOutEdges(); j++) {
 			if (id != context.vit.partition(data[i].getOutEdge(j)) && context.vit.partition(data[i].getOutEdge(j)) != -1) {
 				if (ddmMap[id][context.vit.partition(data[i].getOutEdge(j))] < 0)
-					tempDdm[context.vit.partition(data[i].getOutEdge(j))] -= 1 / (double)numEdges;
+					tempDdm[context.vit.partition(data[i].getOutEdge(j))] -= 1;
 				else
-					tempDdm[context.vit.partition(data[i].getOutEdge(j))] += 1 / (double)numEdges;
+					tempDdm[context.vit.partition(data[i].getOutEdge(j))] += 1;
 			}
 		}
 	}
 	for (int i = 0; i < tempDdm.size(); i++) {
 		//cout << "id = " << id << " value = " << tempDdm[i] << endl;
-		ddmMap[id][i] = tempDdm[i];
+		ddmMap[id][i] = tempDdm[i] / (double)numEdges;
 	}
 }
 
