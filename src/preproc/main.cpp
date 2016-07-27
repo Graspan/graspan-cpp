@@ -1,7 +1,5 @@
 #include "preproc.h"
 #include "../edgecomp/grammar.cpp"
-#include "../datastructures/loader.h"
-#include "../edgecomp/repart.h"
 #include "../datastructures/context.h"
 #include "../datastructures/DDM.h"
 
@@ -18,10 +16,10 @@ int main(int argc, char *argv[]) {
 		cout << "file is not exist" << std::endl;
 		exit(1);
 	}
+	cout << argv[1] << endl;
 	Preproc pre(argv[1], c);
 	cout << "makePreproc " << endl;
 	pre.setMapInfo(g.getMapInfo(), g.getErules());
-	Loader load;
 	begin = clock();
 	pre.makeVIT(argv[1], c);		//need to fix input file
 	end = clock();
@@ -42,8 +40,6 @@ int main(int argc, char *argv[]) {
 	cout << "makeBinaryPart time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 
 	//cout << c.ddm.toString();
-	int p, q;
-	Partition p1, p2;
 
 	return 0;
 }

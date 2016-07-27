@@ -30,6 +30,7 @@ class DDM{
   inline void set(partitionid_t p, partitionid_t q, double rate) {
     ddmMap[p][q] = rate;
   }
+  int getNumPartition();
 
   void adjust(int p);
 
@@ -50,6 +51,7 @@ class DDM{
   // if repartitioning happens, 1 or 2 new partition can happen, that means DDM needs to be enlarged
   // you should figure out how to implement this resizing logic efficiently
   void reSize();
+
 
   bool load_DDM(string fname);
   bool save_DDM(string fname); //assist computation

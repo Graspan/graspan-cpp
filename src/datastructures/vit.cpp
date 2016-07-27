@@ -1,11 +1,6 @@
 #include "vit.h"
 
 //Constructor
-VIT::VIT(vector<pair<int, int>> vit) { 
-  assert (false, "should not call this - pass by value"); 
-  this->vit = vit; 
-}
-
 //ALL small methods should be inlined instead!!!
 
 //Getters
@@ -21,6 +16,11 @@ vector<int> &VIT::getDegree()
 int VIT::getDegree(int pid)
 {
 	return degree[pid];
+}
+
+int VIT::getNumVertex()
+{
+	return vit.size();
 }
 
 //Setters
@@ -57,34 +57,45 @@ int VIT::partition(vertexid_t vid)
 	return -1;
 }
 
-void VIT::writeToFile(VIT & v)
+bool VIT::writeToFile(string fname)
 {
 	FILE *fp;
-	string str = "../resources/" + GRAP + ".vit"; // this should not be hard coded like this, when you run the system, the path is not same as us
+	//string str = "../resources/" + GRAP + ".vit"; // this should not be hard coded like this, when you run the system, the path is not same as us
 
-	fp = fopen(str.c_str(), "w");
-	for (int i = 0; i < v.vit.size(); i++) {
-		fprintf(fp, "%d\t%d\t%d\n", i, v.vit[i].first, v.vit[i].second);
+	fp = fopen(fname.c_str(), "w");
+	if (fp != NULL) {
+
+		for (int i = 0; i < vit.size(); i++) {
+			fprintf(fp, "%d\t%d\t%d\n", i, vit[i].first, vit[i].second);
+		}
+		fclose(fp);
 	}
-	fclose(fp);
+	else {
+		assert(false, "cannot write vit_file");
+		return false;
+	}
+	return true;
 }
 
-void VIT::loadFromFile(VIT &v)
+bool VIT::loadFromFile(string fname)
 {
 	FILE *fp;
-	string str = "../resources/" + GRAP + ".vit"; // this should not be hard coded like this, when you run the system, the path is not same as us
-	v.vit.clear();
+//	string str = "../resources/" + GRAP + ".vit"; // this should not be hard coded like this, when you run the system, the path is not same as us
+	vit.clear();
 	int i,start,end;
-	fp = fopen(str.c_str(), "r");
-  if (fp != NULL) { 
-    while (fscanf(fp, "%d\t%d\t%d\n", &i, &start, &end) != EOF) {
-      v.vit.push_back(std::make_pair(start, end));
-    }
-    fclose(fp);
-  } else {
-    assert (false, "cannot open vit_file");
-  }
-	
+
+	fp = fopen(fname.c_str(), "r");
+
+	if (fp != NULL) { 
+		while (fscanf(fp, "%d\t%d\t%d\n", &i, &start, &end) != EOF) {
+			vit.push_back(std::make_pair(start, end));
+		}
+		fclose(fp);
+	}else {
+		assert(false, "cannot open vit_file");
+		return false;
+	}
+	return true;	
 }
 
 string VIT::toString() {

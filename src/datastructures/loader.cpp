@@ -15,6 +15,7 @@ bool Loader::loadPartition(int id, Partition &p, bool readable)
 	int src, degree, dst;
 	int numVertices = 0;
 	int i = 0;
+	int temp;
 	string str;
 	char *ctemp[2];
 	char buf[4096];
@@ -111,8 +112,10 @@ bool Loader::loadPartition(int id, Partition &p, bool readable)
 				vector<vertexid_t> outEdges;
 				vector<label_t> outEdgeValues;
 				fread(&degree, 4, 1, fp);
+				temp = degree*5;
 				size += degree;
 				numVertices++;
+				//
 				for (int i = 0; i < degree; i++) {
 					fread(&dst, 4, 1, fp);
 

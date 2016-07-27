@@ -25,7 +25,7 @@ Preproc::Preproc(char *fileName, Context &context) {
 	}
 	fclose(fp);
 	end = clock();
-	cout << "Preproc data count time : " << ((end - begin) / CLOCKS_PER_SEC) << endl;
+	//cout << "Preproc data count time : " << ((end - begin) / CLOCKS_PER_SEC) << endl;
 
 	//memory allocation, it takes 10s
 	begin = clock();
@@ -34,7 +34,7 @@ Preproc::Preproc(char *fileName, Context &context) {
 	for (int i = 0; i < dataSize; i++)
 		dataInfo[i] = false;
 	end = clock();
-	cout << "memory allocation time : " << ((end - begin) / CLOCKS_PER_SEC) << endl;
+	//cout << "memory allocation time : " << ((end - begin) / CLOCKS_PER_SEC) << endl;
 }
 
 void Preproc::makeVIT(char *fileName, Context &context) {
@@ -94,7 +94,7 @@ void Preproc::makeVIT(char *fileName, Context &context) {
 	}
 	fclose(fp);*/
 	end = clock();
-	cout << "makeVIT data input time : " << ((end - begin) / CLOCKS_PER_SEC) << endl;
+	//cout << "makeVIT data input time : " << ((end - begin) / CLOCKS_PER_SEC) << endl;
 
 	//sorting the vector of array
 	begin = clock();
@@ -115,13 +115,13 @@ void Preproc::makeVIT(char *fileName, Context &context) {
 		count += data[i].size();
 
 	//make vit
-	cout << count - vitSize*(int)(count / vitSize) << endl;
+	//cout << count - vitSize*(int)(count / vitSize) << endl;
 	if (count - vitSize*(int)(count / vitSize) < vitSize / (float)2)
 		size = count / vitSize;
 	else
 		size = count / vitSize + 1;
 	vitSize = 0;
-	cout << "count =" << count << " size =" << size << endl;
+	//cout << "count =" << count << " size =" << size << endl;
 	for (i = 0; i <= dataSize; i++) {
 		endS = i;
 		sum += data[i].size();
@@ -157,8 +157,8 @@ void Preproc::makeVIT(char *fileName, Context &context) {
 		vitDegree[j] = sum;
 	}
 	end = clock();
-	VIT::writeToFile(context.vit);
-	cout << "makeVIT sorting time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
+	context.vit.writeToFile("graph.vit");
+	//cout << "makeVIT sorting time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 
 }
 

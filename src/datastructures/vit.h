@@ -18,7 +18,6 @@ private:
 public:
 	//Constructors
 	VIT() {};
-	VIT(vector<pair<int, int>> vit); // this should not be called since it's passed by value
 	
 
 	//Getters
@@ -27,6 +26,7 @@ public:
 	int getEnd(int pid);
 	vector<int> &getDegree();
 	int getDegree(int pid);
+	int getNumVertex();
 
 	//Setters
 	void setVIT(vector<pair<int, int>> vit);
@@ -47,9 +47,9 @@ public:
 	// also VIT adds new entry for the newly-created partition
 	//void modify(partitionid_t pid); 
 
-	static void writeToFile(VIT& v);
+	bool writeToFile(string fname);
 
-	static void loadFromFile(VIT &v);
+	bool loadFromFile(string fname);
 	
 };
 

@@ -1,5 +1,6 @@
 #include "../../test/timer.h"
 #include "../edgecomp/engine.h"
+#include "../preproc/run_pre.h"
 #include "../datastructures/vit.h"
 
 #include "../utilities/globalDefinitions.hpp"
@@ -17,8 +18,24 @@ int main(int argc, char *argv[])
 		cout << "execution failed: couldn't load grammar" << endl;
 		return 12;
 	}
+	
+	if (!c.vit.loadFromFile("grammar.vit")) {
+		cout << "execution failed: couldn't load VIT" << endl;
+		return 12;
+	}
+	
+	// PREPROCESSING
+	Timer compTime;
+	compTime.startTimer();
 
-	VIT::loadFromFile(c.vit);
+	cout << "###### STARTING PREPROCESSING #####" << endl;
+	if (c.ddm.getNumPartition() != c.vit.getNumVertex()) {
+		run_preprocessing(c);
+	}
+
+	compTime.endTimer();
+	cout << "TOTAL TIME: " << compTime.toString() << endl;
+
 
 
 	// COMPUTATION
