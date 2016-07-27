@@ -1,10 +1,12 @@
 CC=g++ -std=c++0x
 
 # will eventually need to use threads
-CFLAGS=-fopenmp -ggdb
+CFLAGS=-ggdb
 
 
 ##### source files #####
+# preprocessing
+PREP=preproc/preproc.cpp preproc/run_pre.cpp
 # edge computation
 COMPUTATION=edgecomp/engine.cpp edgecomp/compute.cpp edgecomp/edgemerger.cpp edgecomp/repart.cpp
 LOADER=datastructures/loader.cpp edgecomp/grammar.cpp
@@ -13,14 +15,9 @@ DATASTRUCTS=datastructures/vertex.cpp datastructures/loadedvertexinterval.cpp da
 TEST=../test/timer.cpp
 
 
+
+
 ##### build rules #####
-all: comp
-
-# prepessing
-#prep: $(PREPROC)
-#	$(CC) $(PREPROC) -o ../bin/prep
-
-# edge computation program
-comp: dispatcher/graspan.cpp $(LOADER) $(COMPUTATION) $(DATASTRUCTS) $(TEST)
-	$(CC) $(CFLAGS) dispatcher/graspan.cpp $(LOADER) $(COMPUTATION) $(DATASTRUCTS) $(TEST) -o ../bin/comp
+comp: dispatcher/graspan.cpp $(PREP) $(LOADER) $(COMPUTATION) $(DATASTRUCTS) $(TEST)
+	$(CC) $(CFLAGS) dispatcher/graspan.cpp $(PREP) $(LOADER) $(COMPUTATION) $(DATASTRUCTS) $(TEST) -o ../bin/comp
 
