@@ -26,7 +26,7 @@ public:
 	int getEnd(int pid);
 	vector<int> &getDegree();
 	int getDegree(int pid);
-	int getNumVertex();
+	int getNumVertex(); // TODO: rename this, this is misleading; it eturns vit.size()
 
 	//Setters
 	void setVIT(vector<pair<int, int>> vit);

@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
 	compTime.startTimer();
 
 	cout << "###### STARTING PREPROCESSING #####" << endl;
-	if (c.ddm.getNumPartition() != c.vit.getNumVertex() | c.vit.getNumVertex() == 0) {
+	if (c.ddm.getNumPartition() != c.vit.getNumVertex() || c.vit.getNumVertex() == 0) {
 		run_preprocessing(c);
 	}
 
