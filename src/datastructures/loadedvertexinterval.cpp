@@ -1,9 +1,10 @@
 #include "loadedvertexinterval.h"
 
 // Constructor
-LoadedVertexInterval::LoadedVertexInterval(int partitionID)
+LoadedVertexInterval::LoadedVertexInterval(int pID)
 {
-	this->partitionID = partitionID;
+	partitionID = pID;
+	newEdgeAdded = false;
 }
 
 

@@ -75,7 +75,7 @@ int run_computation(Context &context)
 		repartTimer.endTimer();
 		cout << "== REPA END ==" << endl;
 
-		if (totNewEdges <= 0) context.ddm.markTerminate(p, q);
+		if (totNewEdges <= 0) context.ddm.markTerminate(p, q, intervals[0].hasNewEdges(), intervals[1].hasNewEdges());
 
 		cout << "===== ROUND INFO =====" << endl;
 		cout << "NEW EDGES: " << totNewEdges << endl;
@@ -105,7 +105,6 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 
 		totNewEdges += newEdgesThisIter;
 
-		if (totNewEdges > MAX_NEW_EDGES) break;
 	} while (newEdgesThisIter > 0);
 }
 

@@ -1,7 +1,7 @@
 CC=g++ -std=c++0x
 
 # will eventually need to use threads
-CFLAGS=-lpthread
+CFLAGS=-fopenmp -ggdb
 
 
 ##### source files #####
@@ -22,5 +22,5 @@ all: comp
 
 # edge computation program
 comp: dispatcher/graspan.cpp $(LOADER) $(COMPUTATION) $(DATASTRUCTS) $(TEST)
-	$(CC) -ggdb dispatcher/graspan.cpp $(LOADER) $(COMPUTATION) $(DATASTRUCTS) $(TEST) -o ../bin/comp
+	$(CC) $(CFLAGS) dispatcher/graspan.cpp $(LOADER) $(COMPUTATION) $(DATASTRUCTS) $(TEST) -o ../bin/comp
 
