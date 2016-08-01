@@ -16,25 +16,30 @@ Preproc::Preproc(string fileName, Context &context) {
 	//fisrt file scan for count how many src is in the file
 	//for memory allocation it takes 19s
 	fp = fopen(fileName.c_str(), "r");
-	while (NULL != fgets(buf, sizeof(buf), fp)) {
-		p_token = strtok_r(buf, "\n", &text);
-		p_token = strtok_r(buf, "\t", &text);
-		src = atoi(p_token);
-		if (src > dataSize)
-			dataSize = src;
-	}
-	fclose(fp);
-	end = clock();
-	//cout << "Preproc data count time : " << ((end - begin) / CLOCKS_PER_SEC) << endl;
+	if (fp != NULL) {
+		while (NULL != fgets(buf, sizeof(buf), fp)) {
+			p_token = strtok_r(buf, "\n", &text);
+			p_token = strtok_r(buf, "\t", &text);
+			src = atoi(p_token);
+			if (src > dataSize)
+				dataSize = src;
+		}
+		fclose(fp);
+		end = clock();
+		//cout << "Preproc data count time : " << ((end - begin) / CLOCKS_PER_SEC) << endl;
 
-	//memory allocation, it takes 10s
-	begin = clock();
-	data = new vector<pair<int, string>>[dataSize + 1];
-	dataInfo = new bool[dataSize];
-	for (int i = 0; i < dataSize; i++)
-		dataInfo[i] = false;
-	end = clock();
-	//cout << "memory allocation time : " << ((end - begin) / CLOCKS_PER_SEC) << endl;
+		//memory allocation, it takes 10s
+		begin = clock();
+		data = new vector<pair<int, string>>[dataSize + 1];
+		dataInfo = new bool[dataSize];
+		for (int i = 0; i < dataSize; i++)
+			dataInfo[i] = false;
+		end = clock();
+		//cout << "memory allocation time : " << ((end - begin) / CLOCKS_PER_SEC) << endl;
+	}
+	else {
+		assert(false, "Cannot open file ");
+	}
 }
 
 void Preproc::makeVIT(string fileName, Context &context) {
@@ -58,108 +63,111 @@ void Preproc::makeVIT(string fileName, Context &context) {
 										  //data (vector of array) it takes 275s need to fix for improve the time complexity
 	begin = clock();
 	fp = fopen(fileName.c_str(), "r");
-
-	//read file and save on the memory
 	if (fp != NULL) {
-		while (fscanf(fp, "%d\t%d\t%s\n", &src, &dst, ctemp) != EOF) {
-			label += ctemp;
+		//read file and save on the memory
+		if (fp != NULL) {
+			while (fscanf(fp, "%d\t%d\t%s\n", &src, &dst, ctemp) != EOF) {
+				label += ctemp;
+				data[src].push_back(std::make_pair(dst, label));
+				dataInfo[src] = true;
+				label = "";
+			}
+			fclose(fp);
+		}
+		else {
+			assert(false, "cannot open vit_file");
+		}
+		/*
+		while (NULL != fgets(buf, sizeof(buf), fp)) {
+			p_token = strtok_r(buf, "\n", &text);
+			if (buf == NULL)
+				cout << "TTTTTTTT!" << endl;
+			p_token = strtok_r(buf, "\t", &text);
+			while (p_token != NULL) {
+				ctemp[i++] = p_token;
+				p_token = strtok_r(NULL, "\t", &text);
+			}
+			src = atoi(ctemp[0]);
+			dst = atoi(ctemp[1]);
+			label = ctemp[2];
+
 			data[src].push_back(std::make_pair(dst, label));
+			//dataInfo[dst] = true;
 			dataInfo[src] = true;
-			label = "";
+			i = 0;
+			cout << src << " " << dst << endl;
 		}
-		fclose(fp);
-	}
-	else {
-		assert(false, "cannot open vit_file");
-	}
-	/*
-	while (NULL != fgets(buf, sizeof(buf), fp)) {
-		p_token = strtok_r(buf, "\n", &text);
-		if (buf == NULL)
-			cout << "TTTTTTTT!" << endl;
-		p_token = strtok_r(buf, "\t", &text);
-		while (p_token != NULL) {
-			ctemp[i++] = p_token;
-			p_token = strtok_r(NULL, "\t", &text);
+		fclose(fp);*/
+		end = clock();
+		//cout << "makeVIT data input time : " << ((end - begin) / CLOCKS_PER_SEC) << endl;
+
+		//sorting the vector of array
+		begin = clock();
+		for (i = 0; i <= dataSize; i++) {
+			if (data[i].size() == 0 && !dataInfo[i])
+				continue;
+			if (startS == -1)
+				startS = i;
+			for (it_e = eRules.begin(); it_e != eRules.end(); it_e++) {	//add 
+				label = *it_e;
+				data[i].push_back(std::make_pair(i, label));
+				count++;
+			}
+			std::sort(data[i].begin(), data[i].end(), compareV);
+			data[i].erase(unique(data[i].begin(), data[i].end()), data[i].end());
 		}
-		src = atoi(ctemp[0]);
-		dst = atoi(ctemp[1]);
-		label = ctemp[2];
+		for (i = 0; i <= dataSize; i++)
+			count += data[i].size();
 
-		data[src].push_back(std::make_pair(dst, label));
-		//dataInfo[dst] = true;
-		dataInfo[src] = true;
-		i = 0;
-		cout << src << " " << dst << endl;
-	}
-	fclose(fp);*/
-	end = clock();
-	//cout << "makeVIT data input time : " << ((end - begin) / CLOCKS_PER_SEC) << endl;
-
-	//sorting the vector of array
-	begin = clock();
-	for (i = 0; i <= dataSize; i++) {
-		if (data[i].size() == 0 && !dataInfo[i])
-			continue;
-		if (startS == -1)
-			startS = i;
-		for (it_e = eRules.begin(); it_e != eRules.end(); it_e++) {	//add 
-			label = *it_e;
-			data[i].push_back(std::make_pair(i, label));
-			count++;
+		//make vit
+		//cout << count - vitSize*(int)(count / vitSize) << endl;
+		if (count - vitSize*(int)(count / vitSize) < vitSize / (float)2)
+			size = count / vitSize;
+		else
+			size = count / vitSize + 1;
+		vitSize = 0;
+		//cout << "count =" << count << " size =" << size << endl;
+		for (i = 0; i <= dataSize; i++) {
+			endS = i;
+			sum += data[i].size();
+			if (sum >= size) {
+				//	cout << "sum =" << sum << "size =" << size << endl;
+				vitDegree.push_back(0);
+				tempVIT.push_back(std::make_pair(startS, endS));
+				startS = i + 1;
+				sum = 0;
+				vitSize++;
+			}
 		}
-		std::sort(data[i].begin(), data[i].end(), compareV);
-		data[i].erase(unique(data[i].begin(), data[i].end()), data[i].end());
-	}
-	for (i = 0; i <= dataSize; i++)
-		count += data[i].size();
-
-	//make vit
-	//cout << count - vitSize*(int)(count / vitSize) << endl;
-	if (count - vitSize*(int)(count / vitSize) < vitSize / (float)2)
-		size = count / vitSize;
-	else
-		size = count / vitSize + 1;
-	vitSize = 0;
-	//cout << "count =" << count << " size =" << size << endl;
-	for (i = 0; i <= dataSize; i++) {
-		endS = i;
-		sum += data[i].size();
-		if (sum >= size) {
-		//	cout << "sum =" << sum << "size =" << size << endl;
-			vitDegree.push_back(0);
+		if (sum != 0) {
 			tempVIT.push_back(std::make_pair(startS, endS));
-			startS = i+1;
-			sum = 0;
+			vitDegree.push_back(0);
 			vitSize++;
 		}
-	}
-	if (sum != 0) {
-		tempVIT.push_back(std::make_pair(startS, endS));
-		vitDegree.push_back(0);
-		vitSize++;
-	}
-	context.setNumPartitions(vitSize);
-	context.vit.setDegree(vitSize);
+		context.setNumPartitions(vitSize);
+		context.vit.setDegree(vitSize);
 
 
-	sum = 0;
-	j = 0;
+		sum = 0;
+		j = 0;
 
-	for (i = 0; i <= dataSize; i++) {
-		sum += data[i].size();
-		if (sum >= size) {
-			vitDegree[j++] = sum;
-			sum = 0;
+		for (i = 0; i <= dataSize; i++) {
+			sum += data[i].size();
+			if (sum >= size) {
+				vitDegree[j++] = sum;
+				sum = 0;
+			}
 		}
+		if (sum != 0) {
+			vitDegree[j] = sum;
+		}
+		end = clock();
+		context.vit.writeToFile("graph.vit");
+		//cout << "makeVIT sorting time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 	}
-	if (sum != 0) {
-		vitDegree[j] = sum;
+	else {
+		assert(false, "Cannot open human file " + id);
 	}
-	end = clock();
-	context.vit.writeToFile("graph.vit");
-	//cout << "makeVIT sorting time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
-
 }
 
 void Preproc::makePart(Context &context) {
@@ -176,27 +184,32 @@ void Preproc::makePart(Context &context) {
 		name = GRAP + "." + PART + "." + HUMA + "." + str.c_str();
 
 		f = fopen(name.c_str(), "a");
-		for (int j = start; j <= context.vit.getEnd(i); j++) {
-			if (data[j].size() != 0) {
-				fprintf(f, "%d\t%d\t", j, data[j].size());
-				for (int k = 0; k < data[j].size(); k++) {
-					for (int l = 1; l < mapInfo.size(); l++) {
-						if (strcmp(data[j][k].second.c_str(), mapInfo[l].c_str()) == 0) {
-							fprintf(f, "%d\t%d\t", data[j][k].first, l);
-							break;
+		if (f != NULL) {
+			for (int j = start; j <= context.vit.getEnd(i); j++) {
+				if (data[j].size() != 0) {
+					fprintf(f, "%d\t%d\t", j, data[j].size());
+					for (int k = 0; k < data[j].size(); k++) {
+						for (int l = 1; l < mapInfo.size(); l++) {
+							if (strcmp(data[j][k].second.c_str(), mapInfo[l].c_str()) == 0) {
+								fprintf(f, "%d\t%d\t", data[j][k].first, l);
+								break;
+							}
 						}
-					}
-					if (i != context.vit.partition(data[j][k].first) && context.vit.partition(data[j][k].first) != -1) {
-						ddmMap[i][context.vit.partition(data[j][k].first)] += 1 / (double)context.vit.getDegree(i);
-					}
+						if (i != context.vit.partition(data[j][k].first) && context.vit.partition(data[j][k].first) != -1) {
+							ddmMap[i][context.vit.partition(data[j][k].first)] += 1 / (double)context.vit.getDegree(i);
+						}
 
 
+					}
+					fprintf(f, "\n");
 				}
-				fprintf(f, "\n");
 			}
+			fclose(f);
+			start = context.vit.getEnd(i) + 1;
 		}
-		fclose(f);
-		start = context.vit.getEnd(i) + 1;
+		else {
+			assert(false, "Cannot make human file ");
+		}
 	}
 }
 
@@ -213,27 +226,32 @@ void Preproc::makeBinaryPart(Context &context) {
 		name = GRAP + "." + PART + "." + BINA + "." + str.c_str();
 
 		f = fopen(name.c_str(), "ab");
-		for (int j = start; j <= context.vit.getEnd(i); j++) {
-			if (data[j].size() != 0) {
+		if (f != NULL) {
+			for (int j = start; j <= context.vit.getEnd(i); j++) {
+				if (data[j].size() != 0) {
 
-				fwrite((const void*)& j, sizeof(int), 1, f);
-				degree = data[j].size();
-				fwrite((const void*)&degree, sizeof(int), 1, f);
-				for (int k = 0; k < data[j].size(); k++) {
-					for (int l = 0; l < mapInfo.size(); l++) {
-						if (strcmp(data[j][k].second.c_str(), mapInfo[l].c_str()) == 0) {
-							dst = data[j][k].first;
-							fwrite((const void*)& dst, sizeof(int), 1, f);
-							label = l;
-							fwrite((const void*)& label, sizeof(char), 1, f);
+					fwrite((const void*)& j, sizeof(int), 1, f);
+					degree = data[j].size();
+					fwrite((const void*)&degree, sizeof(int), 1, f);
+					for (int k = 0; k < data[j].size(); k++) {
+						for (int l = 0; l < mapInfo.size(); l++) {
+							if (strcmp(data[j][k].second.c_str(), mapInfo[l].c_str()) == 0) {
+								dst = data[j][k].first;
+								fwrite((const void*)& dst, sizeof(int), 1, f);
+								label = l;
+								fwrite((const void*)& label, sizeof(char), 1, f);
 
+							}
 						}
 					}
 				}
 			}
+			fclose(f);
+			start = context.vit.getEnd(i) + 1;
 		}
-		fclose(f);
-		start = context.vit.getEnd(i) + 1;
+		else {
+			assert(false, "Cannot make Binary file ");
+		}
 	}
 }
 

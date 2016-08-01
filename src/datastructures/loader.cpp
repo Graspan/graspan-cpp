@@ -19,6 +19,7 @@ bool Loader::loadPartition(int id, Partition &p, bool readable)
 	string str;
 	char *ctemp[2];
 	char buf[4096];
+	char *bbuf;
 	char *p_token = NULL;
 	char *context = NULL;
 	if (readable) {
@@ -112,27 +113,45 @@ bool Loader::loadPartition(int id, Partition &p, bool readable)
 				vector<vertexid_t> outEdges;
 				vector<label_t> outEdgeValues;
 				fread(&degree, 4, 1, fp);
+				temp = degree * 5;
+				size += degree;
+				numVertices++;
+				//
+				bbuf = (char *)malloc(temp);
+				fread(bbuf, temp, 1, fp);
+				for (int i = 0; i < temp; i += 5) {
+
+					dst = *((int*)(bbuf + i));
+					label = *((char*)(bbuf + 4 + i));
+
+					outEdges.push_back(dst);
+					outEdgeValues.push_back(label);
+					//	std::cout << dst << " " << (int)label << std::endl;
+				}
+				free(bbuf);
+				/*
 				temp = degree*5;
 				size += degree;
 				numVertices++;
 				//
 				for (int i = 0; i < degree; i++) {
-					fread(&dst, 4, 1, fp);
+				fread(&dst, 4, 1, fp);
 
-					fread(&label, 1, 1, fp);
+				fread(&label, 1, 1, fp);
 
-					outEdges.push_back(dst);
-					outEdgeValues.push_back(label);
-				}
-				Vertex v(0, src, outEdges, outEdgeValues);
-				data.push_back(v);
+				outEdges.push_back(dst);
+				outEdgeValues.push_back(label);
+				}*/
 			}
-			p.setID(id);
-			p.setNumEdges(size);
-			p.setNumVertices(numVertices);
-			fclose(fp);
-			return 1;
+			Vertex v(0, src, outEdges, outEdgeValues);
+			data.push_back(v);
 		}
+		p.setID(id);
+		p.setNumEdges(size);
+		p.setNumVertices(numVertices);
+		fclose(fp);
+		return 1;
+	}
 		else {
 			assert(false, "cant open bin file " + id);
 		}
