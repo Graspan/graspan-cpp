@@ -45,7 +45,7 @@ Preproc::Preproc(string fileName, Context &context) {
 void Preproc::makeVIT(string fileName, Context &context) {
 	clock_t begin, end;
 	int src, dst, degree;
-	int size;
+	int size, mSize, numVertex = 0;
 	string label;
 	char buf[512];
 	char ctemp[10];
@@ -61,7 +61,7 @@ void Preproc::makeVIT(string fileName, Context &context) {
 
 										  //second file scan for get the data and put in the 
 										  //data (vector of array) it takes 275s need to fix for improve the time complexity
-	begin = clock();
+	//begin = clock();
 	fp = fopen(fileName.c_str(), "r");
 	if (fp != NULL) {
 		//read file and save on the memory
@@ -98,11 +98,11 @@ void Preproc::makeVIT(string fileName, Context &context) {
 			cout << src << " " << dst << endl;
 		}
 		fclose(fp);*/
-		end = clock();
+		//end = clock();
 		//cout << "makeVIT data input time : " << ((end - begin) / CLOCKS_PER_SEC) << endl;
 
 		//sorting the vector of array
-		begin = clock();
+		//begin = clock();
 		for (i = 0; i <= dataSize; i++) {
 			if (data[i].size() == 0 && !dataInfo[i])
 				continue;
@@ -115,6 +115,7 @@ void Preproc::makeVIT(string fileName, Context &context) {
 			}
 			std::sort(data[i].begin(), data[i].end(), compareV);
 			data[i].erase(unique(data[i].begin(), data[i].end()), data[i].end());
+			numVertex++;
 		}
 		for (i = 0; i <= dataSize; i++)
 			count += data[i].size();
@@ -125,12 +126,33 @@ void Preproc::makeVIT(string fileName, Context &context) {
 			size = count / vitSize;
 		else
 			size = count / vitSize + 1;
+
+		mSize = numVertex * 8 + count * 5;
+		mSize /= context.getMemBudget();
 		vitSize = 0;
 		//cout << "count =" << count << " size =" << size << endl;
-		for (i = 0; i <= dataSize; i++) {
+		/*for (i = 0; i <= dataSize; i++) {
+			if (startS == -1)
+				startS = i;
 			endS = i;
 			sum += data[i].size();
 			if (sum >= size) {
+				//	cout << "sum =" << sum << "size =" << size << endl;
+				vitDegree.push_back(0);
+				tempVIT.push_back(std::make_pair(startS, endS));
+				startS = -1;
+				sum = 0;
+				vitSize++;
+			}
+		}*/
+		cout << "Size =" << size << ", Msize =" << mSize << endl;
+		for (i = 0; i <= dataSize; i++) {
+			if (data[i].size() == 0)
+				continue;
+			endS = i;
+			sum += data[i].size() * 5;
+			sum += 8;
+			if (sum >= context.getMemBudget()) {
 				//	cout << "sum =" << sum << "size =" << size << endl;
 				vitDegree.push_back(0);
 				tempVIT.push_back(std::make_pair(startS, endS));
@@ -144,24 +166,29 @@ void Preproc::makeVIT(string fileName, Context &context) {
 			vitDegree.push_back(0);
 			vitSize++;
 		}
+		cout << "NUMBER OF PARTITION =" << vitSize << endl;
 		context.setNumPartitions(vitSize);
 		context.vit.setDegree(vitSize);
 
 
 		sum = 0;
 		j = 0;
+		int mSum = 0;
 
 		for (i = 0; i <= dataSize; i++) {
 			sum += data[i].size();
-			if (sum >= size) {
+			mSum += data[i].size() * 5;
+			mSum += 8;
+			if (mSum >= context.getMemBudget()) {
 				vitDegree[j++] = sum;
 				sum = 0;
+				mSum = 0;
 			}
 		}
 		if (sum != 0) {
 			vitDegree[j] = sum;
 		}
-		end = clock();
+		//end = clock();
 		context.vit.writeToFile("graph.vit");
 		//cout << "makeVIT sorting time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 	}
@@ -240,7 +267,7 @@ void Preproc::makeBinaryPart(Context &context) {
 								fwrite((const void*)& dst, sizeof(int), 1, f);
 								label = l;
 								fwrite((const void*)& label, sizeof(char), 1, f);
-
+								continue;
 							}
 						}
 					}
