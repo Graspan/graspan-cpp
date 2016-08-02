@@ -14,6 +14,13 @@ class ComputationSet
 	vector<int> oldUnewEdges;	// old U new
 	vector<char> oldUnewVals;
 
+	// TEMP until better solution
+	vector<int> deltaEdges;
+	vector<char> deltaVals;
+
+	vector<int> oUnUdEdges;
+	vector<char> oUnUdVals;
+
 
 	public:
 	// Constructor
@@ -41,6 +48,21 @@ class ComputationSet
 
 	inline void setoldUnewEdges(vector<int> &oldUnewEdges) { this->oldUnewEdges = oldUnewEdges; }
 	inline void setoldUnewVals(vector<char> &oldUnewVals) { this->oldUnewVals = oldUnewVals; }
+
+	// TEMP until better solution
+	// delta getters and setters
+	inline vector<int> &getDeltaEdges() { return deltaEdges; }
+	inline vector<char> &getDeltaVals() { return deltaVals; }
+
+	inline void setDeltaEdges(vector<int> &deltaEdges) { this->deltaEdges = deltaEdges; }
+	inline void setDeltaVals(vector<char> &deltaVals) { this->deltaVals = deltaVals; }
+
+	// old U new U delta getters and setters
+	inline vector<int> &getoUnUdEdges() { return oUnUdEdges; }
+	inline vector<char> &getoUnUdVals() { return oUnUdVals; }
+
+	inline void setoUnUdEdges(vector<int> &oUnUdEdges) { this->oUnUdEdges = oUnUdEdges; }
+	inline void setoUnUdVals(vector<char> &oUnUdVals) { this->oUnUdVals = oUnUdVals; }
 };
 
 #endif

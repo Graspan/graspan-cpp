@@ -105,6 +105,16 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 
 		totNewEdges += newEdgesThisIter;
 
+		for (int i = 0; i < setSize; i++)
+		{
+			compsets[i].setOldEdges(compsets[i].getoldUnewEdges());
+			compsets[i].setOldVals(compsets[i].getoldUnewVals());
+			compsets[i].setoldUnewEdges(compsets[i].getoUnUdEdges());
+			compsets[i].setoldUnewVals(compsets[i].getoUnUdVals());
+			compsets[i].setNewEdges(compsets[i].getDeltaEdges());
+			compsets[i].setNewVals(compsets[i].getDeltaVals());
+		}
+
 	} while (newEdgesThisIter > 0);
 }
 

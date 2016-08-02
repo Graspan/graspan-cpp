@@ -71,14 +71,17 @@ long updateEdges(int vertInd, ComputationSet compsets[], LoadedVertexInterval in
 
 	em.mergeVectors(edgeVecsToMerge, valVecsToMerge, 0);
 
-	// each thead waits here until every other thread has finished merging
-	#pragma omp barrier
-	compSet->setOldEdges(compSet->getoldUnewEdges());
-	compSet->setOldVals(compSet->getoldUnewVals());
-	compSet->setoldUnewEdges(em.getoUnUdEdges());
-	compSet->setoldUnewVals(em.getoUnUdVals());
-	compSet->setNewEdges(em.getDeltaEdges());
-	compSet->setNewVals(em.getDeltaVals());
+	compSet->setDeltaEdges(em.getDeltaEdges());
+	compSet->setDeltaVals(em.getDeltaVals());
+	compSet->setoUnUdEdges(em.getoUnUdEdges());
+	compSet->setoUnUdVals(em.getoUnUdVals());
+	
+//	compSet->setOldEdges(compSet->getoldUnewEdges());
+//	compSet->setOldVals(compSet->getoldUnewVals());
+//	compSet->setoldUnewEdges(em.getoUnUdEdges());
+//	compSet->setoldUnewVals(em.getoUnUdVals());
+//	compSet->setNewEdges(em.getDeltaEdges());
+//	compSet->setNewVals(em.getDeltaVals());
 
 	return em.getNumNewEdges();
 }
