@@ -16,6 +16,7 @@
 #include "../datastructures/vit.h"
 #include "../datastructures/DDM.h"
 #include "../datastructures/context.h"
+#include "../datastructures/partition.h"
 
 
 
@@ -29,6 +30,8 @@ private:
 	vector<string> mapInfo;
 	vector<pair<int, string>> *data;
 	bool *dataInfo;
+
+	//Partition *p;
 
 
 public:

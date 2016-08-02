@@ -175,6 +175,8 @@ void Preproc::makeVIT(string fileName, Context &context) {
 		j = 0;
 		int mSum = 0;
 
+		p = new Partition[vitSize];
+
 		for (i = 0; i <= dataSize; i++) {
 			sum += data[i].size();
 			mSum += data[i].size() * 5;
@@ -238,6 +240,42 @@ void Preproc::makePart(Context &context) {
 			assert(false, "Cannot make human file ");
 		}
 	}
+	
+	/*
+	int size = 0, numVertices = 0;
+	for (int i = 0; i < vitSize; i++) {
+		vector<Vertex>& pData = p[i].getData();
+		pData.clear();
+		vector<vertexid_t> outEdges;
+		vector<label_t> outEdgeValues;
+
+		for (int j = 0; j <= dataSize; j++) {
+			if (data[j].size() == 0)
+				continue;
+			size += data[j].size();
+			numVertices++;
+			for (int k = 0; k < data[j].size(); k++) {
+				outEdges.push_back(data[j][k].first);
+
+				for (int l = 1; l < mapInfo.size(); l++) {
+					if (strcmp(data[j][k].second.c_str(), mapInfo[l].c_str()) == 0) {
+						outEdgeValues.push_back(l);
+						break;
+					}
+				}
+			}
+			Vertex v(0, j, outEdges, outEdgeValues);
+			pData.push_back(v);
+		}
+		p[i].setID(i);
+		p[i].setNumEdges(size);
+		p[i].setNumVertices(numVertices);
+
+		cout << "Make partition " << endl;
+		Partition().writeToFile(p[i], true);
+
+		cout << "Save Partition " << i << endl;
+	}*/
 }
 
 void Preproc::makeBinaryPart(Context &context) {
