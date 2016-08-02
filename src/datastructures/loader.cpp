@@ -142,16 +142,16 @@ bool Loader::loadPartition(int id, Partition &p, bool readable)
 				outEdges.push_back(dst);
 				outEdgeValues.push_back(label);
 				}*/
+
+				Vertex v(0, src, outEdges, outEdgeValues);
+				data.push_back(v);
 			}
-			Vertex v(0, src, outEdges, outEdgeValues);
-			data.push_back(v);
+			p.setID(id);
+			p.setNumEdges(size);
+			p.setNumVertices(numVertices);
+			fclose(fp);
+			return 1;
 		}
-		p.setID(id);
-		p.setNumEdges(size);
-		p.setNumVertices(numVertices);
-		fclose(fp);
-		return 1;
-	}
 		else {
 			assert(false, "cant open bin file " + id);
 		}

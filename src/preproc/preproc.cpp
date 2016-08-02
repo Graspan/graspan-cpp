@@ -166,7 +166,7 @@ void Preproc::makeVIT(string fileName, Context &context) {
 		//cout << "makeVIT sorting time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 	}
 	else {
-		assert(false, "Cannot open human file " + id);
+		assert(false, "Cannot open file ");
 	}
 }
 
