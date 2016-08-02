@@ -2,7 +2,7 @@
 
 Logger::Logger(){
 	try{
-		fout.open("logFile");
+		fout.open("../resource/logFile");
 		if(!fout) throw 0;
 	} catch(int exception){
 		severe(exception);
