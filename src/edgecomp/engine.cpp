@@ -14,7 +14,7 @@ void initCompSets(ComputationSet compsets[], vector<Vertex> &part1, vector<Verte
 
 void initLVIs(LoadedVertexInterval intervals[], vector<Vertex> &part1, vector<Vertex> &part2);
 
-void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context);
+void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context, int sizeLim);
 
 void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context);
 
@@ -29,14 +29,17 @@ int run_computation(Context &context)
 	// load partitions into memory
 	Timer loadTimer, compTimer, repartTimer;
 	Partition p1, p2;
-	partitionid_t p, q;
+	partitionid_t p, q, oldP = -1, oldQ = -1;
 	int roundNo = 0;
 	while (context.ddm.nextPartitionPair(p, q))
 	{
 		cout << "##### STARTING ROUND " << ++roundNo << " #####" << endl;
 		loadTimer.startTimer();
-		Loader::loadPartition(p, p1, true);
-		Loader::loadPartition(q, p2, true);
+		if (p == oldP) Loader::loadPartition(p, p1, true);
+		if (q == oldQ) Loader::loadPartition(q, p2, true);
+		int sizeLim = (context.getMemBudget() / 2 - p1.getNumVertices() * 4) / 5;
+		oldP = p;
+		oldQ = q;
 		loadTimer.endTimer();
 //		cout << "===== DDM BEFORE COMP =====" << endl << context.ddm.toString() << endl;
 //		cout << "##### LOADED PARTITIONS TO COMPUTE #####" << endl;
@@ -54,7 +57,7 @@ int run_computation(Context &context)
 
 		cout << "== COMP START ==" << endl;
 		compTimer.startTimer();
-		computeEdges(compsets, setSize, intervals, context);
+		computeEdges(compsets, setSize, intervals, context, sizeLim);
 		compTimer.endTimer();
 		cout << "== COMP END ==" << endl;
 
@@ -93,7 +96,7 @@ int run_computation(Context &context)
  * @param compsets
  * @param intervals
  */
-void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context)
+void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context, int sizeLim)
 {
 	iterNo = 0;
 	totNewEdges = 0;
@@ -115,6 +118,10 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 			compsets[i].setNewVals(compsets[i].getDeltaVals());
 		}
 
+	cout << "EDGES THIS ITER: " << newEdgesThisIter << endl;
+	cout << "NEW EDGES TOTAL: " << totNewEdges << endl << endl;
+
+	if (totNewEdges > sizeLim) break;
 	} while (newEdgesThisIter > 0);
 }
 
