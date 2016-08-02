@@ -1,14 +1,17 @@
 #include "context.h"
 
 Context::Context(int argc, char** argv) {
-	string compare[5] = { MEM_BUDGET_KEY , NUM_PARTITION_KEY , MAX_EDGES_PER_PARTITION_KEY ,INSERT_SORT_FLAG ,ALTER_SCHEDULE_FLAG };
+	string compare[5] = { MEM_BUDGET_KEY , NUM_PARTITION_KEY , INSERT_SORT_FLAG ,ALTER_SCHEDULE_FLAG };
 	char *p_token = NULL;
 	char *context = NULL;
 
-	parameters.insert(std::make_pair(MEM_BUDGET_KEY, 3000));
+	//50MB
+	parameters.insert(std::make_pair(MEM_BUDGET_KEY, 52428800));
 	parameters.insert(std::make_pair(NUM_PARTITION_KEY, 10));
-	parameters.insert(std::make_pair(MAX_EDGES_PER_PARTITION_KEY, 20));
-
+	//src, numEdge = 8bytes dst, label = 5bytes
+	//worst case is use 13bytes per edges
+	parameters.insert(std::make_pair(MAX_EDGES_PER_PARTITION_KEY, parameters[MEM_BUDGET_KEY] / 13));
+	cout << "Max_Edges_Partition =" << (parameters[MEM_BUDGET_KEY]) / 13 << endl;
 	flags.insert(std::make_pair(INSERT_SORT_FLAG, false));
 	flags.insert(std::make_pair(ALTER_SCHEDULE_FLAG, false));
 
@@ -20,18 +23,16 @@ Context::Context(int argc, char** argv) {
 				p_token = strtok_r(argv[i], "=", &context);
 				if (j == 0) {
 					parameters.insert(std::make_pair(MEM_BUDGET_KEY, atoi(context)));
+					parameters.insert(std::make_pair(MAX_EDGES_PER_PARTITION_KEY, parameters[MEM_BUDGET_KEY] / 13));
 				}
 				else if (j == 1) {
 					parameters.insert(std::make_pair(NUM_PARTITION_KEY, atoi(context)));
-				}
+				}\
 				else if (j == 2) {
-					parameters.insert(std::make_pair(MAX_EDGES_PER_PARTITION_KEY, atoi(context)));
-				}
-				else if (j == 3) {
 					if (!strncmp(context, "true", 4))
 						flags.insert(std::make_pair(INSERT_SORT_FLAG, true));
 				}
-				else if (j == 4) {
+				else if (j == 3) {
 					if (!strncmp(context, "true", 4)) 
 						flags.insert(std::make_pair(ALTER_SCHEDULE_FLAG, true));
 				}
