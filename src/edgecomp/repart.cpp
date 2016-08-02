@@ -1,7 +1,7 @@
 #include "repart.h"
 
 void Repart::repartition(Partition &p1, Partition &p2, Context &context) {
-	int size = (context.getMemBudget / 2 - p1.getNumVertices() * 4) / 5;
+	int size = (context.getMemBudget() / 2 - p1.getNumVertices() * 4) / 5;
 	int sum = 0, check = 0;
 
 	int i = 0;
