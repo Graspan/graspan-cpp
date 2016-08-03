@@ -56,8 +56,11 @@ long updateEdges(int vertInd, ComputationSet compsets[], LoadedVertexInterval in
 
 
 	// TODO: use DDM to estimate num of rows needed
+	int part = (vertInd >= intervals[0].getIndexStart() && vertInd <= intervals[0].getIndexEnd()) ? 0 : 1;
 	vector< vector<double> > &ddm = context.ddm.getDdmMap();
-	int numRowsToMerge = 2 + compSet->getoldUnewEdges().size();
+	double ratio = ddm[part][1-part];
+	if (ratio < .25) ratio = .25;
+	int numRowsToMerge = 2 + (ratio * compSet->getoldUnewEdges().size());
 	vector< vector<int> > edgeVecsToMerge(numRowsToMerge);;
 	vector< vector<char> > valVecsToMerge(numRowsToMerge);
 
@@ -130,6 +133,10 @@ void genS_RuleEdges(vector<int> &newEdges, vector<char> &newVals,
 	for (int i = 0; i < newEdges.size(); i++) {
 		newEdgeVal = context.grammar.checkRules(newVals[i], 0);
 		if (newEdgeVal != (char)-1) {
+			if (rowMergeID == edgeVecsToMerge.size()) {
+				edgeVecsToMerge.push_back(vector<int>());
+				valVecsToMerge.push_back(vector<char>());
+			}
 			edgeVecsToMerge[rowMergeID].push_back(newEdges[i]);
 			valVecsToMerge[rowMergeID].push_back(newEdgeVal);
 		}
@@ -177,6 +184,10 @@ void checkEdges(int dstInd, char dstVal, ComputationSet compsets[],
 	{
 		newVal = context.grammar.checkRules(dstVal, vals[i]);
 		if (newVal != (char)-1) {
+			if (rowMergeID == edgeVecsToMerge.size()) {
+				edgeVecsToMerge.push_back(vector<int>());
+				valVecsToMerge.push_back(vector<char>());
+			}
 			edgeVecsToMerge[rowMergeID].push_back(edges[i]);
 			valVecsToMerge[rowMergeID].push_back(newVal);
 		}

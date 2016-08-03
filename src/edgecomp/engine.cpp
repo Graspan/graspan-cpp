@@ -1,6 +1,5 @@
 #include "engine.h"
 
-#define MAX_NEW_EDGES 3000000
 
 long totNewEdges;
 long newEdgesThisIter;
@@ -35,16 +34,12 @@ int run_computation(Context &context)
 	{
 		cout << "##### STARTING ROUND " << ++roundNo << " #####" << endl;
 		loadTimer.startTimer();
-		if (p == oldP) Loader::loadPartition(p, p1, true);
-		if (q == oldQ) Loader::loadPartition(q, p2, true);
+		if (p == oldP) Loader::loadPartition(p, p1, false);
+		if (q == oldQ) Loader::loadPartition(q, p2, false);
 		int sizeLim = (context.getMemBudget() / 2 - p1.getNumVertices() * 4) / 5;
 		oldP = p;
 		oldQ = q;
 		loadTimer.endTimer();
-//		cout << "===== DDM BEFORE COMP =====" << endl << context.ddm.toString() << endl;
-//		cout << "##### LOADED PARTITIONS TO COMPUTE #####" << endl;
-//		cout << p1.toString() << endl;
-//		cout << p2.toString() << endl << endl;;
 
 		vector<Vertex> &part1 = p1.getData(), &part2 = p2.getData();
 
