@@ -35,8 +35,8 @@ int run_computation(Context &context)
 	{
 		cout << "##### STARTING ROUND " << ++roundNo << " #####" << endl;
 		loadTimer.startTimer();
-		if (p != oldP) Loader::loadPartition(p, p1, true);
-		if (q != oldQ) Loader::loadPartition(q, p2, true);
+		if (p != oldP) Loader::loadPartition(p, p1, false);
+		if (q != oldQ) Loader::loadPartition(q, p2, false);
 		int sizeLim = (context.getMemBudget() / 2 - p1.getNumVertices() * 4) / 5;
 		oldP = p;
 		oldQ = q;
@@ -96,6 +96,8 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 {
 	iterNo = 0;
 	totNewEdges = 0;
+
+	cout << "NEW EDGES LIMIT: " << sizeLim << endl;
 	
 	do {
 		iterNo++;
@@ -114,10 +116,10 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 			compsets[i].setNewVals(compsets[i].getDeltaVals());
 		}
 
-	cout << "EDGES THIS ITER: " << newEdgesThisIter << endl;
-	cout << "NEW EDGES TOTAL: " << totNewEdges << endl << endl;
+		cout << "EDGES THIS ITER: " << newEdgesThisIter << endl;
+		cout << "NEW EDGES TOTAL: " << totNewEdges << endl << endl;
 
-	if (totNewEdges > sizeLim) break;
+		if (totNewEdges > sizeLim) break;
 	} while (newEdgesThisIter > 0);
 }
 

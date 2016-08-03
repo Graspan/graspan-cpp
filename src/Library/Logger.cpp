@@ -51,12 +51,12 @@ void Logger::warning(string str){
 }
 
 //if you want to add other error, you should add the case
-void Logger::severe(int exception){
-	switch(exception){
-	case 0:
+void Logger::severe(Error err){
+	switch(err){
+	case FOPEN:
 		cout << "can't make file" << endl;
 		break;
-	case 1:
+	case FCLOSE:
 		cout << "can't close file" << endl;
 		break;
 	default: break;
