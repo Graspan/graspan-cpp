@@ -12,11 +12,9 @@ private:
 	std::ofstream fout;
 	time_t cur_time;
 	struct tm *cur_tm;
-	//will reduce function
-	//it will fix to return string type
-	inline void Date(struct tm *cur_tm){cout << cur_tm->tm_year + 1900 << "." <<cur_tm->tm_mon << "." << cur_tm->tm_mday << "  " << cur_tm->tm_hour << ":" << cur_tm->tm_min << ":" << cur_tm->tm_sec << endl;}
-	inline void fDate(struct tm *cur_tm){fout << cur_tm->tm_year + 1900 << "." <<cur_tm->tm_mon << "." << cur_tm->tm_mday << "  " << cur_tm->tm_hour << ":" << cur_tm->tm_min << ":" << cur_tm->tm_sec << endl;}
-	//inline string Date(struct tm *cur_tm){return (cur_tm->tm_year + 1900) + "." + (cur_tm->tm_mon) + "." + (cur_tm->tm_mday) + " " + (cur_tm->tm_hour) ":" + (cur_tm->tm_min) + ":" + (cur_tm->tm_sec) + (" : ");}
+
+	char buf[1024];
+	inline void Date(struct tm *cur_tm){sprintf(buf,"%d.%02d.%02d %02d:%02d:%02d\n",cur_tm->tm_year + 1900, cur_tm->tm_mon, cur_tm->tm_mday, cur_tm->tm_hour, cur_tm->tm_min, cur_tm->tm_sec);}
 public:
 	Logger();
 	Logger(string logFile);
@@ -24,7 +22,7 @@ public:
 
 	void info(string str);
 	void warning(string str);
-	void severe(int execption);
+	void severe(Error err);
 };
 
 #endif
