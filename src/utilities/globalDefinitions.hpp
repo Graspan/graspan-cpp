@@ -29,6 +29,12 @@ typedef int partitionid_t;
 typedef std::string raw_label_t;
 typedef std::string string;
 
+// error codes
+enum Error
+{
+	FOPEN, FCLOSE
+};
+
 // constant value
 const int BytesPerVertexid = sizeof(vertexid_t);
 const int BytesPerLabel = sizeof(label_t);

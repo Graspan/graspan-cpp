@@ -34,8 +34,8 @@ int run_computation(Context &context)
 	{
 		cout << "##### STARTING ROUND " << ++roundNo << " #####" << endl;
 		loadTimer.startTimer();
-		if (p == oldP) Loader::loadPartition(p, p1, false);
-		if (q == oldQ) Loader::loadPartition(q, p2, false);
+		if (p != oldP) Loader::loadPartition(p, p1, false);
+		if (q != oldQ) Loader::loadPartition(q, p2, false);
 		int sizeLim = (context.getMemBudget() / 2 - p1.getNumVertices() * 4) / 5;
 		oldP = p;
 		oldQ = q;

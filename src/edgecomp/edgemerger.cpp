@@ -21,12 +21,6 @@ void EdgeMerger::mergeVectors(vector< vector<int> > &edgeVecsToMerge,
 	
 	fillPriorityQueue(edgeVecsToMerge, valVecsToMerge, srcID);
 
-	if (srcDeltaEdges.capacity() == 0) {
-		srcoUnUdEdges = edgeVecsToMerge[srcID];
-		srcoUnUdVals = valVecsToMerge[srcID]
-
-		return;
-	}
 	
     MinSet tgt;
     int max = std::numeric_limits<int>::max();
@@ -66,14 +60,12 @@ void EdgeMerger::fillPriorityQueue(vector< vector<int> > &edgeVecsToMerge, vecto
 	int totTgtRowSize = 0;
     for (int i = 1; i < edgeVecsToMerge.size(); i++)
     {
-		if (!edgeVecsToMerge[i].empty()) {
 			newminset.setMinSetID(i);
 			updateMinSet(newminset, edgeVecsToMerge[i], valVecsToMerge[i]);
 
 			totTgtRowSize += edgeVecsToMerge[i].size();
 			minEdges.push(newminset);
 			newminset.resetPtr();
-		}
     }
 
     srcDeltaEdges.reserve(totTgtRowSize);

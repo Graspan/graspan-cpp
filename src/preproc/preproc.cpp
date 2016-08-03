@@ -175,7 +175,6 @@ void Preproc::makeVIT(string fileName, Context &context) {
 		j = 0;
 		int mSum = 0;
 
-		p = new Partition[vitSize];
 
 		for (i = 0; i <= dataSize; i++) {
 			sum += data[i].size();
