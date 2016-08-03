@@ -3,9 +3,9 @@
 Logger::Logger(){
 	try{
 		fout.open("../resource/logFile");
-		if(!fout) throw 0;
-	} catch(int exception){
-		severe(exception);
+		if(!fout) throw FOPEN;
+	} catch(Error err){
+		severe(err);
 		return;
 	}	 
 }
@@ -13,9 +13,9 @@ Logger::Logger(){
 Logger::Logger(string logFile){
 	try{
 		fout.open(logFile);
-		if(!fout) throw 0;
-	} catch(int exception){
-		severe(exception);
+		if(!fout) throw FOPEN;
+	} catch(Error err){
+		severe(err);
 		return;
 	}	 
 }
@@ -23,9 +23,9 @@ Logger::Logger(string logFile){
 Logger::~Logger(){
 	try{
 		fout.close();
-		if(!fout) throw 1;
-	} catch(int exception){
-		severe(exception);
+		if(!fout) throw FCLOSE;
+	} catch(Error err){
+		severe(err);
 		return;
 	}
 }

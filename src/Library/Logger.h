@@ -5,7 +5,6 @@
 #include <fstream>
 #include <ctime>
 
-using namespace std;
 
 class Logger{
 private:
@@ -24,7 +23,7 @@ public:
 
 	void info(string str);
 	void warning(string str);
-	void severe(int execption);
+	void severe(Error err);
 };
 
 #endif

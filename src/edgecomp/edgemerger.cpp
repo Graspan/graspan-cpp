@@ -21,6 +21,12 @@ void EdgeMerger::mergeVectors(vector< vector<int> > &edgeVecsToMerge,
 	
 	fillPriorityQueue(edgeVecsToMerge, valVecsToMerge, srcID);
 
+	if (minEdges.empty()) {
+		srcoUnUdEdges = edgeVecsToMerge[srcID];
+		srcoUnUdVals = valVecsToMerge[srcID];
+
+		return;
+	}
 	
     MinSet tgt;
     int max = std::numeric_limits<int>::max();
@@ -54,18 +60,24 @@ void EdgeMerger::mergeVectors(vector< vector<int> > &edgeVecsToMerge,
 
 
 // PRIVATE
+/**
+ * given the vectors of edges to merge, create a priority queue to quickly find the edge with the lowest 
+ * dest vertex
+ */
 void EdgeMerger::fillPriorityQueue(vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge, int srcID)
 {
 	MinSet newminset;
 	int totTgtRowSize = 0;
     for (int i = 1; i < edgeVecsToMerge.size(); i++)
     {
+		if (!edgeVecsToMerge[i].empty()) {
 			newminset.setMinSetID(i);
 			updateMinSet(newminset, edgeVecsToMerge[i], valVecsToMerge[i]);
 
 			totTgtRowSize += edgeVecsToMerge[i].size();
 			minEdges.push(newminset);
 			newminset.resetPtr();
+		}
     }
 
     srcDeltaEdges.reserve(totTgtRowSize);
@@ -127,13 +139,10 @@ void EdgeMerger::processMinSets(MinSet &srcMS, MinSet &tgtMS, vector<int> &srcEd
             }
         }
         updateMinSet(tgtMS, tgtEdgesToMerge, tgtValsToMerge);
-        minEdges.push(tgtMS);
-
-        return;
     }
 
 	// case 2
-	if (srcMS.getCurrVID() == tgtMS.getCurrVID()) {
+	else if (srcMS.getCurrVID() == tgtMS.getCurrVID()) {
 		if (currID != tgtMS.getCurrVID()) {
 			currID = tgtMS.getCurrVID();
 			currEvals.clear();
@@ -152,13 +161,10 @@ void EdgeMerger::processMinSets(MinSet &srcMS, MinSet &tgtMS, vector<int> &srcEd
             }
         }
         updateMinSet(tgtMS, tgtEdgesToMerge, tgtValsToMerge);
-        minEdges.push(tgtMS);
-
-        return;
     }
 
 	// case 3
-	if (srcMS.getCurrVID() < tgtMS.getCurrVID()) {
+	else if (srcMS.getCurrVID() < tgtMS.getCurrVID()) {
 		if (currID != srcMS.getCurrVID()) {
 			currID = srcMS.getCurrVID();
 			currEvals.clear();
@@ -173,10 +179,9 @@ void EdgeMerger::processMinSets(MinSet &srcMS, MinSet &tgtMS, vector<int> &srcEd
             }
         }
         updateMinSet(srcMS, srcEdgesToMerge, srcValsToMerge);
-        minEdges.push(tgtMS);
-
-        return;
     }
+
+	minEdges.push(tgtMS);
 }
 
 void EdgeMerger::updateVector(int vid, char val, vector<int> &edges, vector<char> &vals, int &ptr)
