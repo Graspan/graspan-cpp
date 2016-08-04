@@ -27,7 +27,7 @@ Context::Context(int argc, char** argv) {
 				}
 				else if (j == 1) {
 					parameters.insert(std::make_pair(NUM_PARTITION_KEY, atoi(context)));
-				}\
+				}
 				else if (j == 2) {
 					if (!strncmp(context, "true", 4))
 						flags.insert(std::make_pair(INSERT_SORT_FLAG, true));

@@ -75,19 +75,19 @@ char Grammar::checkRules(string srcVal, string dstVal){
 
 //ex) checkRules("a","0");
 //ex) checkRules("a","b");
-label_t Grammar::checkRules(label_t srcVal, label_t dstVal){
+/*label_t Grammar::checkRules(label_t srcVal, label_t dstVal){
 	map<short,char>::iterator it;
 	if(dstVal!=0){
 		short key = changeShort(srcVal,dstVal);
 		it = rules.find(key);
-		return (it != rules.end()) ? (*it).second : char(-1);
+		return (it != rules.end()) ? (*it).second : label_t(-1);
 	}	
 	else{
 		short key = changeShort(0,srcVal);	
 		it = rules.find(key);
-		return (it != rules.end()) ? (*it).second : char(-1);
+		return (it != rules.end()) ? (*it).second : label_t(-1);
 	}
-}
+  }*/
 
 bool Grammar::print_all(){
 

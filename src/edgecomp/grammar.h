@@ -52,8 +52,28 @@ class Grammar{
   }
 
   //label_t checkRules(string srcVal, string dstVal);
+  inline label_t checkRules(label_t edgeVal) {
+    map<short,char>::iterator it;
+    short key = (short)edgeVal;
+    it = rules.find(key);
+    return (it != rules.end()) ? (*it).second : label_t(-1);
+  }
 
-  label_t checkRules(label_t srcVal, label_t dstVal);
+  inline label_t checkRules(label_t srcVal, label_t dstVal) {
+    map<short,char>::iterator it;
+    short key;
+
+    if(dstVal!=0){
+      key = changeShort(srcVal,dstVal);
+    }  
+    else{
+      key = changeShort(0,srcVal);
+    }
+
+    it = rules.find(key);
+    return (it != rules.end()) ? (*it).second : label_t(-1);
+  
+  }
 
 };
 
