@@ -37,7 +37,7 @@ class DDM{
   inline void markTerminate(partitionid_t p, partitionid_t q, bool newEdgesInP, bool newEdgesInQ) {
     cout << "DDM Terminate" << endl;
 	if (!newEdgesInP && ddmMap[p][q] > 0) ddmMap[p][q] *= -1;
- 	if (!newEdgesInQ && ddmMap[p][q] > 0) ddmMap[q][p] *= -1;
+ 	if (!newEdgesInQ && ddmMap[q][p] > 0) ddmMap[q][p] *= -1;
   }
 
   // the indices p and q tell which partitionRate[p][q] is max: i.e., this is our scheduler
