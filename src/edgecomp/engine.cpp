@@ -70,16 +70,17 @@ int run_computation(Context &context)
 	  }
 	  */
 		delete[] compsets;
+		if (totNewEdges > 0) {
+			cout << "== REPA START ==" << endl;
+			repartTimer.startTimer();
+			Repart::run(p1, p2, context);
+			repartTimer.endTimer();
 
-		cout << "== REPA START ==" << endl;
-		repartTimer.startTimer();	  
-		Repart::run(p1, p2, context);
-		repartTimer.endTimer();
 
+			cout << "== REPA END ==" << endl;
+		}
 
-		cout << "== REPA END ==" << endl;
-
-		if (totNewEdges <= 0) context.ddm.markTerminate(p, q, intervals[0].hasNewEdges(), intervals[1].hasNewEdges());
+		if (newEdgesThisIter <= 0) context.ddm.markTerminate(p, q, intervals[0].hasNewEdges(), intervals[1].hasNewEdges());
 
 		str = std::to_string((long long)roundNo);
 		name = string("DDM.") + str;

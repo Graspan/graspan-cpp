@@ -226,9 +226,6 @@ void Preproc::makePart(Context &context) {
 								break;
 							}
 						}
-						if (i == context.vit.partition(data[j][k].first) && context.vit.partition(data[j][k].first) != -1) {
-							ddmMap[i][context.vit.partition(data[j][k].first)] ++;
-						}
 						if (i != context.vit.partition(data[j][k].first) && context.vit.partition(data[j][k].first) != -1) {
 							ddmMap[i][context.vit.partition(data[j][k].first)] ++;
 						}
