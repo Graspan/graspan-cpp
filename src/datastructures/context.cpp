@@ -6,7 +6,7 @@ Context::Context(int argc, char** argv) {
 	char *context = NULL;
 
 	//50MB
-	parameters.insert(std::make_pair(MEM_BUDGET_KEY, 104857600));
+	parameters.insert(std::make_pair(MEM_BUDGET_KEY, 1000));
 	parameters.insert(std::make_pair(NUM_PARTITION_KEY, 10));
 	//src, numEdge = 8bytes dst, label = 5bytes
 	//worst case is use 13bytes per edges
