@@ -28,6 +28,8 @@ int run_computation(Context &context)
 {
 	// load partitions into memory
 	Timer loadTimer, compTimer, repartTimer;
+	string str;
+	string name;
 	Partition p1, p2;
 	partitionid_t p, q, oldP = -1, oldQ = -1;
 	int roundNo = 0;
@@ -41,6 +43,7 @@ int run_computation(Context &context)
 		oldP = p;
 		oldQ = q;
 		loadTimer.endTimer();
+		cout << "P =" << p << " Q =" << q << endl;
 
 		vector<Vertex> &part1 = p1.getData(), &part2 = p2.getData();
 
@@ -72,9 +75,15 @@ int run_computation(Context &context)
 		repartTimer.startTimer();	  
 		Repart::run(p1, p2, context);
 		repartTimer.endTimer();
+
+
 		cout << "== REPA END ==" << endl;
 
 		if (totNewEdges <= 0) context.ddm.markTerminate(p, q, intervals[0].hasNewEdges(), intervals[1].hasNewEdges());
+
+		str = std::to_string((long long)roundNo);
+		name = string("DDM.") + str;
+		context.ddm.save_DDM(name.c_str());
 
 		cout << "===== ROUND INFO =====" << endl;
 		cout << "NEW EDGES: " << totNewEdges << endl;

@@ -83,9 +83,9 @@ void Repart::run(Partition &p1, Partition &p2, Context &context) {
 	Partition::writeToFile(p22, false);
 
 
-	p1.calc_ddr(context);
-	p2.calc_ddr(context);
 	p12.calc_ddr(context);
 	p22.calc_ddr(context);
+	p1.calc_ddr(context);
+	double bonus = p2.calc_ddr(context);
 
 }
