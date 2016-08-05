@@ -68,7 +68,7 @@ void Repart::repartition(Partition &p1, Partition &p2, Context &context) {
 	context.vit.writeToFile("graph.vit");
 }
 
-void Repart::run(Partition &p1, Partition &p2, Context &context) {
+void Repart::run(Partition &p1, Partition &p2, Context &context, bool newEdgesInP, bool newEdgesInQ, bool terminate) {
 
 	Partition p12, p22;
 	repartition(p1, p12, context);
@@ -79,13 +79,30 @@ void Repart::run(Partition &p1, Partition &p2, Context &context) {
 
 	Partition::writeToFile(p1, false);
 	Partition::writeToFile(p2, false);
-	Partition::writeToFile(p12, false);
-	Partition::writeToFile(p22, false);
+
+	double bonus;
+	if (newEdgesInP)	bonus = p1.calc_ddr(context);
+	if (newEdgesInQ)	bonus = p2.calc_ddr(context);
+
+	if (p12.getExist()) {
+		cout << "p1 =" << p1.getID() << " p12 =" << p12.getID() << endl;
+		Partition::writeToFile(p12, false);
+		context.ddm.copy(p1.getID(), p12.getID());
+		bonus = p12.calc_ddr(context);
+
+		context.ddm.markTerminate(p1.getID(), p12.getID(), terminate, terminate);
+		context.ddm.markTerminate(p2.getID(), p12.getID(), terminate, terminate);
+	}
+	if (p22.getExist()) {
+		cout << "p2 =" << p2.getID() << " p12 =" << p22.getID() << endl;
+		Partition::writeToFile(p22, false);
+		context.ddm.copy(p2.getID(), p22.getID());
+
+		bonus = p22.calc_ddr(context);
+		context.ddm.markTerminate(p1.getID(), p22.getID(), terminate, terminate);
+		context.ddm.markTerminate(p2.getID(), p22.getID(), terminate, terminate);
+	}
 
 
-	p12.calc_ddr(context);
-	p22.calc_ddr(context);
-	p1.calc_ddr(context);
-	double bonus = p2.calc_ddr(context);
 
 }

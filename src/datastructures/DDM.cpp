@@ -56,6 +56,10 @@ void DDM::reSize() {
 		ddmMap[i].resize(numPartition, 0);
 }
 
+void DDM::copy(int p, int q) {
+	std::copy(ddmMap[p].begin(), ddmMap[p].end(), ddmMap[q].begin());
+}
+
 bool DDM::load_DDM(string fname){
 	std::ifstream fin;
 	fin.open(fname);

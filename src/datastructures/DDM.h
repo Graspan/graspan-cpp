@@ -51,6 +51,7 @@ class DDM{
   // if repartitioning happens, 1 or 2 new partition can happen, that means DDM needs to be enlarged
   // you should figure out how to implement this resizing logic efficiently
   void reSize();
+  void copy(int p, int q);
 
 
   bool load_DDM(string fname);

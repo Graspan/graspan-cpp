@@ -73,15 +73,19 @@ int run_computation(Context &context)
 		if (totNewEdges > 0) {
 			cout << "== REPA START ==" << endl;
 			repartTimer.startTimer();
-			Repart::run(p1, p2, context);
+			Repart::run(p1, p2, context, intervals[0].hasNewEdges(), intervals[1].hasNewEdges(), newEdgesThisIter);
 			repartTimer.endTimer();
 
 
 			cout << "== REPA END ==" << endl;
 		}
 
-		if (newEdgesThisIter <= 0) context.ddm.markTerminate(p, q, intervals[0].hasNewEdges(), intervals[1].hasNewEdges());
-
+		if (newEdgesThisIter <= 0) {
+			context.ddm.markTerminate(p, q, 0, 0);
+			cout << intervals[0].hasNewEdges() << endl;
+			cout << intervals[1].hasNewEdges() << endl;
+			cout << "HI" << endl;
+		}
 		str = std::to_string((long long)roundNo);
 		name = string("DDM.") + str;
 		context.ddm.save_DDM(name.c_str());
