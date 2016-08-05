@@ -14,6 +14,6 @@
 #include "../utilities/globalDefinitions.hpp"
 
 
-long updateEdges(int vertInd, ComputationSet compsets[], LoadedVertexInterval intervals[], Context &context);
+long updateEdges(int vertInd, int currPart, ComputationSet compsets[], LoadedVertexInterval intervals[], Context &context);
 
 #endif

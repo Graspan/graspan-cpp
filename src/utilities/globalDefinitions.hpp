@@ -30,7 +30,7 @@ typedef std::string raw_label_t;
 typedef std::string string;
 
 // error codes
-enum Error
+enum Error 
 {
 	FOPEN, FCLOSE
 };

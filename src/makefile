@@ -12,8 +12,7 @@ COMPUTATION=edgecomp/engine.cpp edgecomp/compute.cpp edgecomp/edgemerger.cpp edg
 LOADER=datastructures/loader.cpp edgecomp/grammar.cpp
 # computation sets included through header files
 DATASTRUCTS=datastructures/vertex.cpp datastructures/loadedvertexinterval.cpp datastructures/minset.cpp datastructures/partition.cpp datastructures/context.cpp datastructures/vit.cpp datastructures/DDM.cpp
-UTIL=Library/Logger.cpp ../test/timer.cpp
-
+UTIL=../test/timer.cpp Library/Logger.cpp
 
 
 

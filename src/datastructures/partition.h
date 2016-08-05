@@ -47,8 +47,8 @@ public:
 
 	string toString();
 
-	// ddr = destination distribution ratio, i.e., a cell in DDM
-	void calc_ddr(Context &context);
+	// ddr = destination distribution ratio, i.e., a cell in DDM return BONUS
+	double calc_ddr(Context &context);
 };
 
 

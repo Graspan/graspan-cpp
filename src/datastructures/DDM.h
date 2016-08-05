@@ -36,8 +36,8 @@ class DDM{
 
   inline void markTerminate(partitionid_t p, partitionid_t q, bool newEdgesInP, bool newEdgesInQ) {
     cout << "DDM Terminate" << endl;
-	if (!newEdgesInP) ddmMap[p][q] *= -1;
- 	if (!newEdgesInQ) ddmMap[q][p] *= -1; 
+	if (!newEdgesInP && ddmMap[p][q] > 0) ddmMap[p][q] *= -1;
+ 	if (!newEdgesInQ && ddmMap[q][p] > 0) ddmMap[q][p] *= -1;
   }
 
   // the indices p and q tell which partitionRate[p][q] is max: i.e., this is our scheduler
@@ -51,6 +51,7 @@ class DDM{
   // if repartitioning happens, 1 or 2 new partition can happen, that means DDM needs to be enlarged
   // you should figure out how to implement this resizing logic efficiently
   void reSize();
+  void copy(int p, int q);
 
 
   bool load_DDM(string fname);

@@ -31,6 +31,8 @@ bool DDM::nextPartitionPair(partitionid_t &p, partitionid_t &q) {
 
   for (int i = 0; i < numPartition; ++i) {
     for (int j = 0; j < numPartition; ++j ) {
+		if (i == j)
+			continue;
       if (max < ddmMap[i][j]){
         max=ddmMap[i][j];
         p = i;
@@ -52,6 +54,10 @@ void DDM::reSize() {
 	ddmMap.resize(numPartition);
 	for (int i = 0; i < numPartition; ++i)
 		ddmMap[i].resize(numPartition, 0);
+}
+
+void DDM::copy(int p, int q) {
+	std::copy(ddmMap[p].begin(), ddmMap[p].end(), ddmMap[q].begin());
 }
 
 bool DDM::load_DDM(string fname){

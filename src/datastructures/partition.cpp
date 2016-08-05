@@ -111,12 +111,13 @@ string Partition::toString()
 	return output.str();
 }
 
-void Partition::calc_ddr(Context &context)	{
+double Partition::calc_ddr(Context &context)	{
 	if (!exist)
-		return;
+		return 0;
 	vector<vector<double> > &ddmMap = context.ddm.getDdmMap();
 	vector<double> tempDdm; // TODO: why don't you just get the vector[id] from ddmMap? it would save the copying  later
 	//cout << "ddmMap[id].size " << ddmMap[id].size() << endl;
+	double count = 0, sum = 0;
 	tempDdm.resize(ddmMap[id].size(), 0);
 
 
@@ -124,17 +125,26 @@ void Partition::calc_ddr(Context &context)	{
 	for (int i = 0; i < data.size(); i++) {
 		for (int j = 0; j < data[i].getNumOutEdges(); j++) {
 			if (id != context.vit.partition(data[i].getOutEdge(j)) && context.vit.partition(data[i].getOutEdge(j)) != -1) {
-				if (ddmMap[id][context.vit.partition(data[i].getOutEdge(j))] < 0)
-					tempDdm[context.vit.partition(data[i].getOutEdge(j))] -= 1;
-				else
-					tempDdm[context.vit.partition(data[i].getOutEdge(j))] += 1;
+			//	if (ddmMap[id][context.vit.partition(data[i].getOutEdge(j))] < 0)
+			//		tempDdm[context.vit.partition(data[i].getOutEdge(j))] -= 1;
+				//else 
+					tempDdm[context.vit.partition(data[i].getOutEdge(j))] += 1;				
 			}
 		}
 	}
-	for (int i = 0; i < tempDdm.size(); i++) {
-		//cout << "id = " << id << " value = " << tempDdm[i] << endl;
-		ddmMap[id][i] = tempDdm[i] / (double)numEdges;
+
+	for (int i = 0; i < ddmMap[0].size(); i++) {
+		for (int j = 0; j < ddmMap[0].size(); j++) {
+			if (i == id)
+				ddmMap[id][j] = tempDdm[j] / (double)numEdges;
+			if (ddmMap[i][j] > 0) {
+				count++;
+				sum += ddmMap[i][j];
+			}
+		}
 	}
+	cout << "###BONUS =" << sum / (count * count) << "###" << endl;
+	return sum / (count * count);	
 }
 
 /*

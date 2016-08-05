@@ -152,7 +152,7 @@ void Preproc::makeVIT(string fileName, Context &context) {
 			endS = i;
 			sum += data[i].size() * 5;
 			sum += 8;
-			if (sum >= context.getMemBudget()) {
+			if (sum >= context.getMemBudget()/2 ) {
 				//	cout << "sum =" << sum << "size =" << size << endl;
 				vitDegree.push_back(0);
 				tempVIT.push_back(std::make_pair(startS, endS));
@@ -175,12 +175,15 @@ void Preproc::makeVIT(string fileName, Context &context) {
 		j = 0;
 		int mSum = 0;
 
+		//p = new Partition[vitSize];
 
 		for (i = 0; i <= dataSize; i++) {
+			if (data[i].size() == 0)
+				continue;
 			sum += data[i].size();
 			mSum += data[i].size() * 5;
 			mSum += 8;
-			if (mSum >= context.getMemBudget()) {
+			if (mSum >= context.getMemBudget() / 2) {
 				vitDegree[j++] = sum;
 				sum = 0;
 				mSum = 0;
@@ -224,7 +227,7 @@ void Preproc::makePart(Context &context) {
 							}
 						}
 						if (i != context.vit.partition(data[j][k].first) && context.vit.partition(data[j][k].first) != -1) {
-							ddmMap[i][context.vit.partition(data[j][k].first)] += 1 / (double)context.vit.getDegree(i);
+							ddmMap[i][context.vit.partition(data[j][k].first)] ++;
 						}
 
 
@@ -239,7 +242,12 @@ void Preproc::makePart(Context &context) {
 			assert(false, "Cannot make human file ");
 		}
 	}
-	
+
+	for (int i = 0; i < ddmMap[0].size(); i++) {
+		for (int j = 0; j < ddmMap[0].size(); j++) {
+			ddmMap[i][j] /= (double)context.vit.getDegree(i);
+		}
+	}
 	/*
 	int size = 0, numVertices = 0;
 	for (int i = 0; i < vitSize; i++) {

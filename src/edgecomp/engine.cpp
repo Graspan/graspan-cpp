@@ -1,5 +1,6 @@
 #include "engine.h"
 
+#define MAX_NEW_EDGES 3000000
 
 long totNewEdges;
 long newEdgesThisIter;
@@ -27,6 +28,8 @@ int run_computation(Context &context)
 {
 	// load partitions into memory
 	Timer loadTimer, compTimer, repartTimer;
+	string str;
+	string name;
 	Partition p1, p2;
 	partitionid_t p, q, oldP = -1, oldQ = -1;
 	int roundNo = 0;
@@ -40,6 +43,7 @@ int run_computation(Context &context)
 		oldP = p;
 		oldQ = q;
 		loadTimer.endTimer();
+		cout << "P =" << p << " Q =" << q << endl;
 
 		vector<Vertex> &part1 = p1.getData(), &part2 = p2.getData();
 
@@ -66,14 +70,25 @@ int run_computation(Context &context)
 	  }
 	  */
 		delete[] compsets;
+		if (totNewEdges > 0) {
+			cout << "== REPA START ==" << endl;
+			repartTimer.startTimer();
+			Repart::run(p1, p2, context, intervals[0].hasNewEdges(), intervals[1].hasNewEdges(), newEdgesThisIter);
+			repartTimer.endTimer();
 
-		cout << "== REPA START ==" << endl;
-		repartTimer.startTimer();	  
-		Repart::run(p1, p2, context);
-		repartTimer.endTimer();
-		cout << "== REPA END ==" << endl;
 
-		if (totNewEdges <= 0) context.ddm.markTerminate(p, q, intervals[0].hasNewEdges(), intervals[1].hasNewEdges());
+			cout << "== REPA END ==" << endl;
+		}
+
+		if (newEdgesThisIter <= 0) {
+			context.ddm.markTerminate(p, q, 0, 0);
+			cout << intervals[0].hasNewEdges() << endl;
+			cout << intervals[1].hasNewEdges() << endl;
+			cout << "HI" << endl;
+		}
+		str = std::to_string((long long)roundNo);
+		name = string("DDM.") + str;
+		context.ddm.save_DDM(name.c_str());
 
 		cout << "===== ROUND INFO =====" << endl;
 		cout << "NEW EDGES: " << totNewEdges << endl;
@@ -95,6 +110,8 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 {
 	iterNo = 0;
 	totNewEdges = 0;
+
+	cout << "NEW EDGES LIMIT: " << sizeLim << endl;
 	
 	do {
 		iterNo++;
@@ -113,10 +130,10 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 			compsets[i].setNewVals(compsets[i].getDeltaVals());
 		}
 
-	cout << "EDGES THIS ITER: " << newEdgesThisIter << endl;
-	cout << "NEW EDGES TOTAL: " << totNewEdges << endl << endl;
+		cout << "EDGES THIS ITER: " << newEdgesThisIter << endl;
+		cout << "NEW EDGES TOTAL: " << totNewEdges << endl << endl;
 
-	if (totNewEdges > sizeLim) break;
+		if (totNewEdges > sizeLim) break;
 	} while (newEdgesThisIter > 0);
 }
 
@@ -132,13 +149,12 @@ void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInt
 	#pragma omp parallel for
 	for (int i = 0; i < setSize; i++)
 	{
+		int currPart = (i >= intervals[0].getIndexStart() && i <= intervals[0].getIndexEnd()) ? 0 : 1;
 		long newEdges = 0;
 
-		newEdges += updateEdges(i, compsets, intervals, context);
-		if (newEdges > 0 && (i >= intervals[0].getIndexStart() && i <= intervals[0].getIndexEnd()))
-			intervals[0].setNewEdgeAdded(true);
-		else if (newEdges > 0 && (i >= intervals[1].getIndexStart() && i <= intervals[1].getIndexEnd()))
-			intervals[1].setNewEdgeAdded(true);
+		newEdges += updateEdges(i, currPart, compsets, intervals, context);
+
+		if (newEdges > 0) intervals[currPart].setNewEdgeAdded(true);
 
 		#pragma omp atomic
 		newEdgesThisIter += newEdges;
