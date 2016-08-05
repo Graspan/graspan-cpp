@@ -56,9 +56,9 @@ long updateEdges(int vertInd, int currPart, ComputationSet compsets[], LoadedVer
 
 
 	// TODO: use DDM to estimate num of rows needed
-	vector< vector<double> > &ddm = context.ddm.getDdmMap();
-	double ratio = ddm[intervals[currPart].getPartitionID()][intervals[1-currPart].getPartitionID()];
-	cout << "RATIO: " << ratio << endl;
+//	vector< vector<double> > &ddm = context.ddm.getDdmMap();
+//	double ratio = ddm[intervals[currPart].getPartitionID()][intervals[1-currPart].getPartitionID()];
+//	cout << "ROWS: " << (2 + (ratio * compSet->getoldUnewEdges().size())) << endl;
 	int numRowsToMerge = 2 + compSet->getoldUnewEdges().size();
 	vector< vector<int> > edgeVecsToMerge(numRowsToMerge);;
 	vector< vector<char> > valVecsToMerge(numRowsToMerge);
