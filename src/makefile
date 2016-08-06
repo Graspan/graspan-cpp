@@ -1,8 +1,8 @@
 CC=g++ -std=c++0x
 
 # will eventually need to use threads
-CFLAGS=-ggdb -fopenmp
-
+#CFLAGS=-ggdb -fopenmp -O2
+CFLAGS=-fopenmp -O2
 
 ##### source files #####
 # preprocessing

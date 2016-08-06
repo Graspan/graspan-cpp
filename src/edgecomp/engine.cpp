@@ -161,8 +161,8 @@ void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInt
 		else if (newEdges > 0 && (i >= intervals[1].getIndexStart() && i <= intervals[1].getIndexEnd()))
 			intervals[1].setNewEdgeAdded(true);
 
-		#pragma omp atomic
-		newEdgesThisIter += newEdges;
+    //#pragma omp atomic
+    newEdgesThisIter += newEdges;
 	}
 }
 
