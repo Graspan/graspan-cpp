@@ -31,9 +31,6 @@ Preproc::Preproc(string fileName, Context &context) {
 		//memory allocation, it takes 10s
 		begin = clock();
 		data = new vector<pair<int, string>>[dataSize + 1];
-		dataInfo = new bool[dataSize];
-		for (int i = 0; i < dataSize; i++)
-			dataInfo[i] = false;
 		end = clock();
 		//cout << "memory allocation time : " << ((end - begin) / CLOCKS_PER_SEC) << endl;
 	}
@@ -45,7 +42,8 @@ Preproc::Preproc(string fileName, Context &context) {
 void Preproc::makeVIT(string fileName, Context &context) {
 	clock_t begin, end;
 	int src, dst, degree;
-	int size, mSize, numVertex = 0;
+	unsigned long long int mSize = 0;
+	int size, numVertex = 0;
 	string label;
 	char buf[512];
 	char ctemp[10];
@@ -53,7 +51,7 @@ void Preproc::makeVIT(string fileName, Context &context) {
 	int startS = -1, endS = 0;
 	char *p_token = NULL;
 	char *text = NULL;
-	int sum = 0;
+	int sum = 0, cSum = 0, temp = 0;
 	FILE *fp;
 	set<string>::iterator it_e; //for eRules
 	vector<pair<vertexid_t, vertexid_t>> &tempVIT = context.vit.getVIT();
@@ -69,7 +67,6 @@ void Preproc::makeVIT(string fileName, Context &context) {
 			while (fscanf(fp, "%d\t%d\t%s\n", &src, &dst, ctemp) != EOF) {
 				label += ctemp;
 				data[src].push_back(std::make_pair(dst, label));
-				dataInfo[src] = true;
 				label = "";
 			}
 			fclose(fp);
@@ -103,8 +100,13 @@ void Preproc::makeVIT(string fileName, Context &context) {
 
 		//sorting the vector of array
 		//begin = clock();
+	//	for (i = 0; i <= dataSize; i++)
+	//		count += data[i].size();
+	//	cout << "Numedge =" << count << endl;
+	//	count = 0;
+
 		for (i = 0; i <= dataSize; i++) {
-			if (data[i].size() == 0 && !dataInfo[i])
+			if (data[i].size() == 0)
 				continue;
 			if (startS == -1)
 				startS = i;
@@ -122,13 +124,12 @@ void Preproc::makeVIT(string fileName, Context &context) {
 
 		//make vit
 		//cout << count - vitSize*(int)(count / vitSize) << endl;
-		if (count - vitSize*(int)(count / vitSize) < vitSize / (float)2)
-			size = count / vitSize;
-		else
-			size = count / vitSize + 1;
+		//if (count - vitSize*(int)(count / vitSize) < vitSize / (float)2)
+		//	size = count / vitSize;
+	//	else
+	//		size = count / vitSize + 1;
 
 		mSize = numVertex * 8 + count * 5;
-		mSize /= context.getMemBudget();
 		vitSize = 0;
 		//cout << "count =" << count << " size =" << size << endl;
 		/*for (i = 0; i <= dataSize; i++) {
@@ -145,28 +146,51 @@ void Preproc::makeVIT(string fileName, Context &context) {
 				vitSize++;
 			}
 		}*/
-		cout << "Size =" << size << ", Msize =" << mSize << endl;
+		startS = -1;
+		size = mSize / (context.getMemBudget() / 2);
+		size++;
+		//size for test 2
+		size = 2;
+	//	cout << "Size =" << size << ", Msize =" << mSize << endl;
+	//	cout << "Size =" << (context.getMemBudget() / 2) << ", Msize =" << mSize/size << endl;
+	//	cout << "eNumedge =" << count << ", Vertex =" << numVertex << endl;
+		cout << "mSize =" << mSize;
+		mSize /= (unsigned long long int)size;
+		vitSize = 0;
+
+		//
+		//i calculated the mSize(limit memory) less than membudget and it could not happen 
+		//when just the last src has more than mSize, so this program works
+		//if that happens it makes a lot of bugs!
+		startS = -1;
 		for (i = 0; i <= dataSize; i++) {
 			if (data[i].size() == 0)
 				continue;
-			endS = i;
+			if (startS == -1) {
+				startS = i;
+				endS = i;
+			}
 			sum += data[i].size() * 5;
 			sum += 8;
-			if (sum >= context.getMemBudget()/2 ) {
-				//	cout << "sum =" << sum << "size =" << size << endl;
+			if (sum > mSize) {
+				cout << "mSize =" << mSize;
+			cout << " sum =" << sum << "size =" << context.getMemBudget() / 2 << endl;
 				vitDegree.push_back(0);
 				tempVIT.push_back(std::make_pair(startS, endS));
-				startS = i + 1;
+				startS = -1;
 				sum = 0;
 				vitSize++;
+				if (i != dataSize)
+					i--;
 			}
+			endS = i;
 		}
 		if (sum != 0) {
 			tempVIT.push_back(std::make_pair(startS, endS));
 			vitDegree.push_back(0);
 			vitSize++;
 		}
-		cout << "NUMBER OF PARTITION =" << vitSize << endl;
+	//	cout << "NUMBER OF PARTITION =" << vitSize << endl;
 		context.setNumPartitions(vitSize);
 		context.vit.setDegree(vitSize);
 
@@ -176,17 +200,21 @@ void Preproc::makeVIT(string fileName, Context &context) {
 		int mSum = 0;
 
 		//p = new Partition[vitSize];
-
 		for (i = 0; i <= dataSize; i++) {
 			if (data[i].size() == 0)
 				continue;
 			sum += data[i].size();
 			mSum += data[i].size() * 5;
 			mSum += 8;
-			if (mSum >= context.getMemBudget() / 2) {
+			if (mSum > mSize) {
+				sum -= data[i].size();
+		//		cout << "sum =" << sum;
+		//		cout << " msum =" << mSum << "size =" << context.getMemBudget() / 2 << endl;
 				vitDegree[j++] = sum;
 				sum = 0;
 				mSum = 0;
+				if (i != dataSize)
+					i--;
 			}
 		}
 		if (sum != 0) {

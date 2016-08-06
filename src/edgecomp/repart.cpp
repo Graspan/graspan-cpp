@@ -1,7 +1,8 @@
 #include "repart.h"
 
 void Repart::repartition(Partition &p1, Partition &p2, Context &context) {
-	int size = (context.getMemBudget() / 2 - p1.getNumVertices() * 4) / 5;
+	//int size = (context.getMemBudget() / 2 - p1.getNumVertices() * 4) / 5;
+	int size = (p1.getNumVertices() * 8 + p1.getNumEdges() * 5) / 2;
 	int sum = 0, check = 0;
 
 	int i = 0;
@@ -11,11 +12,15 @@ void Repart::repartition(Partition &p1, Partition &p2, Context &context) {
 
 	vector<Vertex> &dataTemp = p1.getData();
 //	cout << "===" << p1.getID() << "CHECK START ===" << endl;
-	check += dataTemp[0].getNumOutEdges();
+	//check += dataTemp[0].getNumOutEdges();
+	check += dataTemp[0].getNumOutEdges() * 5;
+	check += 8;
+	//i asume that there is no src which has more than size
 	for (i ; i < p1.getNumVertices() - 1; i++) {
 	//	cout << "getVertex = " << i << " " << dataTemp[i].getVertexID() << endl;
 		sum += dataTemp[i].getNumOutEdges();
-		check += dataTemp[i + 1].getNumOutEdges();
+		check += dataTemp[i + 1].getNumOutEdges() * 5;
+		check += 8;
 		if (check > size) {
 			break;
 		}
