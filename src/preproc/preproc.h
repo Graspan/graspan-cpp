@@ -29,7 +29,6 @@ private:
 	set<string> eRules;
 	vector<string> mapInfo;
 	vector<pair<int, string>> *data;
-	bool *dataInfo;
 
 	//Partition *p;
 

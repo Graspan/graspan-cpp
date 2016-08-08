@@ -4,7 +4,8 @@ Context::Context(int argc, char** argv) {
 	//if user don't typing input value
 	if(argc==1){
 		//50MB
-		parameters.insert(std::make_pair(MEM_BUDGET_KEY, 104857600));
+		//parameters.insert(std::make_pair(MEM_BUDGET_KEY, 7730941133));
+		memBudget = (unsigned long long int) 7730941133;
 		parameters.insert(std::make_pair(NUM_PARTITION_KEY, 10));
 		//src, numEdge = 8bytes dst, label = 5bytes
 		//worst case is use 13bytes per edges
@@ -36,8 +37,8 @@ Context::Context(int argc, char** argv) {
 	}
 }
 
-int Context::getMemBudget() {
-	return parameters[MEM_BUDGET_KEY];
+unsigned long long int Context::getMemBudget() {
+	return memBudget;
 }
 
 int Context::getNumPartitions() {
@@ -56,9 +57,9 @@ bool Context::getAlterScheduleFlag() {
 	return flags[ALTER_SCHEDULE_FLAG];
 }
 
-void Context::setMemBudget(int memBudget) {
-	parameters[MEM_BUDGET_KEY] = memBudget;
-}
+//void Context::setMemBudget(int memBudget) {
+	//parameters[MEM_BUDGET_KEY] = memBudget;
+//}
 void Context::setNumPartitions(int numPartitions) {
 	parameters[NUM_PARTITION_KEY] = numPartitions;
 }

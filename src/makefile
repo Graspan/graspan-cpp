@@ -1,8 +1,8 @@
 CC=g++ -std=c++0x
 
 # will eventually need to use threads
-CFLAGS=-ggdb -fopenmp
-
+#CFLAGS=-ggdb -fopenmp -O2
+CFLAGS=-fopenmp -O2
 
 ##### source files #####
 # preprocessing
@@ -13,6 +13,7 @@ LOADER=datastructures/loader.cpp edgecomp/grammar.cpp
 # computation sets included through header files
 DATASTRUCTS=datastructures/vertex.cpp datastructures/loadedvertexinterval.cpp datastructures/minset.cpp datastructures/partition.cpp datastructures/context.cpp datastructures/vit.cpp datastructures/DDM.cpp
 UTIL=../test/timer.cpp Library/Logger.cpp
+
 
 
 

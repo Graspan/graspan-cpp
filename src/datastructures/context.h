@@ -18,7 +18,8 @@
 class Context
 {
 private:
-	map<string, int> parameters;
+	unsigned long long int memBudget;
+	map<string, unsigned int> parameters;
 	map<string, bool> flags;
 	
 
@@ -35,14 +36,14 @@ public:
 	Context(int argc, char** argv);
 
 	//getters
-	int getMemBudget();
+	unsigned long long int getMemBudget();
 	int getNumPartitions();
 	int getMaxEdges();
 
 	bool getInsertFlag();
 	bool getAlterScheduleFlag();
 	//setters
-	void setMemBudget(int memBudget);
+	//void setMemBudget(int memBudget);
 	void setNumPartitions(int numPartitions);
 	void setMaxEdges(int maxEdges);
 

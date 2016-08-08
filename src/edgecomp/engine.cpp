@@ -14,7 +14,7 @@ void initCompSets(ComputationSet compsets[], vector<Vertex> &part1, vector<Verte
 
 void initLVIs(LoadedVertexInterval intervals[], vector<Vertex> &part1, vector<Vertex> &part2);
 
-void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context, int sizeLim);
+void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context, unsigned long long int sizeLim);
 
 void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context);
 
@@ -39,7 +39,7 @@ int run_computation(Context &context)
 		loadTimer.startTimer();
 		if (p != oldP) Loader::loadPartition(p, p1, false);
 		if (q != oldQ) Loader::loadPartition(q, p2, false);
-		int sizeLim = (context.getMemBudget() / 2 - p1.getNumVertices() * 4) / 5;
+		unsigned long long int sizeLim = (context.getMemBudget() - p1.getNumVertices() * 4 - p2.getNumVertices() * 4) / 5;
 		oldP = p;
 		oldQ = q;
 		loadTimer.endTimer();
@@ -106,16 +106,17 @@ int run_computation(Context &context)
  * @param compsets
  * @param intervals
  */
-void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context, int sizeLim)
+void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context, unsigned long long int sizeLim)
 {
+	Timer iterTimer;
 	iterNo = 0;
 	totNewEdges = 0;
 
 	cout << "NEW EDGES LIMIT: " << sizeLim << endl;
 	
 	do {
+		iterTimer.startTimer();
 		iterNo++;
-		newEdgesThisIter = 0;
 		computeOneIteration(compsets, setSize, intervals, context);
 
 		totNewEdges += newEdgesThisIter;
@@ -129,9 +130,11 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 			compsets[i].setNewEdges(compsets[i].getDeltaEdges());
 			compsets[i].setNewVals(compsets[i].getDeltaVals());
 		}
+		iterTimer.endTimer();
 
 		cout << "EDGES THIS ITER: " << newEdgesThisIter << endl;
-		cout << "NEW EDGES TOTAL: " << totNewEdges << endl << endl;
+		cout << "NEW EDGES TOTAL: " << totNewEdges << endl;
+		cout << "ITERATER  TIME   " << iterTimer.hmsFormat() << endl << endl;
 
 		if (totNewEdges > sizeLim) break;
 	} while (newEdgesThisIter > 0);
@@ -146,17 +149,18 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
  */
 void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context)
 {
-	#pragma omp parallel for
+	newEdgesThisIter = 0;
+
+	#pragma omp parallel for reduction (+:newEdgesThisIter)
 	for (int i = 0; i < setSize; i++)
 	{
-		int currPart = (i >= intervals[0].getIndexStart() && i <= intervals[0].getIndexEnd()) ? 0 : 1;
-		long newEdges = 0;
+		unsigned long newEdges = 0;
+		newEdges = updateEdges(i, compsets, intervals, context);
+		if (newEdges > 0 && (i >= intervals[0].getIndexStart() && i <= intervals[0].getIndexEnd()))
+			intervals[0].setNewEdgeAdded(true);
+		else if (newEdges > 0 && (i >= intervals[1].getIndexStart() && i <= intervals[1].getIndexEnd()))
+			intervals[1].setNewEdgeAdded(true);
 
-		newEdges += updateEdges(i, currPart, compsets, intervals, context);
-
-		if (newEdges > 0) intervals[currPart].setNewEdgeAdded(true);
-
-		#pragma omp atomic
 		newEdgesThisIter += newEdges;
 	}
 }

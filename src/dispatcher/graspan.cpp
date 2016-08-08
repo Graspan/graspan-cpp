@@ -9,18 +9,18 @@ int main(int argc, char *argv[])
 {
 	Context c(argc, argv);
 
-	if (!c.ddm.load_DDM("DDM")) {
-		cout << "execution failed: couldn't load DDM" << endl;
-		//return 12;
-	}
-
 	if (!c.grammar.loadGrammar("grammar")) {
 		cout << "execution failed: couldn't load grammar" << endl;
 		return 12;
 	}
+
+	if (!c.ddm.load_DDM("DDM")) {
+		cout << "couldn't load DDM" << endl;
+		//return 12;
+	}
 	
-	if (!c.vit.loadFromFile("grammar.vit")) {
-		cout << "execution failed: couldn't load VIT" << endl;
+	if (!c.vit.loadFromFile("graph.vit")) {
+		cout << "couldn't load VIT" << endl;
 		//return 12;
 	}
 	
@@ -31,6 +31,7 @@ int main(int argc, char *argv[])
 	cout << "###### STARTING PREPROCESSING #####" << endl;
 	if (c.ddm.getNumPartition() != c.vit.getNumVertex() || c.vit.getNumVertex() == 0) {
 		run_preprocessing(c);
+		cout << "PREPROC" << endl;
 	}
 
 	compTime.endTimer();
