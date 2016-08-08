@@ -117,7 +117,6 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 	do {
 		iterTimer.startTimer();
 		iterNo++;
-		newEdgesThisIter = 0;
 		computeOneIteration(compsets, setSize, intervals, context);
 
 		totNewEdges += newEdgesThisIter;
@@ -150,7 +149,8 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
  */
 void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context)
 {
-	#pragma omp parallel for
+	newEdgesThisIter = 0;
+	#pragma omp parallel for reduction (+:newEdgesThisIter)
 	for (int i = 0; i < setSize; i++)
 	{
 		long newEdges = 0;
@@ -161,8 +161,7 @@ void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInt
 		else if (newEdges > 0 && (i >= intervals[1].getIndexStart() && i <= intervals[1].getIndexEnd()))
 			intervals[1].setNewEdgeAdded(true);
 
-    //#pragma omp atomic
-    newEdgesThisIter += newEdges;
+		newEdgesThisIter += newEdges;
 	}
 }
 
