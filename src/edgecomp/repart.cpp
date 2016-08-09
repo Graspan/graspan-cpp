@@ -27,7 +27,7 @@ void Repart::repartition(Partition &p1, Partition &p2, Context &context) {
 			break;
 		}
 	}
-	if (check <=size) {
+	if (check <=size | p1.getNumVertices() == 1) {
 		p2.setExist(false);
 		return;
 	}
@@ -87,9 +87,12 @@ void Repart::run(Partition &p1, Partition &p2, Context &context, bool newEdgesIn
 	//Partition::writeToFile(p1, false);
 //	Partition::writeToFile(p2, false);
 
-	if (newEdgesInP)	p1.calc_ddr(context);
-	if (newEdgesInQ)	p2.calc_ddr(context);
-
+	if (newEdgesInP) {
+		p1.calc_ddr(context);
+	}
+	if (newEdgesInQ) {
+		p2.calc_ddr(context);
+	}
 	if (p12.getExist()) {
 		cout << "p1 =" << p1.getID() << " p12 =" << p12.getID() << endl;
 		Partition::writeToFile(p12, false);
