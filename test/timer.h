@@ -25,6 +25,8 @@ class Timer
 	// return the amount of milliseconds the timer ran for	
 	unsigned long long totalTime();
 
+	long getSeconds();
+
 	// return a string of the total time in (hours, minutes, seconds) format
 	// "[HOURS] h, [MINUTES] m, [SECONDS] s"
 	std::string hmsFormat();

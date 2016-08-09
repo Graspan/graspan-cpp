@@ -16,6 +16,8 @@ void Timer::endTimer() { end = getCurrTime(); }
 
 unsigned long long Timer::totalTime() { return (end - start); }
 
+long Timer::getSeconds() { return totalTime() / 1000; }
+
 
 std::string Timer::hmsFormat()
     {

@@ -1,6 +1,5 @@
 #include "engine.h"
 
-#define MAX_NEW_EDGES 3000000
 
 long totNewEdges;
 long newEdgesThisIter;
@@ -62,36 +61,24 @@ int run_computation(Context &context)
 
 		updatePartitions(compsets, p1, p2, part1, part2);
 
-	  /* TODO:
-	  if (p1.hasNewEdges() || p2.hasNewEdges()) {
-	  }
-	  else {
-		contex.ddm.markTerminate(p,q);
-	  }
-	  */
 		delete[] compsets;
 		if (totNewEdges > 0) {
 			cout << "== REPA START ==" << endl;
 			repartTimer.startTimer();
 			Repart::run(p1, p2, context, intervals[0].hasNewEdges(), intervals[1].hasNewEdges(), newEdgesThisIter);
 			repartTimer.endTimer();
-
-
 			cout << "== REPA END ==" << endl;
 		}
 
 		if (newEdgesThisIter <= 0) {
 			context.ddm.markTerminate(p, q, 0, 0);
-			cout << intervals[0].hasNewEdges() << endl;
-			cout << intervals[1].hasNewEdges() << endl;
-			cout << "HI" << endl;
 		}
 		str = std::to_string((long long)roundNo);
 		name = string("DDM.") + str;
 		context.ddm.save_DDM(name.c_str());
 
 		cout << "===== ROUND INFO =====" << endl;
-		cout << "NEW EDGES: " << totNewEdges << endl;
+		cout << "RND EDGES: " << totNewEdges << endl;
 		cout << "LOAD TIME: " << loadTimer.hmsFormat() << endl;
 		cout << "COMP TIME: " << compTimer.hmsFormat() << endl;
 		cout << "REPA TIME: " << repartTimer.hmsFormat() << endl <<  endl << endl;
@@ -132,9 +119,11 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 		}
 		iterTimer.endTimer();
 
+		cout << "EDGES PER SECND: " << ((double)newEdgesThisIter / (double)iterTimer.getSeconds()) << endl;
+
 		cout << "EDGES THIS ITER: " << newEdgesThisIter << endl;
 		cout << "NEW EDGES TOTAL: " << totNewEdges << endl;
-		cout << "ITERATER  TIME   " << iterTimer.hmsFormat() << endl << endl;
+		cout << "ITERATION  TIME:   " << iterTimer.hmsFormat() << endl << endl;
 
 		if (totNewEdges > sizeLim) break;
 	} while (newEdgesThisIter > 0);

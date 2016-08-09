@@ -22,6 +22,22 @@ using std::map;
 #define ASSERT
 #endif 
 
+template <typename T>
+class array<T> 
+{
+	int size;
+	T* arr;
+
+	public:
+	array<T>() { size = 0; arr = nullptr; }
+	array<T>(int sz) { size = sz; arr = new T[size]; }
+	~array<T>() { if (size != 0) delete[] arr; }
+
+	void reserve(int size) { if (size != 0) arr = new T[size]; }
+	int size() { return size; }
+	bool empty() { return size == 0; }
+};
+
 //----------------------------------------------------------------------------------------------------
 typedef char label_t;
 typedef int vertexid_t;
