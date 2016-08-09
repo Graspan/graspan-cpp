@@ -2,6 +2,8 @@
 
 void Repart::repartition(Partition &p1, Partition &p2, Context &context) {
 	//int size = (context.getMemBudget() / 2 - p1.getNumVertices() * 4) / 5;
+	//if (p1.getNumVertices() * 8 + p1.getNumEdges() * 5 > context.getMemBudget() / 4)
+	//	return;
 	int size = (p1.getNumVertices() * 8 + p1.getNumEdges() * 5) / 2;
 	int sum = 0, check = 0;
 
@@ -82,18 +84,17 @@ void Repart::run(Partition &p1, Partition &p2, Context &context, bool newEdgesIn
 	context.ddm.setNumPartition(context.getNumPartitions());
 	context.ddm.reSize();
 
-	Partition::writeToFile(p1, false);
-	Partition::writeToFile(p2, false);
+	//Partition::writeToFile(p1, false);
+//	Partition::writeToFile(p2, false);
 
-	double bonus;
-	if (newEdgesInP)	bonus = p1.calc_ddr(context);
-	if (newEdgesInQ)	bonus = p2.calc_ddr(context);
+	if (newEdgesInP)	p1.calc_ddr(context);
+	if (newEdgesInQ)	p2.calc_ddr(context);
 
 	if (p12.getExist()) {
 		cout << "p1 =" << p1.getID() << " p12 =" << p12.getID() << endl;
 		Partition::writeToFile(p12, false);
 		context.ddm.copy(p1.getID(), p12.getID());
-		bonus = p12.calc_ddr(context);
+		p12.calc_ddr(context);
 
 		context.ddm.markTerminate(p1.getID(), p12.getID(), terminate, terminate);
 		context.ddm.markTerminate(p2.getID(), p12.getID(), terminate, terminate);
@@ -103,7 +104,7 @@ void Repart::run(Partition &p1, Partition &p2, Context &context, bool newEdgesIn
 		Partition::writeToFile(p22, false);
 		context.ddm.copy(p2.getID(), p22.getID());
 
-		bonus = p22.calc_ddr(context);
+		p22.calc_ddr(context);
 		context.ddm.markTerminate(p1.getID(), p22.getID(), terminate, terminate);
 		context.ddm.markTerminate(p2.getID(), p22.getID(), terminate, terminate);
 	}

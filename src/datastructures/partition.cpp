@@ -111,9 +111,9 @@ string Partition::toString()
 	return output.str();
 }
 
-double Partition::calc_ddr(Context &context)	{
+void Partition::calc_ddr(Context &context)	{
 	if (!exist)
-		return 0;
+		return;
 	vector<vector<double> > &ddmMap = context.ddm.getDdmMap();
 	vector<double> tempDdm; // TODO: why don't you just get the vector[id] from ddmMap? it would save the copying  later
 	//cout << "ddmMap[id].size " << ddmMap[id].size() << endl;
@@ -143,8 +143,9 @@ double Partition::calc_ddr(Context &context)	{
 			}
 		}
 	}
-	cout << "###BONUS =" << sum / (count * count) << "###" << endl;
-	return sum / (count * count);	
+	//cout << "###BONUS =" << sum / (count * count) << "###" << endl;
+//	return sum / (count * count);
+	return;
 }
 
 /*

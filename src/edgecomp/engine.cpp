@@ -37,8 +37,16 @@ int run_computation(Context &context)
 	{
 		cout << "##### STARTING ROUND " << ++roundNo << " #####" << endl;
 		loadTimer.startTimer();
-		if (p != oldP) Loader::loadPartition(p, p1, false);
-		if (q != oldQ) Loader::loadPartition(q, p2, false);
+		if (p != oldP) {
+			if (oldP != -1)
+				Partition::writeToFile(p1, false);
+			Loader::loadPartition(p, p1, false);
+		}
+		if (q != oldQ) {
+			if (oldQ != -1)
+				Partition::writeToFile(p2, false);
+			Loader::loadPartition(q, p2, false);
+		}
 		unsigned long long int sizeLim = (context.getMemBudget() - p1.getNumVertices() * 4 - p2.getNumVertices() * 4) / 5;
 		oldP = p;
 		oldQ = q;
@@ -86,6 +94,9 @@ int run_computation(Context &context)
 			cout << intervals[1].hasNewEdges() << endl;
 			cout << "HI" << endl;
 		}
+		else {
+			context.ddm.set(p, q, 1);
+		}
 		str = std::to_string((long long)roundNo);
 		name = string("DDM.") + str;
 		context.ddm.save_DDM(name.c_str());
@@ -96,6 +107,9 @@ int run_computation(Context &context)
 		cout << "COMP TIME: " << compTimer.hmsFormat() << endl;
 		cout << "REPA TIME: " << repartTimer.hmsFormat() << endl <<  endl << endl;
 	}
+	Partition::writeToFile(p1, false);
+	Partition::writeToFile(p2, false);
+
 	return 0;
 }
 
