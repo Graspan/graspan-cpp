@@ -1,8 +1,13 @@
 #include "engine.h"
 
+ull iterAddTime;
+ull iterMergeTime;
 
-unsigned long long mergeTime;
-unsigned long long addEdgesTime;
+ull rndAddTime;
+ull rndMergeTime;
+
+ull addEdgesTime;
+ull mergeTime;
 
 long totNewEdges;
 long newEdgesThisIter;
@@ -26,7 +31,7 @@ void updatePartitions(ComputationSet compsets[], Partition &p1, Partition &p2, v
 string timeToStr(ull time)
 {
 	int seconds, minutes, hours;
-	int x = totalTime() / 1000;
+	int x = time / 1000;
 	seconds = x % 60;
 	x /= 60;
 	minutes = x % 60;
@@ -45,7 +50,7 @@ string timeToStr(ull time)
 int run_computation(Context &context)
 {
 	// load partitions into memory
-	Timer loadTimer, compTimer, repartTimer;
+	Timer loadTimer, compTimer, repartTimer, rndTimer;
 	string str;
 	string name;
 	Partition p1, p2;
@@ -59,8 +64,13 @@ int run_computation(Context &context)
 	int roundNo = 0;
 	while (context.ddm.nextPartitionPair(p, q))
 	{
+		rndTimer.startTimer();
 		cout << "##### STARTING ROUND " << ++roundNo << " #####" << endl;
 		loadTimer.startTimer();
+
+		rndAddTime = 0;
+		rndMergeTime = 0;
+
 		if (p != oldP) Loader::loadPartition(p, p1, false);
 		if (q != oldQ) Loader::loadPartition(q, p2, false);
 		unsigned long long int sizeLim = (context.getMemBudget() - p1.getNumVertices() * 4 - p2.getNumVertices() * 4) / 5;
@@ -103,15 +113,23 @@ int run_computation(Context &context)
 		name = string("DDM.") + str;
 		context.ddm.save_DDM(name.c_str());
 
+		rndTimer.endTimer();
 		cout << "===== ROUND INFO =====" << endl;
+		cout << "ADDE TIME: " << timeToStr(rndAddTime) << endl;
+		cout << "MERG TIME: " << timeToStr(rndMergeTime) << '\n' << endl;
+
 		cout << "RND EDGES: " << totNewEdges << endl;
 		cout << "LOAD TIME: " << loadTimer.hmsFormat() << endl;
 		cout << "COMP TIME: " << compTimer.hmsFormat() << endl;
-		cout << "REPA TIME: " << repartTimer.hmsFormat() << endl <<  endl << endl;
+		cout << "REPA TIME: " << repartTimer.hmsFormat() << endl;
+		cout << "===== ROUND " << roundNo << " took " << rndTimer.hmsFormat() << "\n\n" << endl;
+
+		addEdgesTime += rndAddTime;
+		mergeTime += rndMergeTime;
 	}
 
-	cout << "TOTAL TIME MERGING (WITH SOME ERROR): " << timeToStr(mergeTime) << endl;
 	cout << "TOTAL TIME ADDING EDGES (WITH ERROR): " << timeToStr(addEdgesTime) << endl << endl;
+	cout << "TOTAL TIME MERGING (WITH SOME ERROR): " << timeToStr(mergeTime) << endl;
 
 	return 0;
 }
@@ -132,6 +150,8 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 	do {
 		cout << "===== STARTING ITERATION " << ++iterNo << endl;
 		iterTimer.startTimer();
+		iterAddTime = 0;
+		iterMergeTime = 0;
 		computeOneIteration(compsets, setSize, intervals, context, numRules);
 
 		totNewEdges += newEdgesThisIter;
@@ -147,14 +167,19 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 		}
 		iterTimer.endTimer();
 
+		cout << "ADD E TIME ITER: " << timeToStr(iterAddTime) << endl;
+		cout << "MERGE TIME ITER: " << timeToStr(iterMergeTime) << endl << endl;
+
 		cout << "EDGES PER SECND: " << ((double)newEdgesThisIter / (double)iterTimer.getSeconds()) << endl;
 		cout << "NEW E THIS ITER: " << newEdgesThisIter << endl;
 		cout << "NEW EDGES TOTAL: " << totNewEdges << endl;
 		cout << "ITERATION  TIME: " << iterTimer.hmsFormat() << endl << endl;
 
+		rndAddTime += iterAddTime;
+		rndMergeTime += iterMergeTime;
+
 		if (totNewEdges > sizeLim) break;
 	} while (newEdgesThisIter > 0);
-
 }
 
 /**
@@ -172,7 +197,7 @@ void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInt
 	for (int i = 0; i < setSize; i++)
 	{
 		unsigned long newEdges = 0;
-		newEdges = updateEdges(i, compsets, intervals, context, numRules, mergeTime, addEdgesTime);
+		newEdges = updateEdges(i, compsets, intervals, context, numRules, iterMergeTime, iterAddTime);
 		if (newEdges > 0 && (i >= intervals[0].getIndexStart() && i <= intervals[0].getIndexEnd()))
 			intervals[0].setNewEdgeAdded(true);
 		else if (newEdges > 0 && (i >= intervals[1].getIndexStart() && i <= intervals[1].getIndexEnd()))

@@ -4,8 +4,9 @@
 
 // FUNCTION DEFINITIONS
 void getEdgesToMerge(ComputationSet *compSet, ComputationSet compsets[],
-		LoadedVertexInterval intervals[], vector< vector<int> > &edgeVecsToMerge,
-		vector< vector<char> > &valVecsToMerge, int &rowMergeID, Context &context);
+		LoadedVertexInterval intervals[], bool oldEdgesEmpty, bool newEdgesEmpty, 
+		vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge,
+		int &rowMergeID, Context &context);
 
 void genS_RuleEdges(vector<int> &newEdges, vector<char> &newVals,
 		vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge,
@@ -73,7 +74,7 @@ long updateEdges(int vertInd, ComputationSet compsets[], LoadedVertexInterval in
 	getEdgesToMerge(compSet, compsets, intervals, oldEdgesEmpty, newEdgesEmpty, edgeVecsToMerge, valVecsToMerge, rowMergeID, context);
 	addEdgesTimer.endTimer();
 
-	addEdgesTime += addEdgesTimer.getTotalTime();
+	addEdgesTime += addEdgesTimer.totalTime();
 
 	EdgeMerger em;
 
@@ -81,7 +82,7 @@ long updateEdges(int vertInd, ComputationSet compsets[], LoadedVertexInterval in
 	em.mergeVectors(edgeVecsToMerge, valVecsToMerge, 0, numRules);
 	mergeTimer.endTimer();
 
-	mergeTime += mergeTimer.getTotalTime();
+	mergeTime += mergeTimer.totalTime();
 
 	compSet->setDeltaEdges(em.getDeltaEdges());
 	compSet->setDeltaVals(em.getDeltaVals());
@@ -108,7 +109,7 @@ long updateEdges(int vertInd, ComputationSet compsets[], LoadedVertexInterval in
  * @param context				-grammar checker
  */
 void getEdgesToMerge(ComputationSet *compSet, ComputationSet compsets[],
-		LoadedVertexInterval intervals[], bool oldEdgesEmpty, bool NewEdgesEmpty,
+		LoadedVertexInterval intervals[], bool oldEdgesEmpty, bool newEdgesEmpty,
 		vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge,
 		int &rowMergeID, Context &context)
 {
