@@ -6,4 +6,8 @@ cp originalTest/* resources/
 
 echo "running..."
 cd resources
-../../bin/comp
+nohup ../../bin/comp memBudget=$1 > cpp.output.$1 &
+PID=$( echo $( ps -f  | grep "../../bin/comp" | awk '{print $2}' ) | awk '{print $1}' )
+
+nohup ./pmap.sh $PID > pmap.output.$1
+
