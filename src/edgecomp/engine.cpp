@@ -13,9 +13,9 @@ void initCompSets(ComputationSet compsets[], vector<Vertex> &part1, vector<Verte
 
 void initLVIs(LoadedVertexInterval intervals[], vector<Vertex> &part1, vector<Vertex> &part2);
 
-void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context, unsigned long long int sizeLim);
+void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context, unsigned long long int sizeLim, short numRules);
 
-void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context);
+void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context, short numRules);
 
 void updatePartitions(ComputationSet compsets[], Partition &p1, Partition &p2, vector<Vertex> &part1, vector<Vertex> &part2);
 
@@ -31,6 +31,9 @@ int run_computation(Context &context)
 	string name;
 	Partition p1, p2;
 	partitionid_t p, q, oldP = -1, oldQ = -1;
+
+	short numRules = context.grammar.getNumRules();
+
 	int roundNo = 0;
 	while (context.ddm.nextPartitionPair(p, q))
 	{
@@ -42,7 +45,8 @@ int run_computation(Context &context)
 		oldP = p;
 		oldQ = q;
 		loadTimer.endTimer();
-		cout << "P =" << p << " Q =" << q << endl;
+		cout << "P = " << p << ", Q = " << q << endl;
+		cout << "SIZE LIM THIS ROUND: " << sizeLim << endl << endl;
 
 		vector<Vertex> &part1 = p1.getData(), &part2 = p2.getData();
 
@@ -55,7 +59,7 @@ int run_computation(Context &context)
 
 		cout << "== COMP START ==" << endl;
 		compTimer.startTimer();
-		computeEdges(compsets, setSize, intervals, context, sizeLim);
+		computeEdges(compsets, setSize, intervals, context, sizeLim, numRules);
 		compTimer.endTimer();
 		cout << "== COMP END ==" << endl;
 
@@ -93,18 +97,16 @@ int run_computation(Context &context)
  * @param compsets
  * @param intervals
  */
-void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context, unsigned long long int sizeLim)
+void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context, unsigned long long int sizeLim, short numRules)
 {
 	Timer iterTimer;
 	iterNo = 0;
 	totNewEdges = 0;
-
-	cout << "NEW EDGES LIMIT: " << sizeLim << endl;
 	
 	do {
+		cout << "===== STARTING ITERATION " << ++iterNo << endl;
 		iterTimer.startTimer();
-		iterNo++;
-		computeOneIteration(compsets, setSize, intervals, context);
+		computeOneIteration(compsets, setSize, intervals, context, numRules);
 
 		totNewEdges += newEdgesThisIter;
 
@@ -120,10 +122,9 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 		iterTimer.endTimer();
 
 		cout << "EDGES PER SECND: " << ((double)newEdgesThisIter / (double)iterTimer.getSeconds()) << endl;
-
-		cout << "EDGES THIS ITER: " << newEdgesThisIter << endl;
+		cout << "NEW E THIS ITER: " << newEdgesThisIter << endl;
 		cout << "NEW EDGES TOTAL: " << totNewEdges << endl;
-		cout << "ITERATION  TIME:   " << iterTimer.hmsFormat() << endl << endl;
+		cout << "ITERATION  TIME: " << iterTimer.hmsFormat() << endl << endl;
 
 		if (totNewEdges > sizeLim) break;
 	} while (newEdgesThisIter > 0);
@@ -136,7 +137,7 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
  * @param compsets
  * @param intervals
  */
-void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context)
+void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context, short numRules)
 {
 	newEdgesThisIter = 0;
 
@@ -144,7 +145,7 @@ void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInt
 	for (int i = 0; i < setSize; i++)
 	{
 		unsigned long newEdges = 0;
-		newEdges = updateEdges(i, compsets, intervals, context);
+		newEdges = updateEdges(i, compsets, intervals, context, numRules);
 		if (newEdges > 0 && (i >= intervals[0].getIndexStart() && i <= intervals[0].getIndexEnd()))
 			intervals[0].setNewEdgeAdded(true);
 		else if (newEdges > 0 && (i >= intervals[1].getIndexStart() && i <= intervals[1].getIndexEnd()))

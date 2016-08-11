@@ -7,7 +7,7 @@ Grammar::Grammar(){
 Grammar::~Grammar(){}
 
 bool Grammar::loadGrammar(string fname){
-  std::ifstream fin;
+	std::ifstream fin;
 	fin.open(fname);
 	if(!fin) return false;	
 
@@ -36,7 +36,7 @@ bool Grammar::loadGrammar(string fname){
 		//d-rule
 		else if(tok.size() == 3)
 			rules[changeShort(getValue(tok.at(1)),getValue(tok.at(2)))]=getValue(tok.at(0));
-		
+
 		//initialize
 		tok.erase(tok.begin(),tok.end());
 	}
@@ -59,46 +59,46 @@ string Grammar::trimStr(string str){
 //ex) checkRules("a","");
 //ex) checkRules("a","b");
 char Grammar::checkRules(string srcVal, string dstVal){
-	map<short, char>::iterator it;
-	if(!dstVal.empty()){
-		short key = changeShort(getValue(srcVal),getValue(dstVal));
-		it = rules.find(key);
-		return (it != rules.end()) ? (*it).second : char(-1);
-	}	
-	else{
-		short key = changeShort(0,getValue(srcVal));	
-		it = rules.find(key);
-		return (it != rules.end()) ? (*it).second : char(-1);
-	}
+map<short, char>::iterator it;
+if(!dstVal.empty()){
+short key = changeShort(getValue(srcVal),getValue(dstVal));
+it = rules.find(key);
+return (it != rules.end()) ? (*it).second : char(-1);
+}	
+else{
+short key = changeShort(0,getValue(srcVal));	
+it = rules.find(key);
+return (it != rules.end()) ? (*it).second : char(-1);
+}
 
 }*/
 
 //ex) checkRules("a","0");
 //ex) checkRules("a","b");
 /*label_t Grammar::checkRules(label_t srcVal, label_t dstVal){
-	map<short,char>::iterator it;
-	if(dstVal!=0){
-		short key = changeShort(srcVal,dstVal);
-		it = rules.find(key);
-		return (it != rules.end()) ? (*it).second : label_t(-1);
-	}	
-	else{
-		short key = changeShort(0,srcVal);	
-		it = rules.find(key);
-		return (it != rules.end()) ? (*it).second : label_t(-1);
-	}
+  map<short,char>::iterator it;
+  if(dstVal!=0){
+  short key = changeShort(srcVal,dstVal);
+  it = rules.find(key);
+  return (it != rules.end()) ? (*it).second : label_t(-1);
+  }	
+  else{
+  short key = changeShort(0,srcVal);	
+  it = rules.find(key);
+  return (it != rules.end()) ? (*it).second : label_t(-1);
+  }
   }*/
 
 bool Grammar::print_all(){
 
-  using std::cin; 
+	using std::cin; 
 
 	if(!eRules.size() && !rules.size()) return false;
-	
+
 	set<char>::iterator it_e; //for eRules
 	for(it_e=eRules.begin();it_e!=eRules.end();it_e++)
 		cout << (short)*it_e << endl;
-	
+
 	map<short, char>::iterator it;
 	for(it=rules.begin(); it!=rules.end(); it++){
 		if((*it).first <=256)

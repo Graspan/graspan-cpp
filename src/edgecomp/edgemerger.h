@@ -18,7 +18,8 @@ class EdgeMerger
 	int oUnUdPtr;
 	int currID;
 
-	std::unordered_set<char> currEvals;
+//	std::unordered_set<char> currEvals;
+	char *currEvals;
 	std::priority_queue<MinSet, vector<MinSet>, compare> minEdges;
 
 	vector<int> srcoUnUdEdges;
@@ -56,7 +57,7 @@ class EdgeMerger
 
 	// given all new edges and their values, merge with the source creating a vector of old U new edges
 	// and only new edges
-	void mergeVectors(vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge, int srcID);
+	void mergeVectors(vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge, int srcID, short numRules);
 };
 
 #endif

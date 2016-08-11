@@ -1,9 +1,15 @@
 #include "minset.h"
 
 // constructor
-MinSet::MinSet()
+MinSet::MinSet(short numRules)
 {
 	ptr = 0;
+	evals = new char[numRules];
+}
+
+MinSet::~MinSet()
+{
+	delete evals[];
 }
 
 
