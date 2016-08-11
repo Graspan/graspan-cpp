@@ -2,10 +2,11 @@
 
 Context::Context(int argc, char** argv) {
 	//if user don't typing input value
+	cout << "argc ==" << argc << endl;
 	if(argc==1){
 		//50MB
 		//parameters.insert(std::make_pair(MEM_BUDGET_KEY, 7730941133));
-		memBudget = (unsigned long long int) 7730941133;
+		memBudget = (unsigned long long int) 7730941133; // 1073741824
 		parameters.insert(std::make_pair(NUM_PARTITION_KEY, 10));
 		//src, numEdge = 8bytes dst, label = 5bytes
 		//worst case is use 13bytes per edges
@@ -21,11 +22,14 @@ Context::Context(int argc, char** argv) {
 		for(int i=0;i<argc;i++){
 			p_token = strtok_r(argv[i], "=", &context);
 			if(i<2){
-				parameters.insert(std::make_pair(compare[i], atoi(context)));
-				if(i==0){
-					parameters.insert(std::make_pair(MAX_EDGES_PER_PARTITION_KEY,parameters[compare[i]] / 13));
+				if (i == 0) {
+					parameters.insert(std::make_pair(MAX_EDGES_PER_PARTITION_KEY, parameters[compare[i]] / 13));
 					cout << "Max_Edges_Partition =" << (parameters[MEM_BUDGET_KEY]) / 13 << endl;
+					continue;
 				}
+				parameters.insert(std::make_pair(compare[i], (unsigned long long int)atoi(context)*(unsigned long long int)1073741824));
+				memBudget = (unsigned long long int)atoi(context)*(unsigned long long int)1073741824;
+				
 			} else{
 				if((bool)context){
 					flags.insert(std::make_pair(compare[i],true));
@@ -35,6 +39,7 @@ Context::Context(int argc, char** argv) {
 			}
 		}
 	}
+	cout << "memBudget =" << memBudget << endl;
 }
 
 unsigned long long int Context::getMemBudget() {

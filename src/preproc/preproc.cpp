@@ -113,7 +113,6 @@ void Preproc::makeVIT(string fileName, Context &context) {
 			for (it_e = eRules.begin(); it_e != eRules.end(); it_e++) {	//add 
 				label = *it_e;
 				data[i].push_back(std::make_pair(i, label));
-				count++;
 			}
 			std::sort(data[i].begin(), data[i].end(), compareV);
 			data[i].erase(unique(data[i].begin(), data[i].end()), data[i].end());
@@ -173,8 +172,9 @@ void Preproc::makeVIT(string fileName, Context &context) {
 			sum += data[i].size() * 5;
 			sum += 8;
 			if (sum > mSize) {
-				cout << "mSize =" << mSize;
+				cout << " mSize =" << mSize;
 			cout << " sum =" << sum << "size =" << context.getMemBudget() / 2 << endl;
+			cout << " start =" << startS << " end =" << endS <<endl;
 				vitDegree.push_back(0);
 				tempVIT.push_back(std::make_pair(startS, endS));
 				startS = -1;
@@ -185,6 +185,7 @@ void Preproc::makeVIT(string fileName, Context &context) {
 			}
 			endS = i;
 		}
+		cout << " sum2 =" << sum << endl;
 		if (sum != 0) {
 			tempVIT.push_back(std::make_pair(startS, endS));
 			vitDegree.push_back(0);
