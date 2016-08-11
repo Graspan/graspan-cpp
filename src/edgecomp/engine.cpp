@@ -1,6 +1,9 @@
 #include "engine.h"
 
 
+unsigned long long mergeTime;
+unsigned long long addEdgesTime;
+
 long totNewEdges;
 long newEdgesThisIter;
 int iterNo;
@@ -20,6 +23,22 @@ void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInt
 void updatePartitions(ComputationSet compsets[], Partition &p1, Partition &p2, vector<Vertex> &part1, vector<Vertex> &part2);
 
 
+string timeToStr(ull time)
+{
+	int seconds, minutes, hours;
+	int x = totalTime() / 1000;
+	seconds = x % 60;
+	x /= 60;
+	minutes = x % 60;
+	x /= 60;
+	hours = x;
+
+	std::stringstream output;
+	output << hours << " h, " << minutes << " m, " << seconds << " s";
+
+	return output.str();
+}
+
 /**
  * runs the edge computation for graspan
  */
@@ -31,6 +50,9 @@ int run_computation(Context &context)
 	string name;
 	Partition p1, p2;
 	partitionid_t p, q, oldP = -1, oldQ = -1;
+
+	mergeTime = 0;
+	addEdgesTime = 0;
 
 	short numRules = context.grammar.getNumRules();
 
@@ -87,6 +109,10 @@ int run_computation(Context &context)
 		cout << "COMP TIME: " << compTimer.hmsFormat() << endl;
 		cout << "REPA TIME: " << repartTimer.hmsFormat() << endl <<  endl << endl;
 	}
+
+	cout << "TOTAL TIME MERGING (WITH SOME ERROR): " << timeToStr(mergeTime) << endl;
+	cout << "TOTAL TIME ADDING EDGES (WITH ERROR): " << timeToStr(addEdgesTime) << endl << endl;
+
 	return 0;
 }
 
@@ -128,6 +154,7 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 
 		if (totNewEdges > sizeLim) break;
 	} while (newEdgesThisIter > 0);
+
 }
 
 /**
@@ -145,7 +172,7 @@ void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInt
 	for (int i = 0; i < setSize; i++)
 	{
 		unsigned long newEdges = 0;
-		newEdges = updateEdges(i, compsets, intervals, context, numRules);
+		newEdges = updateEdges(i, compsets, intervals, context, numRules, mergeTime, addEdgesTime);
 		if (newEdges > 0 && (i >= intervals[0].getIndexStart() && i <= intervals[0].getIndexEnd()))
 			intervals[0].setNewEdgeAdded(true);
 		else if (newEdges > 0 && (i >= intervals[1].getIndexStart() && i <= intervals[1].getIndexEnd()))

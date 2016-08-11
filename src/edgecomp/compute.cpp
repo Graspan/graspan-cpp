@@ -43,17 +43,21 @@ void print_edges(vector<vector<int>> &edgeVecsToMerge, vector<vector<char>> &val
  * @param vertInd			-index of source vertex in compsets[]
  * @param compsets[]		-ComputationSet list for all in-memory vertices
  * @param intervals			-list (size=2) with information about the partitions
- * @param context				-Context object for checking grammar
+ * @param context			-Context object for checking grammar
  */
-long updateEdges(int vertInd, ComputationSet compsets[], LoadedVertexInterval intervals[], Context &context, short numRules)
+long updateEdges(int vertInd, ComputationSet compsets[], LoadedVertexInterval intervals[], Context &context, short numRules, ull mergeTime, ull addEdgesTime)
 {
 	ComputationSet *compSet = &compsets[vertInd];
 
 	bool oldEdgesEmpty = (compSet->getOldEdges().empty()) ? true : false;
 	bool newEdgesEmpty = (compSet->getNewEdges().empty()) ? true : false;
 
-	if (oldEdgesEmpty && newEdgesEmpty) return 0;
+	if (oldEdgesEmpty && newEdgesEmpty) {
+		cout << "BOTH EMPTY" << endl;
+		return 0;
+	}
 
+	Timer mergeTimer, addEdgesTimer;
 
 	// TODO: use DDM to estimate num of rows needed
 	vector< vector<double> > &ddm = context.ddm.getDdmMap();
@@ -65,11 +69,19 @@ long updateEdges(int vertInd, ComputationSet compsets[], LoadedVertexInterval in
 	edgeVecsToMerge[rowMergeID] = compSet->getoldUnewEdges();
 	valVecsToMerge[rowMergeID++] = compSet->getoldUnewVals();
 
-	getEdgesToMerge(compSet, compsets, intervals, edgeVecsToMerge, valVecsToMerge, rowMergeID, context);
+	addEdgesTimer.startTimer();
+	getEdgesToMerge(compSet, compsets, intervals, oldEdgesEmpty, newEdgesEmpty, edgeVecsToMerge, valVecsToMerge, rowMergeID, context);
+	addEdgesTimer.endTimer();
+
+	addEdgesTime += addEdgesTimer.getTotalTime();
 
 	EdgeMerger em;
 
+	mergeTimer.startTimer();
 	em.mergeVectors(edgeVecsToMerge, valVecsToMerge, 0, numRules);
+	mergeTimer.endTimer();
+
+	mergeTime += mergeTimer.getTotalTime();
 
 	compSet->setDeltaEdges(em.getDeltaEdges());
 	compSet->setDeltaVals(em.getDeltaVals());
@@ -96,8 +108,9 @@ long updateEdges(int vertInd, ComputationSet compsets[], LoadedVertexInterval in
  * @param context				-grammar checker
  */
 void getEdgesToMerge(ComputationSet *compSet, ComputationSet compsets[],
-		LoadedVertexInterval intervals[], vector< vector<int> > &edgeVecsToMerge,
-		vector< vector<char> > &valVecsToMerge, int &rowMergeID, Context &context)
+		LoadedVertexInterval intervals[], bool oldEdgesEmpty, bool NewEdgesEmpty,
+		vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge,
+		int &rowMergeID, Context &context)
 {
 	vector<int> &oldEdges = compSet->getOldEdges();
 	vector<char> &oldVals = compSet->getOldVals();
@@ -105,10 +118,14 @@ void getEdgesToMerge(ComputationSet *compSet, ComputationSet compsets[],
 	vector<int> &newEdges = compSet->getNewEdges();
 	vector<char> &newVals = compSet->getNewVals();
 
-	genS_RuleEdges(newEdges, newVals, edgeVecsToMerge, valVecsToMerge, rowMergeID, context);
+	if (!newEdgesEmpty)
+		genS_RuleEdges(newEdges, newVals, edgeVecsToMerge, valVecsToMerge, rowMergeID, context);
 
-	genD_RuleEdges(compsets, intervals, oldEdges, oldVals, edgeVecsToMerge, valVecsToMerge, rowMergeID, context, 'o');
-	genD_RuleEdges(compsets, intervals, newEdges, newVals, edgeVecsToMerge, valVecsToMerge, rowMergeID, context, 'n');
+	if (!oldEdgesEmpty)
+		genD_RuleEdges(compsets, intervals, oldEdges, oldVals, edgeVecsToMerge, valVecsToMerge, rowMergeID, context, 'o');
+
+	if (!newEdgesEmpty)
+		genD_RuleEdges(compsets, intervals, newEdges, newVals, edgeVecsToMerge, valVecsToMerge, rowMergeID, context, 'n');
 }
 
 /**
@@ -142,8 +159,8 @@ void genS_RuleEdges(vector<int> &newEdges, vector<char> &newVals,
  * check the edges of that vertex against the contextmar
  */
 void genD_RuleEdges(ComputationSet compsets[], LoadedVertexInterval intervals[], vector<int> &edges,
-		vector<char> &vals, vector< vector<int> > &edgeVecsToMerge,
-		vector< vector<char> > &valVecsToMerge, int &rowMergeID, Context &context, char flag)
+		vector<char> &vals, vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge,
+		int &rowMergeID, Context &context, char flag)
 {
 	int dstInd;
 	for (int i = 0; i < edges.size(); i++)
