@@ -4,8 +4,9 @@
 
 // FUNCTION DEFINITIONS
 void getEdgesToMerge(ComputationSet *compSet, ComputationSet compsets[],
-		LoadedVertexInterval intervals[], vector< vector<int> > &edgeVecsToMerge,
-		vector< vector<char> > &valVecsToMerge, int &rowMergeID, Context &context);
+		LoadedVertexInterval intervals[], bool oldEdgesEmpty, bool newEdgesEmpty,
+		vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge,
+		int &rowMergeID, Context &context);
 
 void genS_RuleEdges(vector<int> &newEdges, vector<char> &newVals,
 		vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge,
@@ -65,7 +66,7 @@ long updateEdges(int vertInd, ComputationSet compsets[], LoadedVertexInterval in
 	edgeVecsToMerge[rowMergeID] = compSet->getoldUnewEdges();
 	valVecsToMerge[rowMergeID++] = compSet->getoldUnewVals();
 
-	getEdgesToMerge(compSet, compsets, intervals, edgeVecsToMerge, valVecsToMerge, rowMergeID, context);
+	getEdgesToMerge(compSet, compsets, intervals, oldEdgesEmpty, newEdgesEmpty, edgeVecsToMerge, valVecsToMerge, rowMergeID, context);
 
 	EdgeMerger em;
 
@@ -96,8 +97,9 @@ long updateEdges(int vertInd, ComputationSet compsets[], LoadedVertexInterval in
  * @param context				-grammar checker
  */
 void getEdgesToMerge(ComputationSet *compSet, ComputationSet compsets[],
-		LoadedVertexInterval intervals[], vector< vector<int> > &edgeVecsToMerge,
-		vector< vector<char> > &valVecsToMerge, int &rowMergeID, Context &context)
+		LoadedVertexInterval intervals[], bool oldEdgesEmpty, bool newEdgesEmpty,
+		vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge,
+		int &rowMergeID, Context &context)
 {
 	vector<int> &oldEdges = compSet->getOldEdges();
 	vector<char> &oldVals = compSet->getOldVals();
@@ -105,10 +107,14 @@ void getEdgesToMerge(ComputationSet *compSet, ComputationSet compsets[],
 	vector<int> &newEdges = compSet->getNewEdges();
 	vector<char> &newVals = compSet->getNewVals();
 
-	genS_RuleEdges(newEdges, newVals, edgeVecsToMerge, valVecsToMerge, rowMergeID, context);
+	if (!newEdgesEmpty)
+		genS_RuleEdges(newEdges, newVals, edgeVecsToMerge, valVecsToMerge, rowMergeID, context);
 
-	genD_RuleEdges(compsets, intervals, oldEdges, oldVals, edgeVecsToMerge, valVecsToMerge, rowMergeID, context, 'o');
-	genD_RuleEdges(compsets, intervals, newEdges, newVals, edgeVecsToMerge, valVecsToMerge, rowMergeID, context, 'n');
+	if (!oldEdgesEmpty)
+		genD_RuleEdges(compsets, intervals, oldEdges, oldVals, edgeVecsToMerge, valVecsToMerge, rowMergeID, context, 'o');
+
+	if (!newEdgesEmpty)
+		genD_RuleEdges(compsets, intervals, newEdges, newVals, edgeVecsToMerge, valVecsToMerge, rowMergeID, context, 'n');
 }
 
 /**

@@ -47,5 +47,7 @@ int main(int argc, char *argv[])
 	compTime.endTimer();
 	cout << "TOTAL TIME: " << compTime.toString() << endl;
 
+	std::cerr << "GRASPAN FINISHED" << endl;
+
 	return 0;
 }
