@@ -76,7 +76,7 @@ long updateEdges(int vertInd, ComputationSet compsets[], LoadedVertexInterval in
 
 	addEdgesTime += addEdgesTimer.totalTime();
 
-	EdgeMerger em;
+	EdgeMerger em(numRules);
 
 	mergeTimer.startTimer();
 	em.mergeVectors(edgeVecsToMerge, valVecsToMerge, 0, numRules);

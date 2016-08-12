@@ -19,7 +19,7 @@ class MinSet
 	public:
 	// constructor
 	MinSet(short numRules);
-	~MinSet();
+//	~MinSet();
 
 	// getters
 	inline int getMinSetID() { return minSetID; }
@@ -33,7 +33,7 @@ class MinSet
 	inline void setCurrVID(int vid) { currentVID = vid; }
 //	inline void resetPtr() { ptr = 0; numEvals = 0; }
 
-	inline void incPtr() { ptr++; }
+	inline void incPtr() { ptr++; numEvals++; }
 	inline void addEval(char eval) { evals[numEvals] = eval; }
 	inline void clearEvalSet() { numEvals = 0; }
 	

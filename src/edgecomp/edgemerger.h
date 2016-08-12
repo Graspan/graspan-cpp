@@ -18,6 +18,7 @@ class EdgeMerger
 	int oUnUdPtr;
 	int currID;
 
+	int numEvals;
 	char *currEvals;
 	std::priority_queue<MinSet, vector<MinSet>, compare> minEdges;
 
@@ -29,9 +30,11 @@ class EdgeMerger
 
 
 	// FUNCTIONS
-	void fillPriorityQueue(vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge, int srcID);
+	void fillPriorityQueue(vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge, int srcID, short numRules);
 
 	void removeExtraSpace();
+
+	bool findVal(char *evals, char val, int numVals);
 
 	void updateMinSet(MinSet &minset, vector<int> &edges, vector<char> &vals);
 
@@ -43,7 +46,8 @@ class EdgeMerger
 
 	public:
 	// constructor
-	EdgeMerger();
+	EdgeMerger(short numRules);
+	~EdgeMerger();
 
 	// getters
 	inline vector<int> &getoUnUdEdges() { return srcoUnUdEdges; }

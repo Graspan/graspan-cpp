@@ -7,11 +7,11 @@ MinSet::MinSet(short numRules)
 	evals = new char[numRules];
 }
 
-MinSet::~MinSet()
-{
-	delete evals[];
-}
-
+//MinSet::~MinSet()
+//{
+//	delete[] evals;
+//}
+//
 
 string MinSet::toString()
 {
