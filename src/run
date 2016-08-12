@@ -6,4 +6,4 @@ cp originalTest/* resources/
 
 echo "running..."
 cd resources
-../../bin/comp
+../../bin/exp
