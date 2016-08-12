@@ -18,7 +18,7 @@ class EdgeMerger
 	int oUnUdPtr;
 	int currID;
 
-	char *currEvals;
+	std::unordered_set<char> currEvals;
 	std::priority_queue<MinSet, vector<MinSet>, compare> minEdges;
 
 	vector<int> srcoUnUdEdges;

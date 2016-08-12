@@ -46,7 +46,7 @@ void print_edges(vector<vector<int>> &edgeVecsToMerge, vector<vector<char>> &val
  * @param intervals			-list (size=2) with information about the partitions
  * @param context			-Context object for checking grammar
  */
-long updateEdges(int vertInd, ComputationSet compsets[], LoadedVertexInterval intervals[], Context &context, short numRules, ull mergeTime, ull addEdgesTime)
+long updateEdges(int vertInd, ComputationSet compsets[], LoadedVertexInterval intervals[], Context &context, short numRules, ull &mergeTime, ull &addEdgesTime)
 {
 	ComputationSet *compSet = &compsets[vertInd];
 

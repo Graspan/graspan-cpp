@@ -13,32 +13,29 @@ class MinSet
 	
 	int minSetID;
 	int currentVID;
-	std::unordered_set<char> evals;
-//	char *evals;
-//	int numEvals;
+	char *evals;
+	int numEvals;
 
 	public:
 	// constructor
-	MinSet(/*short numRules*/);
-//	~MinSet();
+	MinSet(short numRules);
+	~MinSet();
 
 	// getters
 	inline int getMinSetID() { return minSetID; }
 	inline int getCurrVID() const { return currentVID; }
 	inline int getPtr() { return ptr; }
-	inline std::unordered_set<char> &getEvals() { return evals; }
-//	inline char *getEvals() { return evals; }
+	inline int getNumEvals() { return numEvals; }
+	inline char *getEvals() { return evals; }
 
 	// setters
 	inline void setMinSetID(int id) { minSetID = id; }
 	inline void setCurrVID(int vid) { currentVID = vid; }
-	inline void resetPtr() { ptr = 0; }
+//	inline void resetPtr() { ptr = 0; numEvals = 0; }
 
 	inline void incPtr() { ptr++; }
-//	inline void addEval(char eval) { evals[numEvals] = eval; }
-	inline void addEval(char eval) { evals.insert(eval); }
-	inline void clearEvalSet() { evals.clear(); }
-//	inline void clearEvalSet() { numEvals = 0; }
+	inline void addEval(char eval) { evals[numEvals] = eval; }
+	inline void clearEvalSet() { numEvals = 0; }
 	
 	string toString();
 };

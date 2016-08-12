@@ -167,13 +167,13 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 		}
 		iterTimer.endTimer();
 
-		cout << "ADD E TIME ITER: " << timeToStr(iterAddTime) << endl;
-		cout << "MERGE TIME ITER: " << timeToStr(iterMergeTime) << endl << endl;
+		cout << "ADD E TIME ITER: " << iterAddTime << " ms" <<  endl;
+		cout << "MERGE TIME ITER: " << iterMergeTime << " ms" << endl << endl;
 
 		cout << "EDGES PER SECND: " << ((double)newEdgesThisIter / (double)iterTimer.getSeconds()) << endl;
 		cout << "NEW E THIS ITER: " << newEdgesThisIter << endl;
 		cout << "NEW EDGES TOTAL: " << totNewEdges << endl;
-		cout << "ITERATION  TIME: " << iterTimer.hmsFormat() << endl << endl;
+		cout << "ITERATION  TIME: " << iterTimer.hmsFormat() << "\n\n" << endl;
 
 		rndAddTime += iterAddTime;
 		rndMergeTime += iterMergeTime;

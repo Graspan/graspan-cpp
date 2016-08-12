@@ -1,0 +1,23 @@
+#! /bin/bash
+
+# minset
+mv datastructures/minset.h datastructures/tmpminset.h
+mv datastructures/minset.cpp datastructures/tmpminset.cpp
+
+mv datastructures/altminset.h datastructures/minset.h
+mv datastructures/altminset.cpp datastructures/minset.cpp
+
+mv datastructures/tmpminset.h datastructures/altminset.h
+mv datastructures/tmpminset.cpp datastructures/altminset.cpp
+
+
+
+# edgemerger
+mv edgecomp/edgemerger.h edgecomp/tmpedgemerger.h
+mv edgecomp/edgemerger.cpp edgecomp/tmpedgemerger.cpp
+
+mv edgecomp/altedgemerger.h edgecomp/edgemerger.h
+mv edgecomp/altedgemerger.cpp edgecomp/edgemerger.cpp
+
+mv edgecomp/tmpedgemerger.h edgecomp/altedgemerger.h
+mv edgecomp/tmpedgemerger.cpp edgecomp/altedgemerger.cpp

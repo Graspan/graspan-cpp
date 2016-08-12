@@ -1,7 +1,7 @@
 CC=g++ -std=c++0x
 
 # will eventually need to use threads
-CFLAGS=-ggdb -O3
+CFLAGS=-ggdb -O3 
 #CFLAGS=-O2
 
 ##### source files #####
