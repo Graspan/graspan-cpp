@@ -47,7 +47,8 @@ int run_computation(Context &context)
 				Partition::writeToFile(p2, false);
 			Loader::loadPartition(q, p2, false);
 		}
-		unsigned long long int sizeLim = (context.getMemBudget() - p1.getNumVertices() * 4 - p2.getNumVertices() * 4) / 5;
+		cout << "OG NUM EDGES: " << (p1.getNumEdges() + p2.getNumEdges()) << endl;
+		unsigned long long int sizeLim = (context.getMemBudget() - p1.getNumVertices() * 8 - p2.getNumVertices() * 8) / 5;
 		oldP = p;
 		oldQ = q;
 		loadTimer.endTimer();
@@ -70,13 +71,8 @@ int run_computation(Context &context)
 
 		updatePartitions(compsets, p1, p2, part1, part2);
 
-	  /* TODO:
-	  if (p1.hasNewEdges() || p2.hasNewEdges()) {
-	  }
-	  else {
-		contex.ddm.markTerminate(p,q);
-	  }
-	  */
+		cout << "NEW NUM EDGES: " << (p1.getNumEdges() + p2.getNumEdges()) << endl;
+
 		delete[] compsets;
 		if (totNewEdges > 0) {
 			cout << "== REPA START ==" << endl;
@@ -146,6 +142,7 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 		}
 		iterTimer.endTimer();
 
+		cout << "EDGES PER SECND: " << (double)newEdgesThisIter / (double)(iterTimer.totalTime() / 1000) << endl;
 		cout << "EDGES THIS ITER: " << newEdgesThisIter << endl;
 		cout << "NEW EDGES TOTAL: " << totNewEdges << endl;
 		cout << "ITERATER  TIME   " << iterTimer.hmsFormat() << endl << endl;
