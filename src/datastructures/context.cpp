@@ -15,13 +15,12 @@ Context::Context(int argc, char** argv) {
 		flags.insert(std::make_pair(INSERT_SORT_FLAG, false));
 		flags.insert(std::make_pair(ALTER_SCHEDULE_FLAG, false));
 	} else{
-		string compare[5] = { MEM_BUDGET_KEY , NUM_PARTITION_KEY , INSERT_SORT_FLAG ,ALTER_SCHEDULE_FLAG };
 		char *p_token = NULL;
 		char *context = NULL;
 
 		for(int i=0;i<argc;i++){
 			p_token = strtok_r(argv[i], "=", &context);
-			if(i<2){
+		/*	if(i<2){
 				if (i == 0) {
 					parameters.insert(std::make_pair(MAX_EDGES_PER_PARTITION_KEY, parameters[compare[i]] / 13));
 					cout << "Max_Edges_Partition =" << (parameters[MEM_BUDGET_KEY]) / 13 << endl;
@@ -29,6 +28,7 @@ Context::Context(int argc, char** argv) {
 				}
 				parameters.insert(std::make_pair(compare[i], (unsigned long long int)atoi(context)*(unsigned long long int)1073741824));
 				memBudget = (unsigned long long int)atoi(context)*(unsigned long long int)1073741824;
+				cout << "test" << endl;
 				
 			} else{
 				if((bool)context){
@@ -36,6 +36,34 @@ Context::Context(int argc, char** argv) {
 				} else{
 					flags.insert(std::make_pair(compare[i],false));
 				}
+			}*/
+			if (!strncmp(argv[i], INPUT_GRAPH_FILE_KEY.c_str(), sizeof(argv[i]))) {
+				parameters.insert(std::make_pair(INPUT_GRAPH_FILE_KEY, atoi(context)));
+			}
+			else if (!strncmp(argv[i], GRAMMAR_FILE_KEY.c_str(), sizeof(argv[i]))) {
+				parameters.insert(std::make_pair(GRAMMAR_FILE_KEY, atoi(context)));
+			}
+			else if (!strncmp(argv[i], MEM_BUDGET_KEY.c_str(), sizeof(argv[i]))) {
+				parameters.insert(std::make_pair(MEM_BUDGET_KEY, (unsigned long long int)atoi(context)*(unsigned long long int)1073741824));
+				memBudget = (unsigned long long int)atoi(context)*(unsigned long long int)1073741824;
+			}
+			else if (!strncmp(argv[i], NUM_PARTITION_KEY.c_str(), sizeof(argv[i]))) {
+				parameters.insert(std::make_pair(NUM_PARTITION_KEY, atoi(context)));
+			}
+			else if (!strncmp(argv[i], MAX_EDGES_PER_PARTITION_KEY.c_str(), sizeof(argv[i]))) {
+				parameters.insert(std::make_pair(MAX_EDGES_PER_PARTITION_KEY, atoi(context)));
+			}
+			else if (!strncmp(argv[i], INSERT_SORT_FLAG.c_str(), sizeof(argv[i]))) {
+				if (atoi(context) == 0)
+					flags.insert(std::make_pair(INSERT_SORT_FLAG, false));
+				else
+					flags.insert(std::make_pair(INSERT_SORT_FLAG, true));
+			}
+			else if (!strncmp(argv[i], ALTER_SCHEDULE_FLAG.c_str(), sizeof(argv[i]))) {
+				if (atoi(context) == 0)
+					flags.insert(std::make_pair(ALTER_SCHEDULE_FLAG, false));
+				else
+					flags.insert(std::make_pair(ALTER_SCHEDULE_FLAG, true));
 			}
 		}
 	}
