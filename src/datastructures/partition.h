@@ -49,6 +49,7 @@ public:
 
 	// ddr = destination distribution ratio, i.e., a cell in DDM return BONUS
 	void calc_ddr(Context &context);
+	~Partition();
 };
 
 

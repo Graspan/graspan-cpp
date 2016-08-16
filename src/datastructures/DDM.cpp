@@ -17,11 +17,11 @@ int DDM::getNumPartition()
 }
 
 //the meaning of adjust p is to set teminate_map[p][] and teminate_map[][p] into UNMARK
-void DDM::adjust(partitionid_t p){
-  for(int i = 0; i < numPartition; ++i) {
-    ddmMap[p][i] = 0;
-    ddmMap[i][p] = 0;
-  }
+void DDM::adjust(int p, int q) {
+	if (ddmMap[p][q] > 0)
+		ddmMap[p][q] += 1;
+	if (ddmMap[q][p] > 0)
+		ddmMap[q][p] += 1;
 }
 
 //return false if the whole system should terminate
