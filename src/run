@@ -1,5 +1,9 @@
 #! /bin/bash
 
+PID=0
+
+trap "{ kill $PID; exit 12; }" EXIT SIGINT SIGQUIT 
+
 GRAMMAR=resources/grammar
 INPGRAPH=preproc/bigtest.txt
 NUMPARTITIONS=3
@@ -13,6 +17,6 @@ echo "running..."
 ../bin/comp numPartitions=$NUMPARTITIONS insertionSort=false alterSchedule=false memBudget=$MEMBUDGET inputGraph=$INPGRAPH grammar=$GRAMMAR > log/cpp.$MEMBUDGET.$NUMPARTITIONS.output &
 
 sleep 1
-
 PID=$( echo $( ps -f  | grep "../../bin/comp" | awk '{print $2}' ) | awk '{print $1}' )
 ./utilities/pmap.sh $PID > log/pmap.$MEMBUDGET.$NUMPARTITIONS.output
+
