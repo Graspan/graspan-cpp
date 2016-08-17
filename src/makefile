@@ -12,12 +12,12 @@ COMPUTATION=edgecomp/engine.cpp edgecomp/compute.cpp edgecomp/edgemerger.cpp edg
 LOADER=datastructures/loader.cpp edgecomp/grammar.cpp
 # computation sets included through header files
 DATASTRUCTS=datastructures/vertex.cpp datastructures/loadedvertexinterval.cpp datastructures/minset.cpp datastructures/partition.cpp datastructures/context.cpp datastructures/vit.cpp datastructures/DDM.cpp
-TEST=../test/timer.cpp
+UTIL=../test/timer.cpp Library/Logger.cpp
 
 
 
 
 ##### build rules #####
-comp: dispatcher/graspan.cpp $(PREP) $(LOADER) $(COMPUTATION) $(DATASTRUCTS) $(TEST)
-	$(CC) $(CFLAGS) dispatcher/graspan.cpp $(PREP) $(LOADER) $(COMPUTATION) $(DATASTRUCTS) $(TEST) -o ../bin/comp
+comp: dispatcher/graspan.cpp $(PREP) $(LOADER) $(COMPUTATION) $(DATASTRUCTS) $(UTIL)
+	$(CC) $(CFLAGS) dispatcher/graspan.cpp $(PREP) $(LOADER) $(COMPUTATION) $(DATASTRUCTS) $(UTIL) -o ../bin/comp
 

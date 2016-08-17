@@ -58,7 +58,7 @@ long updateEdges(int vertInd, ComputationSet compsets[], LoadedVertexInterval in
 
 	// TODO: use DDM to estimate num of rows needed
 	vector< vector<double> > &ddm = context.ddm.getDdmMap();
-	int numRowsToMerge = 2 + compSet->getoldUnewEdges().size();
+	int numRowsToMerge = 8;
 	vector< vector<int> > edgeVecsToMerge(numRowsToMerge);;
 	vector< vector<char> > valVecsToMerge(numRowsToMerge);
 
@@ -133,14 +133,16 @@ void genS_RuleEdges(vector<int> &newEdges, vector<char> &newVals,
 		int &rowMergeID, Context &context)
 {
 	char newEdgeVal;
+	bool added = false;
 	for (int i = 0; i < newEdges.size(); i++) {
 		newEdgeVal = context.grammar.checkRules(newVals[i], 0);
 		if (newEdgeVal != (char)-1) {
 			edgeVecsToMerge[rowMergeID].push_back(newEdges[i]);
 			valVecsToMerge[rowMergeID].push_back(newEdgeVal);
+			added = true;
 		}
 	}
-	rowMergeID++;
+	if (added) rowMergeID++;
 }
 
 /**
@@ -158,6 +160,10 @@ void genD_RuleEdges(ComputationSet compsets[], LoadedVertexInterval intervals[],
 		{
 			if (edges[i] >= intervals[j].getFirstVertex() && edges[i] <= intervals[j].getLastVertex()) {
 				dstInd = intervals[j].getIndexStart() + (edges[i] - intervals[j].getFirstVertex());
+				if (rowMergeID == edgeVecsToMerge.size()) {
+					edgeVecsToMerge.push_back( vector<int>() );
+					valVecsToMerge.push_back( vector<char>() );
+				}
 				if (flag == 'o' && compsets[dstInd].getNewEdges().size() > 0)
 					checkEdges(dstInd, vals[i], compsets, edgeVecsToMerge, valVecsToMerge, rowMergeID, context, flag);
 				else if (flag == 'n' && compsets[dstInd].getoldUnewEdges().size() > 0)
@@ -179,13 +185,15 @@ void checkEdges(int dstInd, char dstVal, ComputationSet compsets[],
 	vector<char> &vals = (flag == 'o') ? compsets[dstInd].getNewVals() : compsets[dstInd].getoldUnewVals();
 
 	char newVal;
+	bool added = false;
 	for (int i = 0; i < edges.size(); i++)
 	{
 		newVal = context.grammar.checkRules(dstVal, vals[i]);
 		if (newVal != (char)-1) {
 			edgeVecsToMerge[rowMergeID].push_back(edges[i]);
 			valVecsToMerge[rowMergeID].push_back(newVal);
+			added = true;
 		}
 	}
-	rowMergeID++;
+	if (added) rowMergeID++;
 }

@@ -6,3 +6,4 @@ src/originalTest/*
 .gitignore
 *.out
 *.[oa]
+.gpull

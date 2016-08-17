@@ -22,4 +22,7 @@ do
 	date=`date +20%y-%m-%d-%H-%M-%S`
 	echo -e "$date$DELIM$total$DELIM$rss$DELIM$dirty"
 	sleep $DURATION
+
+	NUM=$( ps aux | grep $PID | wc -l )
+	if [ $NUM == 1 ] then break fi
 done
