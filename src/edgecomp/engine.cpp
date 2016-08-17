@@ -93,7 +93,7 @@ int run_computation(Context &context)
 			context.ddm.set(p, q, 1);
 		}
 		str = std::to_string((long long)roundNo);
-		name = string("DDM.") + str;
+		name = context.getGraphFile() + ".ddm." + str;
 		context.ddm.save_DDM(name.c_str());
 
 		cout << "===== ROUND INFO =====" << endl;

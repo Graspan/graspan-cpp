@@ -173,7 +173,7 @@ void Preproc::makeVIT(string fileName, Context &context) {
 			sum += 8;
 		//	cout << "src =" << i << " sum =" << sum << endl;
 		//	cout << " start =" << startS << " end =" << endS << endl;
-			if (sum > mSize) {
+			if (sum > mSize && vitSize != size - 1) {
 			//	cout << " mSize =" << mSize;
 				vitDegree.push_back(0);
 				if (i == dataSize)
