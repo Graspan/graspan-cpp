@@ -24,5 +24,8 @@ do
 	sleep $DURATION
 
 	NUM=$( ps aux | grep $PID | wc -l )
-	if [ $NUM == 1 ] then break fi
+	if [ $NUM == 1 ]
+	then 
+		break 
+	fi
 done

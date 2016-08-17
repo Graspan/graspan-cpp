@@ -1,4 +1,6 @@
 bin/*
+src/log/
+src/log/*
 src/resources/*
 src/originalTest/*
 .cproject
