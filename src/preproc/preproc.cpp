@@ -153,7 +153,7 @@ void Preproc::makeVIT(string fileName, Context &context) {
 	//	cout << "Size =" << size << ", Msize =" << mSize << endl;
 	//	cout << "Size =" << (context.getMemBudget() / 2) << ", Msize =" << mSize/size << endl;
 	//	cout << "eNumedge =" << count << ", Vertex =" << numVertex << endl;
-		cout << "mSize =" << mSize;
+	//	cout << "mSize =" << mSize;
 		mSize /= (unsigned long long int)size;
 		vitSize = 0;
 
@@ -171,21 +171,26 @@ void Preproc::makeVIT(string fileName, Context &context) {
 			}
 			sum += data[i].size() * 5;
 			sum += 8;
+		//	cout << "src =" << i << " sum =" << sum << endl;
+		//	cout << " start =" << startS << " end =" << endS << endl;
 			if (sum > mSize) {
-				cout << " mSize =" << mSize;
-			cout << " sum =" << sum << "size =" << context.getMemBudget() / 2 << endl;
-			cout << " start =" << startS << " end =" << endS <<endl;
+			//	cout << " mSize =" << mSize;
 				vitDegree.push_back(0);
+				if (i == dataSize)
+					endS = i;
 				tempVIT.push_back(std::make_pair(startS, endS));
 				startS = -1;
 				sum = 0;
 				vitSize++;
 				if (i != dataSize)
 					i--;
+
 			}
 			endS = i;
+		//	cout << " start =" << startS << " end =" << endS << endl;
 		}
-		cout << " sum2 =" << sum << endl;
+	//	cout << " Fstart =" << startS << " end =" << endS << endl;
+	//	cout << " sum2 =" << sum << endl;
 		if (sum != 0) {
 			tempVIT.push_back(std::make_pair(startS, endS));
 			vitDegree.push_back(0);
@@ -208,7 +213,8 @@ void Preproc::makeVIT(string fileName, Context &context) {
 			mSum += data[i].size() * 5;
 			mSum += 8;
 			if (mSum > mSize) {
-				sum -= data[i].size();
+				if (i != dataSize)
+					sum -= data[i].size();
 		//		cout << "sum =" << sum;
 		//		cout << " msum =" << mSum << "size =" << context.getMemBudget() / 2 << endl;
 				vitDegree[j++] = sum;

@@ -20,6 +20,7 @@ class Context
 private:
 	unsigned long long int memBudget;
 	map<string, unsigned int> parameters;
+	map<string, string> filePath;
 	map<string, bool> flags;
 	
 
@@ -39,6 +40,9 @@ public:
 	unsigned long long int getMemBudget();
 	int getNumPartitions();
 	int getMaxEdges();
+
+	string getGraphFile();
+	string getGrammarFile();
 
 	bool getInsertFlag();
 	bool getAlterScheduleFlag();

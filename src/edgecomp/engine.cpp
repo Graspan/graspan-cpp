@@ -6,15 +6,9 @@ ull iterMergeTime;
 ull rndAddTime;
 ull rndMergeTime;
 
-ull addEdgesTime;
-ull mergeTime;
-
 long totNewEdges;
 long newEdgesThisIter;
 int iterNo;
-
-bool newEdgesPart1;
-bool newEdgesPart2;
 
 // FUNCTION DEFS
 void initCompSets(ComputationSet compsets[], vector<Vertex> &part1, vector<Vertex> &part2);
@@ -30,18 +24,18 @@ void updatePartitions(ComputationSet compsets[], Partition &p1, Partition &p2, v
 
 string timeToStr(ull time)
 {
-	int seconds, minutes, hours;
-	int x = time / 1000;
-	seconds = x % 60;
-	x /= 60;
-	minutes = x % 60;
-	x /= 60;
-	hours = x;
+    int seconds, minutes, hours;
+    int x = time / 1000;
+    seconds = x % 60;
+    x /= 60;
+    minutes = x % 60;
+    x /= 60;
+    hours = x;
 
-	std::stringstream output;
-	output << hours << " h, " << minutes << " m, " << seconds << " s";
+    std::stringstream output;
+    output << hours << " h, " << minutes << " m, " << seconds << " s";
 
-	return output.str();
+    return output.str();
 }
 
 /**
@@ -56,9 +50,6 @@ int run_computation(Context &context)
 	Partition p1, p2;
 	partitionid_t p, q, oldP = -1, oldQ = -1;
 
-	mergeTime = 0;
-	addEdgesTime = 0;
-
 	short numRules = context.grammar.getNumRules();
 
 	int roundNo = 0;
@@ -67,18 +58,26 @@ int run_computation(Context &context)
 		rndTimer.startTimer();
 		cout << "##### STARTING ROUND " << ++roundNo << " #####" << endl;
 		loadTimer.startTimer();
+		if (p != oldP) {
+			if (oldP != -1)
+				Partition::writeToFile(p1, false);
+			Loader::loadPartition(p, p1, false);
+		}
+		if (q != oldQ) {
+			if (oldQ != -1)
+				Partition::writeToFile(p2, false);
+			Loader::loadPartition(q, p2, false);
+		}
 
 		rndAddTime = 0;
 		rndMergeTime = 0;
 
-		if (p != oldP) Loader::loadPartition(p, p1, false);
-		if (q != oldQ) Loader::loadPartition(q, p2, false);
-		unsigned long long int sizeLim = (context.getMemBudget() - p1.getNumVertices() * 4 - p2.getNumVertices() * 4) / 5;
+		cout << "OG NUM EDGES: " << (p1.getNumEdges() + p2.getNumEdges()) << endl;
+		unsigned long long int sizeLim = (context.getMemBudget() - p1.getNumVertices() * 8 - p2.getNumVertices() * 8) / 5;
 		oldP = p;
 		oldQ = q;
 		loadTimer.endTimer();
-		cout << "P = " << p << ", Q = " << q << endl;
-		cout << "SIZE LIM THIS ROUND: " << sizeLim << endl << endl;
+		cout << "P =" << p << " Q =" << q << endl;
 
 		vector<Vertex> &part1 = p1.getData(), &part2 = p2.getData();
 
@@ -97,17 +96,26 @@ int run_computation(Context &context)
 
 		updatePartitions(compsets, p1, p2, part1, part2);
 
+		cout << "NEW NUM EDGES: " << (p1.getNumEdges() + p2.getNumEdges()) << endl;
+
 		delete[] compsets;
 		if (totNewEdges > 0) {
 			cout << "== REPA START ==" << endl;
 			repartTimer.startTimer();
 			Repart::run(p1, p2, context, intervals[0].hasNewEdges(), intervals[1].hasNewEdges(), newEdgesThisIter);
 			repartTimer.endTimer();
+
 			cout << "== REPA END ==" << endl;
 		}
 
 		if (newEdgesThisIter <= 0) {
 			context.ddm.markTerminate(p, q, 0, 0);
+			cout << intervals[0].hasNewEdges() << endl;
+			cout << intervals[1].hasNewEdges() << endl;
+			cout << "HI" << endl;
+		}
+		else {
+			context.ddm.set(p, q, 1);
 		}
 		str = std::to_string((long long)roundNo);
 		name = string("DDM.") + str;
@@ -115,21 +123,16 @@ int run_computation(Context &context)
 
 		rndTimer.endTimer();
 		cout << "===== ROUND INFO =====" << endl;
-		cout << "ADDE TIME: " << timeToStr(rndAddTime) << endl;
-		cout << "MERG TIME: " << timeToStr(rndMergeTime) << '\n' << endl;
+		cout << "ADD E TIME: " << timeToStr(rndAddTime) << endl;
+		cout << "MERGE TIME: " << timeToStr(rndMergeTime) << endl;
 
 		cout << "RND EDGES: " << totNewEdges << endl;
 		cout << "LOAD TIME: " << loadTimer.hmsFormat() << endl;
 		cout << "COMP TIME: " << compTimer.hmsFormat() << endl;
-		cout << "REPA TIME: " << repartTimer.hmsFormat() << endl;
-		cout << "===== ROUND " << roundNo << " took " << rndTimer.hmsFormat() << "\n\n" << endl;
-
-		addEdgesTime += rndAddTime;
-		mergeTime += rndMergeTime;
+		cout << "REPA TIME: " << repartTimer.hmsFormat() << endl <<  endl << endl;
 	}
-
-	cout << "TOTAL TIME ADDING EDGES (WITH ERROR): " << timeToStr(addEdgesTime) << endl << endl;
-	cout << "TOTAL TIME MERGING (WITH SOME ERROR): " << timeToStr(mergeTime) << endl;
+	Partition::writeToFile(p1, false);
+	Partition::writeToFile(p2, false);
 
 	return 0;
 }
@@ -146,6 +149,8 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 	Timer iterTimer;
 	iterNo = 0;
 	totNewEdges = 0;
+
+	cout << "NEW EDGES LIMIT: " << sizeLim << endl;
 	
 	do {
 		cout << "===== STARTING ITERATION " << ++iterNo << endl;
@@ -167,16 +172,13 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 		}
 		iterTimer.endTimer();
 
-		cout << "ADD E TIME ITER: " << iterAddTime << " ms" <<  endl;
-		cout << "MERGE TIME ITER: " << iterMergeTime << " ms" << endl << endl;
+		cout << "ADD E TIME ITER: " << iterAddTime << " ms" << endl;
+		cout << "MERGE TIME ITER: " << iterMergeTime << " ms\n" << endl;
 
-		cout << "EDGES PER SECND: " << ((double)newEdgesThisIter / (double)iterTimer.getSeconds()) << endl;
-		cout << "NEW E THIS ITER: " << newEdgesThisIter << endl;
+		cout << "EDGES PER SECND: " << (double)newEdgesThisIter / (double)(iterTimer.totalTime() / 1000) << endl;
+		cout << "EDGES THIS ITER: " << newEdgesThisIter << endl;
 		cout << "NEW EDGES TOTAL: " << totNewEdges << endl;
-		cout << "ITERATION  TIME: " << iterTimer.hmsFormat() << "\n\n" << endl;
-
-		rndAddTime += iterAddTime;
-		rndMergeTime += iterMergeTime;
+		cout << "ITERATION  TIME: " << iterTimer.hmsFormat() << endl << endl;
 
 		if (totNewEdges > sizeLim) break;
 	} while (newEdgesThisIter > 0);
@@ -192,12 +194,12 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context, short numRules)
 {
 	newEdgesThisIter = 0;
-
 	#pragma omp parallel for reduction (+:newEdgesThisIter)
 	for (int i = 0; i < setSize; i++)
 	{
-		unsigned long newEdges = 0;
-		newEdges = updateEdges(i, compsets, intervals, context, numRules, iterMergeTime, iterAddTime);
+		long newEdges = 0;
+
+		newEdges += updateEdges(i, compsets, intervals, context, numRules, iterMergeTime, iterAddTime);
 		if (newEdges > 0 && (i >= intervals[0].getIndexStart() && i <= intervals[0].getIndexEnd()))
 			intervals[0].setNewEdgeAdded(true);
 		else if (newEdges > 0 && (i >= intervals[1].getIndexStart() && i <= intervals[1].getIndexEnd()))
