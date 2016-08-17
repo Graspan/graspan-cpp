@@ -2,7 +2,7 @@
 
 
 //TODO: this method is too long, make it shorter by refactoring
-bool Loader::loadPartition(int id, Partition &p, bool readable)
+bool Loader::loadPartition(int id, Partition &p, bool readable, Context c)
 {
 	static char s[32 + 1] = { '0', };
 	vector<Vertex>& data=p.getData();
@@ -23,7 +23,7 @@ bool Loader::loadPartition(int id, Partition &p, bool readable)
 	char *p_token = NULL;
 	char *context = NULL;
 	if (readable) {
-		str = GRAP + "." + PART + "." + HUMA + "." + std::to_string((long long)id);
+		str = c.getGraphFile() + "." + PART + "." + HUMA + "." + std::to_string((long long)id);
 		fp = fopen(str.c_str(), "r");
 		int linecounts = 0;
 		if (fp!= NULL) {
@@ -105,7 +105,7 @@ bool Loader::loadPartition(int id, Partition &p, bool readable)
 		}
 	}
 	else {
-		str = GRAP + "." + PART + "." + BINA + "." + std::to_string((long long)id);
+		str = c.getGraphFile() + "." + PART + "." + BINA + "." + std::to_string((long long)id);
 		fp = fopen(str.c_str(), "rb");
 		if (fp != NULL) {
 			// wouldnt this cause problem with hard-coded value 4 and 1???

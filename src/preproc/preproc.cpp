@@ -149,7 +149,7 @@ void Preproc::makeVIT(string fileName, Context &context) {
 		size = mSize / (context.getMemBudget() / 2);
 		size++;
 		//size for test 2
-		size = 2;
+		size = 4;
 	//	cout << "Size =" << size << ", Msize =" << mSize << endl;
 	//	cout << "Size =" << (context.getMemBudget() / 2) << ", Msize =" << mSize/size << endl;
 	//	cout << "eNumedge =" << count << ", Vertex =" << numVertex << endl;
@@ -228,7 +228,7 @@ void Preproc::makeVIT(string fileName, Context &context) {
 			vitDegree[j] = sum;
 		}
 		//end = clock();
-		context.vit.writeToFile("graph.vit");
+		context.vit.writeToFile(context.getGraphFile() + ".vit");
 		//cout << "makeVIT sorting time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 	}
 	else {
@@ -247,7 +247,7 @@ void Preproc::makePart(Context &context) {
 	//make partition files
 	for (int i = 0; i < vitSize; i++) {
 		str = std::to_string((long long)i);
-		name = GRAP + "." + PART + "." + HUMA + "." + str.c_str();
+		name = context.getGraphFile() + "." + PART + "." + HUMA + "." + str.c_str();
 
 		f = fopen(name.c_str(), "a");
 		if (f != NULL) {
@@ -330,7 +330,7 @@ void Preproc::makeBinaryPart(Context &context) {
 	//make partition files in binary files
 	for (int i = 0; i < vitSize; i++) {
 		str = std::to_string((long long)i);
-		name = GRAP + "." + PART + "." + BINA + "." + str.c_str();
+		name = context.getGraphFile() + "." + PART + "." + BINA + "." + str.c_str();
 
 		f = fopen(name.c_str(), "ab");
 		if (f != NULL) {

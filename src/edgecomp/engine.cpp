@@ -39,13 +39,13 @@ int run_computation(Context &context)
 		loadTimer.startTimer();
 		if (p != oldP) {
 			if (oldP != -1)
-				Partition::writeToFile(p1, false);
-			Loader::loadPartition(p, p1, false);
+				Partition::writeToFile(p1, false, context);
+			Loader::loadPartition(p, p1, false, context);
 		}
 		if (q != oldQ) {
 			if (oldQ != -1)
-				Partition::writeToFile(p2, false);
-			Loader::loadPartition(q, p2, false);
+				Partition::writeToFile(p2, false, context);
+			Loader::loadPartition(q, p2, false, context);
 		}
 		cout << "OG NUM EDGES: " << (p1.getNumEdges() + p2.getNumEdges()) << endl;
 		unsigned long long int sizeLim = (context.getMemBudget() - p1.getNumVertices() * 8 - p2.getNumVertices() * 8) / 5;
@@ -88,7 +88,6 @@ int run_computation(Context &context)
 			context.ddm.markTerminate(p, q, 0, 0);
 			cout << intervals[0].hasNewEdges() << endl;
 			cout << intervals[1].hasNewEdges() << endl;
-			cout << "HI" << endl;
 		}
 		else {
 			context.ddm.set(p, q, 1);
@@ -103,8 +102,8 @@ int run_computation(Context &context)
 		cout << "COMP TIME: " << compTimer.hmsFormat() << endl;
 		cout << "REPA TIME: " << repartTimer.hmsFormat() << endl <<  endl << endl;
 	}
-	Partition::writeToFile(p1, false);
-	Partition::writeToFile(p2, false);
+	Partition::writeToFile(p1, false, context);
+	Partition::writeToFile(p2, false, context);
 
 	return 0;
 }

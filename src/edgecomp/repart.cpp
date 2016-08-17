@@ -84,9 +84,6 @@ void Repart::run(Partition &p1, Partition &p2, Context &context, bool newEdgesIn
 	context.ddm.setNumPartition(context.getNumPartitions());
 	context.ddm.reSize();
 
-	//Partition::writeToFile(p1, false);
-//	Partition::writeToFile(p2, false);
-
 	if (newEdgesInP) {
 		p1.calc_ddr(context);
 	}
@@ -95,7 +92,7 @@ void Repart::run(Partition &p1, Partition &p2, Context &context, bool newEdgesIn
 	}
 	if (p12.getExist()) {
 		cout << "p1 =" << p1.getID() << " p12 =" << p12.getID() << endl;
-		Partition::writeToFile(p12, false);
+		Partition::writeToFile(p12, false, context);
 		context.ddm.copy(p1.getID(), p12.getID());
 		p12.calc_ddr(context);
 
@@ -104,14 +101,12 @@ void Repart::run(Partition &p1, Partition &p2, Context &context, bool newEdgesIn
 	}
 	if (p22.getExist()) {
 		cout << "p2 =" << p2.getID() << " p12 =" << p22.getID() << endl;
-		Partition::writeToFile(p22, false);
+		Partition::writeToFile(p22, false, context);
 		context.ddm.copy(p2.getID(), p22.getID());
 
 		p22.calc_ddr(context);
 		context.ddm.markTerminate(p1.getID(), p22.getID(), terminate, terminate);
 		context.ddm.markTerminate(p2.getID(), p22.getID(), terminate, terminate);
 	}
-
-
-
+	context.ddm.adjust(p1.getID(), p2.getID());
 }

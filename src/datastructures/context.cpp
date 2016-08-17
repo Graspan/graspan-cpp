@@ -75,6 +75,8 @@ Context::Context(int argc, char** argv) {
 			}
 		}
 	}
+	if (filePath.size() != 2)
+		assert(false, "Need a file path ");
 }
 
 unsigned long long int Context::getMemBudget() {

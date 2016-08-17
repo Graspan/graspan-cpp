@@ -6,11 +6,8 @@ cp originalTest/* resources/
 
 echo "running..."
 cd resources
-nohup ../../bin/comp memBudget=$1 > cpp.output.$1 &
-
-sleep 2
-
+../../bin/comp numPartitions=3 insertionSort=false alterSchedule=false memBudget=4 inputGraph=../preproc/bigtest.txt grammar=grammar
 PID=$( echo $( ps -f  | grep "../../bin/comp" | awk '{print $2}' ) | awk '{print $1}' )
-nohup ../pmap.sh $PID > pmap.output.$1
 
+../pmap.sh $PID > pmap.output.$1 &
 
