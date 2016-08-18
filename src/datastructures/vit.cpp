@@ -3,28 +3,7 @@
 //Constructor
 //ALL small methods should be inlined instead!!!
 
-//Getters
-vector<pair<vertexid_t, vertexid_t>> &VIT::getVIT() { return vit; }
-int VIT::getStart(int pid) { return vit[pid].first; }
-int VIT::getEnd(int pid) { return vit[pid].second; }
-
-vector<int> &VIT::getDegree()
-{
-	return degree;
-}
-
-int VIT::getDegree(int pid)
-{
-	return degree[pid];
-}
-
-int VIT::getNumVertex()
-{
-	return vit.size();
-}
-
 //Setters
-void VIT::setVIT(vector<pair<int, int>> vit) { this->vit = vit; }
 
 void VIT::setDegree(int numPartition)
 {
@@ -33,24 +12,9 @@ void VIT::setDegree(int numPartition)
 			degree.push_back(0);
 }
 
-void VIT::setVITID(int id, vertexid_t start, vertexid_t end)
-{
-	vit[id].first = start;
-	vit[id].second = end;
-}
-
-bool VIT::is_in_partition(vertexid_t vid, partitionid_t pid)
-{
-	if (vid >= vit[pid].first || vid <= vit[pid].second)
-		return true;
-	else
-		return false;
-}
-
 int VIT::partition(vertexid_t vid)
 {
 	for (int i = 0; i < vit.size(); i++) {
-		//cout << "i " << i << " " << "vid = " << vid << " " << vit[i].first << " " << vit[i].second << endl;
 		if (vid >= vit[i].first && vid <= vit[i].second)
 			return i;
 	}
@@ -60,8 +24,6 @@ int VIT::partition(vertexid_t vid)
 bool VIT::writeToFile(string fname)
 {
 	FILE *fp;
-	//string str = "../resources/" + GRAP + ".vit"; // this should not be hard coded like this, when you run the system, the path is not same as us
-
 	fp = fopen(fname.c_str(), "w");
 	if (fp != NULL) {
 
@@ -71,7 +33,6 @@ bool VIT::writeToFile(string fname)
 		fclose(fp);
 	}
 	else {
-		//assert(false, "cannot write vit_file");
 		return false;
 	}
 	return true;
@@ -80,7 +41,6 @@ bool VIT::writeToFile(string fname)
 bool VIT::loadFromFile(string fname)
 {
 	FILE *fp;
-//	string str = "../resources/" + GRAP + ".vit"; // this should not be hard coded like this, when you run the system, the path is not same as us
 	vit.clear();
 	int i,start,end;
 
@@ -92,7 +52,6 @@ bool VIT::loadFromFile(string fname)
 		}
 		fclose(fp);
 	}else {
-		//assert(false, "cannot open vit_file");
 		return false;
 	}
 	return true;	
