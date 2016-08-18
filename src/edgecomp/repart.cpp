@@ -4,7 +4,14 @@ void Repart::repartition(Partition &p1, Partition &p2, Context &context) {
 	//int size = (context.getMemBudget() / 2 - p1.getNumVertices() * 4) / 5;
 	//if (p1.getNumVertices() * 8 + p1.getNumEdges() * 5 > context.getMemBudget() / 4)
 	//	return;
-	int size = (p1.getNumVertices() * 8 + p1.getNumEdges() * 5) / 2;
+	unsigned long long int size = (p1.getNumVertices() * 8 + p1.getNumEdges() * 5);
+	if (size < context.getMemBudget()) {
+		p2.setExist(false);
+		return;
+	}
+	else
+		size /= (unsigned long long int) 2;
+
 	int sum = 0, check = 0;
 
 	int i = 0;

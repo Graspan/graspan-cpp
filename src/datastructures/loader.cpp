@@ -2,7 +2,7 @@
 
 
 //TODO: this method is too long, make it shorter by refactoring
-bool Loader::loadPartition(int id, Partition &p, bool readable, Context c)
+bool Loader::loadPartition(partitionid_t id, Partition &p, bool readable, Context c)
 {
 	static char s[32 + 1] = { '0', };
 	vector<Vertex>& data=p.getData();
