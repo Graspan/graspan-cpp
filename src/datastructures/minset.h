@@ -9,11 +9,12 @@
 
 class MinSet
 {
-	int ptr;
+	int ptr;				// pointer into the current vector of edges
 	
-	int minSetID;
-	int currentVID;
-	std::unordered_set<char> evals;
+	int minSetID;			// index in the vectors to merge of the current minset
+	int currentVID;			// current value of the minset
+	std::unordered_set<char> evals;		// all edge values that are associated with
+										// the current VID
 
 
 	public:

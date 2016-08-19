@@ -58,10 +58,10 @@ int run_computation(Context &context)
 
 		ComputationSet *compsets = new ComputationSet[part1.size() + part2.size()];
 		int setSize = part1.size() + part2.size();
-		initCompSets(compsets, part1, part2);
+		initCompSets(compsets, part1, part2);				// Initialize the ComputationSet list
 		
 		LoadedVertexInterval intervals[2] = {LoadedVertexInterval{p}, LoadedVertexInterval{q}};
-		initLVIs(intervals, part1, part2);
+		initLVIs(intervals, part1, part2);					// Initialize the Loaded Vertex Intervals
 
 		cout << "== COMP START ==" << endl;
 		compTimer.startTimer();
@@ -69,7 +69,7 @@ int run_computation(Context &context)
 		compTimer.endTimer();
 		cout << "== COMP END ==" << endl;
 
-		updatePartitions(compsets, p1, p2, part1, part2);
+		updatePartitions(compsets, p1, p2, part1, part2);	// store information to partitions
 
 		cout << "NEW NUM EDGES: " << (p1.getNumEdges() + p2.getNumEdges()) << endl;
 
@@ -124,8 +124,8 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 	cout << "NEW EDGES LIMIT: " << sizeLim << endl;
 	
 	do {
+		cout << "===== STARTING ITERATION " << ++iterNo << endl;
 		iterTimer.startTimer();
-		iterNo++;
 		computeOneIteration(compsets, setSize, intervals, context);
 
 		totNewEdges += newEdgesThisIter;

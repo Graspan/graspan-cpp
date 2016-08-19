@@ -14,17 +14,17 @@
 
 class EdgeMerger
 {
-	int deltaPtr;
-	int oUnUdPtr;
-	int currID;
+	int deltaPtr;		// index into the vector of new edges
+	int oUnUdPtr;		// index into the vector of ALL edges
+	int currID;			// the current vertex ID (increasing order)
 
-	std::unordered_set<char> currEvals;
+	std::unordered_set<char> currEvals;		// the current edge values (to check for duplicates)
 	std::priority_queue<MinSet, vector<MinSet>, compare> minEdges;
 
-	vector<int> srcoUnUdEdges;
+	vector<int> srcoUnUdEdges;		// ALL edges (current source edges and NEW edges)
 	vector<char> srcoUnUdVals;
 
-	vector<int> srcDeltaEdges;
+	vector<int> srcDeltaEdges;		// ONLY NEW edges
 	vector<char> srcDeltaVals;
 
 

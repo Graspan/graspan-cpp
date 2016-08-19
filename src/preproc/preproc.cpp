@@ -146,13 +146,10 @@ void Preproc::makeVIT(string fileName, Context &context) {
 			}
 		}*/
 		startS = -1;
-		size = context.getNumPartitions();
-		cout << "size =" << size << endl;
-		if (mSize / (unsigned long long int)size > context.getMemBudget() / (unsigned long long int)4) {
-			size = mSize / (context.getMemBudget() / (unsigned long long int) 4);
-			size++;
-		}
-		cout << "size =" << size << endl;
+		size = mSize / (context.getMemBudget() / 2);
+		size++;
+		//size for test 2
+		size = 4;
 	//	cout << "Size =" << size << ", Msize =" << mSize << endl;
 	//	cout << "Size =" << (context.getMemBudget() / 2) << ", Msize =" << mSize/size << endl;
 	//	cout << "eNumedge =" << count << ", Vertex =" << numVertex << endl;
