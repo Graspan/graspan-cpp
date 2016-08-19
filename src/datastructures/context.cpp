@@ -28,7 +28,7 @@ Context::Context(int argc, char** argv) {
 			cout << "MEM_BUDGET_KEY =" << memBudget << endl;
 		}
 		else if (!strncmp(argv[i], NUM_PARTITION_KEY.c_str(), sizeof(argv[i]))) {
-			parameters.insert(std::make_pair(NUM_PARTITION_KEY, atoi(context)));
+			parameters.find(NUM_PARTITION_KEY)->second = atoi(context);
 			cout << "NUM_PARTITION_KEY =" << atoi(context) << endl;
 		}
 		else if (!strncmp(argv[i], MAX_EDGES_PER_PARTITION_KEY.c_str(), sizeof(argv[i]))) {
@@ -37,16 +37,16 @@ Context::Context(int argc, char** argv) {
 		}
 		else if (!strncmp(argv[i], INSERT_SORT_FLAG.c_str(), sizeof(argv[i]))) {
 			if (atoi(context) == 0)
-				flags.insert(std::make_pair(INSERT_SORT_FLAG, false));
+				flags.find(INSERT_SORT_FLAG)->second = false;
 			else
-				flags.insert(std::make_pair(INSERT_SORT_FLAG, true));
+				flags.find(INSERT_SORT_FLAG)->second = true;
 			cout << "INSERT_SORT_FLAG =" << atoi(context) << endl;
 		}
 		else if (!strncmp(argv[i], ALTER_SCHEDULE_FLAG.c_str(), sizeof(argv[i]))) {
 			if (atoi(context) == 0)
-				flags.insert(std::make_pair(ALTER_SCHEDULE_FLAG, false));
+				flags.find(ALTER_SCHEDULE_FLAG)->second = false;
 			else
-				flags.insert(std::make_pair(ALTER_SCHEDULE_FLAG, true));
+				flags.find(ALTER_SCHEDULE_FLAG)->second = true;
 			cout << "ALTER_SCHEDULE_FLAG =" << atoi(context) << endl;
 		}
 	}
