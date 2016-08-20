@@ -7,6 +7,8 @@
 
 int main(int argc, char *argv[])
 {
+	Timer graspanTimer, prepTimer, compTimer;
+	graspanTimer.startTimer();
 	Context c(argc, argv);
 
 	if (!c.ddm.load_DDM(c.getGraphFile() + ".ddm")) {
@@ -25,29 +27,29 @@ int main(int argc, char *argv[])
 	}
 	
 	// PREPROCESSING
-	Timer compTime;
-	compTime.startTimer();
+	prepTimer.startTimer();
 
 	cout << "###### STARTING PREPROCESSING #####" << endl;
 	if (c.ddm.getNumPartition() != c.vit.getNumPartition() || c.vit.getNumPartition() == 0) {
 		run_preprocessing(c);
 	}
 
-	compTime.endTimer();
-	cout << "TOTAL TIME: " << compTime.toString() << endl;
-
+	prepTimer.endTimer();
 
 
 	// COMPUTATION
-	compTime.startTimer();
+	compTimer.startTimer();
 
 	cout << "###### STARTING COMPUTATION #####" << endl;
 	run_computation(c);
 
-	compTime.endTimer();
-	cout << "TOTAL TIME: " << compTime.toString() << endl;
+	compTimer.endTimer();
 
-	std::cerr << "GRASPAN FINISHED" << endl;
+	graspanTimer.endTimer();
+	std::cerr << "===== GRASPAN FINISHED =====" << endl;
+	cout << "TOTAL PREPROC TIME: " << prepTimer.hmsFormat() << endl;
+	cout << "TOTAL COMPUTE TIME: " << compTimer.hmsFormat() << endl;
+	cout << "TOTAL GRASPAN TIME: " << graspanTimer.hmsFormat() << "\n" << endl;
 
 	return 0;
 }

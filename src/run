@@ -5,14 +5,14 @@ echo "resetting..."
 rm -f resources/*
 cp originalTest/* resources/
 
-if [ $1 == "dbg" ]
+if [ "$1" == "dbg" ]
 then 
 	gdb ../bin/comp
 	exit 0
 fi
 
-GRAMMAR=resources/grammar
-INPGRAPH=preproc/bigtest.txt
+INPGRAPH=$1
+GRAMMAR=$2
 NUMPARTITIONS=3
 MEMBUDGET=4
 
