@@ -203,6 +203,9 @@ void Preproc::makePart(Context &context) {
 					}
 					fprintf(f, "\n");
 				}
+				else {
+					fprintf(f, "%d\t%d\n", j, 0);
+				}
 			}
 			fclose(f);
 			start = context.vit.getEnd(i) + 1;
@@ -250,6 +253,11 @@ void Preproc::makeBinaryPart(Context &context) {
 							}
 						}
 					}
+				}
+				else {
+					fwrite((const void*)& j, sizeof(int), 1, f);
+					degree = 0;
+					fwrite((const void*)&degree, sizeof(int), 1, f);
 				}
 			}
 			fclose(f);
