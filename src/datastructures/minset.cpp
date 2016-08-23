@@ -1,10 +1,11 @@
 #include "minset.h"
 
 // constructor
-MinSet::MinSet()
+MinSet::MinSet(/*short numRules*/)
 {
 	ptr = 0;
 }
+
 
 
 string MinSet::toString()

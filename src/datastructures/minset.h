@@ -15,7 +15,6 @@ class MinSet
 	int currentVID;
 	std::unordered_set<char> evals;
 
-
 	public:
 	// constructor
 	MinSet();

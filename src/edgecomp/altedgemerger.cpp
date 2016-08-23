@@ -1,19 +1,11 @@
 #include "edgemerger.h"
 
 // PUBLIC
-EdgeMerger::EdgeMerger(short numRules)
+EdgeMerger::EdgeMerger()
 {
 	deltaPtr = -1;
 	oUnUdPtr = -1;
 	currID = -1;
-
-	numEvals = 0;
-	currEvals = new char[numRules];
-}
-
-EdgeMerger::~EdgeMerger()
-{
-	delete[] currEvals;
 }
 
 /**
@@ -23,22 +15,22 @@ EdgeMerger::~EdgeMerger()
 void EdgeMerger::mergeVectors(vector< vector<int> > &edgeVecsToMerge,
 		vector< vector<char> > &valVecsToMerge, int srcID, short numRules)
 {
-	MinSet srcMS(numRules);
+	MinSet srcMS;
 	srcMS.setMinSetID(0);
 	updateMinSet(srcMS, edgeVecsToMerge[srcID], valVecsToMerge[srcID]);
 	
-	fillPriorityQueue(edgeVecsToMerge, valVecsToMerge, srcID, numRules);
+	fillPriorityQueue(edgeVecsToMerge, valVecsToMerge, srcID);
 
-	if (minEdges.empty()) {
-		srcoUnUdEdges = edgeVecsToMerge[srcID];
-		srcoUnUdVals = valVecsToMerge[srcID];
-
-		cout << "MIN EDGES WAS EMPTY" << endl;
-
-		return;
-	}
+//	if (minEdges.empty()) {
+//		srcoUnUdEdges = edgeVecsToMerge[srcID];
+//		srcoUnUdVals = valVecsToMerge[srcID];
+//
+//		cout << "MIN EDGES WAS EMPTY" << endl;
+//
+//		return;
+//	}
 	
-    MinSet tgt(numRules);
+    MinSet tgt;
     int max = std::numeric_limits<int>::max();
     while (1)
     {
@@ -70,19 +62,20 @@ void EdgeMerger::mergeVectors(vector< vector<int> > &edgeVecsToMerge,
 
 
 // PRIVATE
-void EdgeMerger::fillPriorityQueue(vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge, int srcID, short numRules)
+void EdgeMerger::fillPriorityQueue(vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge, int srcID)
 {
+	MinSet newminset;
 	int totTgtRowSize = 0;
     for (int i = 1; i < edgeVecsToMerge.size(); i++)
     {
-		if (!edgeVecsToMerge.empty()) {
-			MinSet newminset(numRules);
+//		if (!edgeVecsToMerge.empty()) {
 			newminset.setMinSetID(i);
 			updateMinSet(newminset, edgeVecsToMerge[i], valVecsToMerge[i]);
 
 			totTgtRowSize += edgeVecsToMerge[i].size();
 			minEdges.push(newminset);
-		}
+			newminset.resetPtr();
+//		}
     }
 
     srcDeltaEdges.reserve(totTgtRowSize);
@@ -102,16 +95,6 @@ void EdgeMerger::removeExtraSpace()
 
 	srcDeltaEdges = vector<int>(srcDeltaEdges.begin(), srcDeltaEdges.begin() + deltaPtr + 1);
 	srcDeltaVals = vector<char>(srcDeltaVals.begin(), srcDeltaVals.begin() + deltaPtr + 1);
-}
-
-bool EdgeMerger::findVal(char *evals, char val, int numVals)
-{
-	for (int i = 0; i < numVals; i++)
-	{
-		if (evals[i] == val) return true;
-	}
-
-	return false;
 }
 
 /**
@@ -141,16 +124,16 @@ void EdgeMerger::processMinSets(MinSet &srcMS, MinSet &tgtMS, vector<int> &srcEd
 	if (srcMS.getCurrVID() > tgtMS.getCurrVID()) {
 		if (currID != tgtMS.getCurrVID()) {
 			currID = tgtMS.getCurrVID();
-			numEvals = 0;
+			currEvals.clear();
 		}
 
-		char *tgtVals = tgtMS.getEvals();
-		for (int i = 0; i < tgtMS.getNumEvals(); i++)
+        unordered_set<char> &tgtVals = tgtMS.getEvals();
+        for (unordered_set<char>::iterator iter = tgtVals.begin(); iter != tgtVals.end(); iter++)
 		{
-			if (!findVal(currEvals, tgtVals[i], numEvals)) {
-				updateVector(tgtMS.getCurrVID(), tgtVals[i], srcoUnUdEdges, srcoUnUdVals, oUnUdPtr);
-				updateVector(tgtMS.getCurrVID(), tgtVals[i], srcDeltaEdges, srcDeltaVals, deltaPtr);
-				currEvals[numEvals] = tgtVals[i];
+            if (currEvals.find(*iter) == currEvals.end()) {
+				updateVector(tgtMS.getCurrVID(), *iter, srcoUnUdEdges, srcoUnUdVals, oUnUdPtr);
+				updateVector(tgtMS.getCurrVID(), *iter, srcDeltaEdges, srcDeltaVals, deltaPtr);
+				currEvals.insert(*iter);
             }
         }
         updateMinSet(tgtMS, tgtEdgesToMerge, tgtValsToMerge);
@@ -163,18 +146,18 @@ void EdgeMerger::processMinSets(MinSet &srcMS, MinSet &tgtMS, vector<int> &srcEd
 	if (srcMS.getCurrVID() == tgtMS.getCurrVID()) {
 		if (currID != tgtMS.getCurrVID()) {
 			currID = tgtMS.getCurrVID();
-			numEvals = 0;
+			currEvals.clear();
 		}
 
-		char *srcVals = srcMS.getEvals();
-		char *tgtVals = tgtMS.getEvals();
-		for (int i = 0; i < tgtMS.getNumEvals(); i++)
+        unordered_set<char> &srcVals = srcMS.getEvals();
+        unordered_set<char> &tgtVals = tgtMS.getEvals();
+        for (unordered_set<char>::iterator iter = tgtVals.begin(); iter != tgtVals.end(); iter++)
 		{
-			if (!findVal(srcVals, tgtVals[i], srcMS.getNumEvals())) {
-				if (!findVal(currEvals, tgtVals[i], numEvals)) {
-					updateVector(tgtMS.getCurrVID(), tgtVals[i], srcoUnUdEdges, srcoUnUdVals, oUnUdPtr);
-					updateVector(tgtMS.getCurrVID(), tgtVals[i], srcDeltaEdges, srcDeltaVals, deltaPtr);
-					currEvals[numEvals] = tgtVals[i];
+            if (srcVals.find(*iter) == srcVals.end()) {
+                if (currEvals.find(*iter) == currEvals.end()) {
+					updateVector(tgtMS.getCurrVID(), *iter, srcoUnUdEdges, srcoUnUdVals, oUnUdPtr);
+					updateVector(tgtMS.getCurrVID(), *iter, srcDeltaEdges, srcDeltaVals, deltaPtr);
+					currEvals.insert(*iter);
                 }
             }
         }
@@ -188,15 +171,15 @@ void EdgeMerger::processMinSets(MinSet &srcMS, MinSet &tgtMS, vector<int> &srcEd
 	if (srcMS.getCurrVID() < tgtMS.getCurrVID()) {
 		if (currID != srcMS.getCurrVID()) {
 			currID = srcMS.getCurrVID();
-			numEvals = 0;
+			currEvals.clear();
 		}
 
-		char *srcVals = srcMS.getEvals();
-		for (int i = 0; i < srcMS.getNumEvals(); i++)
+        unordered_set<char> &srcVals = srcMS.getEvals();
+        for (unordered_set<char>::iterator iter = srcVals.begin(); iter != srcVals.end(); iter++)
 		{
-			if (!findVal(currEvals, srcVals[i], numEvals)) {
-				updateVector(srcMS.getCurrVID(), srcVals[i], srcoUnUdEdges, srcoUnUdVals, oUnUdPtr);
-				currEvals[numEvals] = srcVals[i];
+            if (currEvals.find(*iter) == currEvals.end()) {
+				updateVector(srcMS.getCurrVID(), *iter, srcoUnUdEdges, srcoUnUdVals, oUnUdPtr);
+				currEvals.insert(*iter);
             }
         }
         updateMinSet(srcMS, srcEdgesToMerge, srcValsToMerge);
