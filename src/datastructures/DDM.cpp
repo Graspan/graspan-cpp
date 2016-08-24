@@ -24,6 +24,15 @@ void DDM::adjust(int p, int q) {
 		ddmMap[q][p] += 1;
 }
 
+void DDM::adjustRow(int pId)
+{
+	for (int i = 0; i < ddmMap[pId].size(); i++) {
+		if (ddmMap[pId][i] > 0)
+			ddmMap[pId][i] += 1;
+	}
+}
+
+
 //return false if the whole system should terminate
 bool DDM::nextPartitionPair(partitionid_t &p, partitionid_t &q) {
 

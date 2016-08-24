@@ -33,6 +33,7 @@ class DDM{
   int getNumPartition();
 
   void adjust(int p, int q);
+  void adjustRow(int pId);
 
   inline void markTerminate(partitionid_t p, partitionid_t q, bool newEdgesInP, bool newEdgesInQ) {
     cout << "DDM Terminate" << endl;
