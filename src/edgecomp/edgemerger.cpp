@@ -150,7 +150,7 @@ void EdgeMerger::processMinSets(MinSet &srcMS, MinSet &tgtMS, vector<int> &srcEd
 			if (!findVal(currEvals, tgtVals[i], numEvals)) {
 				updateVector(tgtMS.getCurrVID(), tgtVals[i], srcoUnUdEdges, srcoUnUdVals, oUnUdPtr);
 				updateVector(tgtMS.getCurrVID(), tgtVals[i], srcDeltaEdges, srcDeltaVals, deltaPtr);
-				currEvals[numEvals] = tgtVals[i];
+				currEvals[numEvals++] = tgtVals[i];
             }
         }
         updateMinSet(tgtMS, tgtEdgesToMerge, tgtValsToMerge);
@@ -174,7 +174,7 @@ void EdgeMerger::processMinSets(MinSet &srcMS, MinSet &tgtMS, vector<int> &srcEd
 				if (!findVal(currEvals, tgtVals[i], numEvals)) {
 					updateVector(tgtMS.getCurrVID(), tgtVals[i], srcoUnUdEdges, srcoUnUdVals, oUnUdPtr);
 					updateVector(tgtMS.getCurrVID(), tgtVals[i], srcDeltaEdges, srcDeltaVals, deltaPtr);
-					currEvals[numEvals] = tgtVals[i];
+					currEvals[numEvals++] = tgtVals[i];
                 }
             }
         }
@@ -196,7 +196,7 @@ void EdgeMerger::processMinSets(MinSet &srcMS, MinSet &tgtMS, vector<int> &srcEd
 		{
 			if (!findVal(currEvals, srcVals[i], numEvals)) {
 				updateVector(srcMS.getCurrVID(), srcVals[i], srcoUnUdEdges, srcoUnUdVals, oUnUdPtr);
-				currEvals[numEvals] = srcVals[i];
+				currEvals[numEvals++] = srcVals[i];
             }
         }
         updateMinSet(srcMS, srcEdgesToMerge, srcValsToMerge);

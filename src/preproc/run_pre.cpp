@@ -6,11 +6,11 @@ int run_preprocessing(Context &context) {
 	clock_t begin, end;
 	begin = clock();
 
-	Preproc pre("../preproc/bigtest.txt", context);
+	Preproc pre(context.getGraphFile(), context);
 	pre.setMapInfo(context.grammar.getMapInfo(), context.grammar.getErules());
 
 	//save vit file
-	pre.makeVIT("../preproc/bigtest.txt", context);		//need to fix input file
+	pre.makeVIT(context.getGraphFile(), context);		//need to fix input file
 	end = clock();
 	//cout << "saveVIT time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 
@@ -24,7 +24,7 @@ int run_preprocessing(Context &context) {
 	//cout << "makePart time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 
 	//save binary file and DDM
-	context.ddm.save_DDM("DDM");
+	context.ddm.save_DDM(context.getGraphFile()+".ddm");
 	//begin = clock();
 	pre.makeBinaryPart(context);
 	end = clock();

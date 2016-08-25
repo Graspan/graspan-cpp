@@ -3,78 +3,57 @@
 Context::Context(int argc, char** argv) {
 	//if user don't typing input value
 	cout << "argc ==" << argc << endl;
-	if(argc==1){
-		//50MB
-		//parameters.insert(std::make_pair(MEM_BUDGET_KEY, 7730941133));
-		memBudget = (unsigned long long int) 7730941133; // 1073741824
-		parameters.insert(std::make_pair(NUM_PARTITION_KEY, 10));
-		//src, numEdge = 8bytes dst, label = 5bytes
-		//worst case is use 13bytes per edges
-		parameters.insert(std::make_pair(MAX_EDGES_PER_PARTITION_KEY, parameters[MEM_BUDGET_KEY] / 13));
-		cout << "Max_Edges_Partition =" << (parameters[MEM_BUDGET_KEY]) / 13 << endl;
-		flags.insert(std::make_pair(INSERT_SORT_FLAG, false));
-		flags.insert(std::make_pair(ALTER_SCHEDULE_FLAG, false));
-	} else{
-		char *p_token = NULL;
-		char *context = NULL;
+	char *p_token = NULL;
+	char *context = NULL;
 
-		for(int i=0;i<argc;i++){
-			p_token = strtok_r(argv[i], "=", &context);
-		/*	if(i<2){
-				if (i == 0) {
-					parameters.insert(std::make_pair(MAX_EDGES_PER_PARTITION_KEY, parameters[compare[i]] / 13));
-					cout << "Max_Edges_Partition =" << (parameters[MEM_BUDGET_KEY]) / 13 << endl;
-					continue;
-				}
-				parameters.insert(std::make_pair(compare[i], (unsigned long long int)atoi(context)*(unsigned long long int)1073741824));
-				memBudget = (unsigned long long int)atoi(context)*(unsigned long long int)1073741824;
-				cout << "test" << endl;
-				
-			} else{
-				if((bool)context){
-					flags.insert(std::make_pair(compare[i],true));
-				} else{
-					flags.insert(std::make_pair(compare[i],false));
-				}
-			}*/
-			if (!strncmp(argv[i], INPUT_GRAPH_FILE_KEY.c_str(), sizeof(argv[i]))) {
-				filePath.insert(std::make_pair(INPUT_GRAPH_FILE_KEY, context));
-				cout << "INPUT_GRAPH_FILE_KEY =" << context << endl;
-				//error
-			}
-			else if (!strncmp(argv[i], GRAMMAR_FILE_KEY.c_str(), sizeof(argv[i]))) {
-				filePath.insert(std::make_pair(GRAMMAR_FILE_KEY, context));
-				cout << "GRAMMAR_FILE_KEY =" << context << endl;
-			}
-			else if (!strncmp(argv[i], MEM_BUDGET_KEY.c_str(), sizeof(argv[i]))) {
-				parameters.insert(std::make_pair(MEM_BUDGET_KEY, (unsigned long long int)atoi(context)*(unsigned long long int)1073741824));
-				memBudget = (unsigned long long int)atoi(context)*(unsigned long long int)1073741824;
-				cout << "MEM_BUDGET_KEY =" << memBudget << endl;
-			}
-			else if (!strncmp(argv[i], NUM_PARTITION_KEY.c_str(), sizeof(argv[i]))) {
-				parameters.insert(std::make_pair(NUM_PARTITION_KEY, atoi(context)));
-				cout << "NUM_PARTITION_KEY =" << atoi(context) << endl;
-			}
-			else if (!strncmp(argv[i], MAX_EDGES_PER_PARTITION_KEY.c_str(), sizeof(argv[i]))) {
-				parameters.insert(std::make_pair(MAX_EDGES_PER_PARTITION_KEY, atoi(context)));
-				cout << "MAX_EDGES_PER_PARTITION_KEY =" << atoi(context) << endl;
-			}
-			else if (!strncmp(argv[i], INSERT_SORT_FLAG.c_str(), sizeof(argv[i]))) {
-				if (atoi(context) == 0)
-					flags.insert(std::make_pair(INSERT_SORT_FLAG, false));
-				else
-					flags.insert(std::make_pair(INSERT_SORT_FLAG, true));
-				cout << "INSERT_SORT_FLAG =" << atoi(context) << endl;
-			}
-			else if (!strncmp(argv[i], ALTER_SCHEDULE_FLAG.c_str(), sizeof(argv[i]))) {
-				if (atoi(context) == 0)
-					flags.insert(std::make_pair(ALTER_SCHEDULE_FLAG, false));
-				else
-					flags.insert(std::make_pair(ALTER_SCHEDULE_FLAG, true));
-				cout << "ALTER_SCHEDULE_FLAG =" << atoi(context) << endl;
-			}
+	//default values
+	memBudget = (unsigned long long int)8 * (unsigned long long int)1073741824; // 1073741824
+	parameters.insert(std::make_pair(NUM_PARTITION_KEY, 2));
+	flags.insert(std::make_pair(INSERT_SORT_FLAG, false));
+	flags.insert(std::make_pair(ALTER_SCHEDULE_FLAG, false));
+
+	for (int i = 0; i < argc; i++) {
+		p_token = strtok_r(argv[i], "=", &context);
+		if (!strncmp(argv[i], INPUT_GRAPH_FILE_KEY.c_str(), sizeof(argv[i]))) {
+			filePath.insert(std::make_pair(INPUT_GRAPH_FILE_KEY, context));
+			cout << "INPUT_GRAPH_FILE_KEY =" << context << endl;
+		}
+		else if (!strncmp(argv[i], GRAMMAR_FILE_KEY.c_str(), sizeof(argv[i]))) {
+			filePath.insert(std::make_pair(GRAMMAR_FILE_KEY, context));
+			cout << "GRAMMAR_FILE_KEY =" << context << endl;
+		}
+		else if (!strncmp(argv[i], MEM_BUDGET_KEY.c_str(), sizeof(argv[i]))) {
+			parameters.insert(std::make_pair(MEM_BUDGET_KEY, (unsigned long long int)atoi(context)*(unsigned long long int)1073741824));
+			memBudget = (unsigned long long int)atoi(context)*(unsigned long long int)1073741824;
+			cout << "MEM_BUDGET_KEY =" << memBudget << endl;
+		}
+		else if (!strncmp(argv[i], NUM_PARTITION_KEY.c_str(), sizeof(argv[i]))) {
+			parameters.find(NUM_PARTITION_KEY)->second = atoi(context);
+			cout << "NUM_PARTITION_KEY =" << atoi(context) << endl;
+		}
+		else if (!strncmp(argv[i], MAX_EDGES_PER_PARTITION_KEY.c_str(), sizeof(argv[i]))) {
+			parameters.insert(std::make_pair(MAX_EDGES_PER_PARTITION_KEY, atoi(context)));
+			cout << "MAX_EDGES_PER_PARTITION_KEY =" << atoi(context) << endl;
+		}
+		else if (!strncmp(argv[i], INSERT_SORT_FLAG.c_str(), sizeof(argv[i]))) {
+			if (atoi(context) == 0)
+				flags.find(INSERT_SORT_FLAG)->second = false;
+			else
+				flags.find(INSERT_SORT_FLAG)->second = true;
+			cout << "INSERT_SORT_FLAG =" << atoi(context) << endl;
+		}
+		else if (!strncmp(argv[i], ALTER_SCHEDULE_FLAG.c_str(), sizeof(argv[i]))) {
+			if (atoi(context) == 0)
+				flags.find(ALTER_SCHEDULE_FLAG)->second = false;
+			else
+				flags.find(ALTER_SCHEDULE_FLAG)->second = true;
+			cout << "ALTER_SCHEDULE_FLAG =" << atoi(context) << endl;
 		}
 	}
+
+	//if there are no inputs about file paths.
+	if (filePath.size() != 2)
+		assert(false, "Need a file path ");
 }
 
 unsigned long long int Context::getMemBudget() {
@@ -103,9 +82,6 @@ bool Context::getAlterScheduleFlag() {
 	return flags[ALTER_SCHEDULE_FLAG];
 }
 
-//void Context::setMemBudget(int memBudget) {
-	//parameters[MEM_BUDGET_KEY] = memBudget;
-//}
 void Context::setNumPartitions(int numPartitions) {
 	parameters[NUM_PARTITION_KEY] = numPartitions;
 }

@@ -14,7 +14,7 @@ class ComputationSet
 	vector<int> oldUnewEdges;	// old U new
 	vector<char> oldUnewVals;
 
-	// TEMP until better solution
+	// VECTORS WILL STORE NEW EDGES UNTIL END OF COMPUTATION
 	vector<int> deltaEdges;
 	vector<char> deltaVals;
 
@@ -49,7 +49,8 @@ class ComputationSet
 	inline void setoldUnewEdges(vector<int> &oldUnewEdges) { this->oldUnewEdges = oldUnewEdges; }
 	inline void setoldUnewVals(vector<char> &oldUnewVals) { this->oldUnewVals = oldUnewVals; }
 
-	// TEMP until better solution
+
+	// THESE VECTORS STORE NEW EDGES UNTIL END OF COMPUTATION
 	// delta getters and setters
 	inline vector<int> &getDeltaEdges() { return deltaEdges; }
 	inline vector<char> &getDeltaVals() { return deltaVals; }

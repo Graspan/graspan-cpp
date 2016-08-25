@@ -14,8 +14,6 @@
 #include "../utilities/globalDefinitions.hpp"
 
 
-typedef unsigned long long ull;
-
-long updateEdges(int vertInd, ComputationSet compsets[], LoadedVertexInterval intervals[], Context &context, short numRules, ull &mergeTime, ull &addEdgesTime);
+long updateEdges(int vertInd, ComputationSet compsets[], LoadedVertexInterval intervals[], Context &context, short numRules);
 
 #endif

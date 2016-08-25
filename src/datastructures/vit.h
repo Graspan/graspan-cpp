@@ -21,22 +21,30 @@ public:
 	
 
 	//Getters
-	vector<pair<vertexid_t, vertexid_t>> &getVIT();
-	int getStart(int pid);
-	int getEnd(int pid);
-	vector<int> &getDegree();
-	int getDegree(int pid);
-	int getNumVertex(); // TODO: rename this, this is misleading; it eturns vit.size()
+	inline vector<pair<vertexid_t, vertexid_t>> &getVIT() { return vit; };
+	inline int getStart(int pid) { return vit[pid].first; };
+	inline int getEnd(int pid) { return vit[pid].second; };
+	inline vector<int> &getDegree() { return degree; };
+	inline int getDegree(int pid) { return degree[pid]; };
+	inline int getNumPartition() { return vit.size(); };
 
 	//Setters
-	void setVIT(vector<pair<int, int>> vit);
+	inline void setVIT(vector<pair<int, int>> vit) { this->vit = vit; };
 	void setDegree(int numPartition);
 
 	//change the vit[id] values
-	void setVITID(int id, vertexid_t start, vertexid_t end);
+	inline void setVITID(int id, vertexid_t start, vertexid_t end) {
+		vit[id].first = start;
+		vit[id].second = end;
+	};
 
 	// given a vertex id, return true if this vertex is in partition pid
-	bool is_in_partition(vertexid_t vid, partitionid_t pid);
+	inline bool is_in_partition(vertexid_t vid, partitionid_t pid) {
+		if (vid >= vit[pid].first || vid <= vit[pid].second)
+			return true;
+		else
+			return false;
+	};
 
 	// return the partition id which vetex vid is in
 	int partition(vertexid_t vid);

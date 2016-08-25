@@ -4,7 +4,7 @@
 
 // FUNCTION DEFINITIONS
 void getEdgesToMerge(ComputationSet *compSet, ComputationSet compsets[],
-		LoadedVertexInterval intervals[], bool oldEdgesEmpty, bool newEdgesEmpty, 
+		LoadedVertexInterval intervals[], bool oldEdgesEmpty, bool newEdgesEmpty,
 		vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge,
 		int &rowMergeID, Context &context);
 
@@ -44,47 +44,35 @@ void print_edges(vector<vector<int>> &edgeVecsToMerge, vector<vector<char>> &val
  * @param vertInd			-index of source vertex in compsets[]
  * @param compsets[]		-ComputationSet list for all in-memory vertices
  * @param intervals			-list (size=2) with information about the partitions
- * @param context			-Context object for checking grammar
+ * @param context				-Context object for checking grammar
  */
-long updateEdges(int vertInd, ComputationSet compsets[], LoadedVertexInterval intervals[], Context &context, short numRules, ull &mergeTime, ull &addEdgesTime)
+long updateEdges(int vertInd, ComputationSet compsets[], LoadedVertexInterval intervals[], Context &context, short numRules)
 {
 	ComputationSet *compSet = &compsets[vertInd];
 
 	bool oldEdgesEmpty = (compSet->getOldEdges().empty()) ? true : false;
 	bool newEdgesEmpty = (compSet->getNewEdges().empty()) ? true : false;
 
-	if (oldEdgesEmpty && newEdgesEmpty) {
-		cout << "BOTH EMPTY" << endl;
-		return 0;
-	}
+	// check first if current vertex has no old or new edges
+	if (oldEdgesEmpty && newEdgesEmpty) return 0;
 
-	Timer mergeTimer, addEdgesTimer;
-
-	// TODO: use DDM to estimate num of rows needed
-	short thisPart = (vertInd >= intervals[0].getIndexStart() && vertInd <= intervals[0].getIndexEnd()) ? 0 : 1;
+	// ESTIMATE the number of vectors we will need to merge
 	vector< vector<double> > &ddm = context.ddm.getDdmMap();
-	int numRowsToMerge = (2 + (ddm[intervals[thisPart].getPartitionID()][intervals[1 - thisPart].getPartitionID()] * compSet->getoldUnewEdges().size())) * 3;
+	int numRowsToMerge = 8;		// place holder because no better heuristic
 	vector< vector<int> > edgeVecsToMerge(numRowsToMerge);
 	vector< vector<char> > valVecsToMerge(numRowsToMerge);
 
+	// set edgeVecsToMerge[0] equal to the current vertex's outgoing edges
 	int rowMergeID = 0;
 	edgeVecsToMerge[rowMergeID] = compSet->getoldUnewEdges();
 	valVecsToMerge[rowMergeID++] = compSet->getoldUnewVals();
 
-	addEdgesTimer.startTimer();
+	// find new edges
 	getEdgesToMerge(compSet, compsets, intervals, oldEdgesEmpty, newEdgesEmpty, edgeVecsToMerge, valVecsToMerge, rowMergeID, context);
-	addEdgesTimer.endTimer();
 
+	EdgeMerger em(numRules);
 
-	addEdgesTime += addEdgesTimer.totalTime();
-
-	EdgeMerger em;
-
-	mergeTimer.startTimer();
 	em.mergeVectors(edgeVecsToMerge, valVecsToMerge, 0, numRules);
-	mergeTimer.endTimer();
-
-	mergeTime += mergeTimer.totalTime();
 
 	compSet->setDeltaEdges(em.getDeltaEdges());
 	compSet->setDeltaVals(em.getDeltaVals());
@@ -121,12 +109,15 @@ void getEdgesToMerge(ComputationSet *compSet, ComputationSet compsets[],
 	vector<int> &newEdges = compSet->getNewEdges();
 	vector<char> &newVals = compSet->getNewVals();
 
+	// look through new edges of current vertex to see if any S-Rules
 	if (!newEdgesEmpty)
 		genS_RuleEdges(newEdges, newVals, edgeVecsToMerge, valVecsToMerge, rowMergeID, context);
 
+	// look through old edges of current vertex to check if any are in a partition that is currently in memory
 	if (!oldEdgesEmpty)
 		genD_RuleEdges(compsets, intervals, oldEdges, oldVals, edgeVecsToMerge, valVecsToMerge, rowMergeID, context, 'o');
 
+	// look through new edges of current vertex to check if any are in a partition that is currenlty in memory
 	if (!newEdgesEmpty)
 		genD_RuleEdges(compsets, intervals, newEdges, newVals, edgeVecsToMerge, valVecsToMerge, rowMergeID, context, 'n');
 }
@@ -147,34 +138,34 @@ void genS_RuleEdges(vector<int> &newEdges, vector<char> &newVals,
 		int &rowMergeID, Context &context)
 {
 	char newEdgeVal;
-	bool add = false;
+	bool added = false;
 	for (int i = 0; i < newEdges.size(); i++) {
 		newEdgeVal = context.grammar.checkRules(newVals[i], 0);
 		if (newEdgeVal != (char)-1) {
 			edgeVecsToMerge[rowMergeID].push_back(newEdges[i]);
 			valVecsToMerge[rowMergeID].push_back(newEdgeVal);
-			add = true;
+			added = true;
 		}
 	}
-	if (add) rowMergeID++;
+	if (added) rowMergeID++;
 }
 
 /**
- * For each outgoing edge of the source vertex that points to a vertex currently loaded into memory
- * check the edges of that vertex against the contextmar
+ * For each outgoing edge of the current source vertex, check if it points to a destination vertex that
+ * is currently loaded into memory. If so, check the DESTINATION VERTEX's outgoing edges for D-Rules
  */
 void genD_RuleEdges(ComputationSet compsets[], LoadedVertexInterval intervals[], vector<int> &edges,
-		vector<char> &vals, vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge,
-		int &rowMergeID, Context &context, char flag)
+		vector<char> &vals, vector< vector<int> > &edgeVecsToMerge,
+		vector< vector<char> > &valVecsToMerge, int &rowMergeID, Context &context, char flag)
 {
 	int dstInd;
 	for (int i = 0; i < edges.size(); i++)
 	{
 		for (int j = 0; j < 2; j++)
 		{
-			if (edges[i] >= intervals[j].getFirstVertex() && edges[i] <= intervals[j].getLastVertex()) {
-				dstInd = intervals[j].getIndexStart() + (edges[i] - intervals[j].getFirstVertex());
-				if (rowMergeID == edgeVecsToMerge.size()) {
+			if (edges[i] >= intervals[j].getFirstVertex() && edges[i] <= intervals[j].getLastVertex()) {	// if loaded into memory
+				dstInd = intervals[j].getIndexStart() + (edges[i] - intervals[j].getFirstVertex());		// calculate offset into ComputationSet
+				if (rowMergeID == edgeVecsToMerge.size()) {				// if current row == size, add a new row
 					edgeVecsToMerge.push_back( vector<int>() );
 					valVecsToMerge.push_back( vector<char>() );
 				}
@@ -189,7 +180,7 @@ void genD_RuleEdges(ComputationSet compsets[], LoadedVertexInterval intervals[],
 
 /**
  * given an index into the ComputationSet list, and the edge value of that vertex, check if any of
- * the outgoing edges fit the contextmar and if so add them to the vector to be merged with the source
+ * the outgoing edges fit the context grammar and if so add them to the vector to be merged with the source
  */
 void checkEdges(int dstInd, char dstVal, ComputationSet compsets[],
 		vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge, int &rowMergeID,
@@ -199,15 +190,15 @@ void checkEdges(int dstInd, char dstVal, ComputationSet compsets[],
 	vector<char> &vals = (flag == 'o') ? compsets[dstInd].getNewVals() : compsets[dstInd].getoldUnewVals();
 
 	char newVal;
-	bool add = false;
+	bool added = false;
 	for (int i = 0; i < edges.size(); i++)
 	{
-		newVal = context.grammar.checkRules(dstVal, vals[i]);
+		newVal = context.grammar.checkRules(dstVal, vals[i]);   // check if dstVal  ->  vals[i]  == newVal
 		if (newVal != (char)-1) {
 			edgeVecsToMerge[rowMergeID].push_back(edges[i]);
 			valVecsToMerge[rowMergeID].push_back(newVal);
-			add = true;
+			added = true;
 		}
 	}
-	if (add) rowMergeID++;
+	if (added) rowMergeID++;
 }

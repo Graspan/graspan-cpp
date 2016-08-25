@@ -21,4 +21,3 @@ UTIL=../test/timer.cpp Library/Logger.cpp
 ##### build rules #####
 comp: dispatcher/graspan.cpp $(PREP) $(LOADER) $(COMPUTATION) $(DATASTRUCTS) $(UTIL)
 	$(CC) $(CFLAGS) $(THREAD) dispatcher/graspan.cpp $(PREP) $(LOADER) $(COMPUTATION) $(DATASTRUCTS) $(UTIL) -o ../bin/exp
-

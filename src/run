@@ -1,14 +1,39 @@
 #! /bin/bash
 
+
 echo "resetting..."
 rm -f resources/*
 cp originalTest/* resources/
 
+if [ "$1" == "dbg" ];
+then 
+	gdb ../bin/exp
+	exit 0
+fi
+
+
+
+
+INPGRAPH=$1
+GRAMMAR=$2
+NUMPARTITIONS=$3
+MEMBUDGET=$4
+
+if [ "$1" == "test" ];
+then
+	INPGRAPH=preproc/bigtest.txt
+	GRAMMAR=resources/grammar
+	NUMPARTITIONS=3
+	MEMBUDGET=4
+fi
+
+PID=0
+trap "{ kill $PID; exit 12; }" EXIT SIGINT SIGQUIT 
+
 echo "running..."
-cd resources
-../../bin/exp memBudget=$1 > cpp.output.$1 &
+../bin/exp numPartitions=$NUMPARTITIONS insertionSort=false alterSchedule=false memBudget=$MEMBUDGET inputGraph=$INPGRAPH grammar=$GRAMMAR 
 
-sleep 2
+sleep 1
+PID=$( echo $( ps -f  | grep "../bin/exp" | awk '{print $2}' ) | awk '{print $1}' )
+./utilities/pmap.sh $PID > log/pmap.$MEMBUDGET.$NUMPARTITIONS.output
 
-PID=$( echo $( ps -f  | grep "../../bin/comp" | awk '{print $2}' ) | awk '{print $1}' )
-../pmap.sh $PID > pmap.output.$1

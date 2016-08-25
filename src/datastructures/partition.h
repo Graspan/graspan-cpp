@@ -40,10 +40,10 @@ public:
 
 	//if user want save the partition to the disk use this function
 	//readable == true then text format, readable == false binary format
-	static void writeToFile(Partition& part, bool readable = false);
+	static void writeToFile(Partition& part, bool readable, Context c);
 
 	//read the partition from the harddisk
-	static void loadFromFile(int id, Partition &part, bool readable = false);
+	static void loadFromFile(int id, Partition &part, bool readable, Context c);
 
 	string toString();
 

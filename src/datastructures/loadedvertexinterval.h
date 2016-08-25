@@ -8,22 +8,19 @@
 
 class LoadedVertexInterval 
 {
-	int firstVertex;
-	int lastVertex;
-	int indexStart;
-	int indexEnd;
+	int firstVertex;			// first and last vertex ID of current loaded partition
+	int lastVertex;				// in the ComputationSet
+	int indexStart;				// first and last index of current loaded partition into
+	int indexEnd;				// the ComputationSet
 	int partitionID;
 
-	// If new edge added to partition after loaded but before saved
+	// If new edge added to partition in the current round
 	bool newEdgeAdded;
-	// If a new edge added to partition in current round
-	bool newEdgeAddedCurrRound;
 
 	public:
 	// Constructor
 	LoadedVertexInterval(int partitionID);
 
-  // Small methods should be inlined and given the implementation here (no linking needed)
 	// Getters 
 	inline int getFirstVertex() { return firstVertex; }
 	inline int getLastVertex() { return lastVertex; }

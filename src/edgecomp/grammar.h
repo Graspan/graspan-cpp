@@ -11,71 +11,71 @@
 // 
 
 class Grammar{
+  
+ private:
 
-	private:
+  vector<raw_label_t> map_info; //for storing map info
 
-		vector<raw_label_t> map_info; //for storing map info
+  set<label_t> eRules; //encoded form
+  
+  map<short, label_t> rules;
+	
+  void mapping(raw_label_t temp);
+  
+  string trimStr(string str);
 
-		set<label_t> eRules; //encoded form
+  //add 1 for delete 0
+  //0 is using another method instead of int
+  inline label_t getValue(raw_label_t str){
+    return (find(map_info.begin(),map_info.end(),str) - map_info.begin());
+  }
 
-		map<short, label_t> rules;
+  inline short changeShort(label_t a, label_t b){
+    return (short)a << 8 | b;
+  }
+  
+ public:
+	
+  Grammar();
+  ~Grammar();
 
-		void mapping(raw_label_t temp);
+  bool loadGrammar(string fname);
+	
+  bool print_all();
 
-		string trimStr(string str);
+  inline vector<raw_label_t> getMapInfo() {
+    return map_info;
+  }
+	
+  inline set<label_t> getErules() {
+    return eRules;
+  }
 
-		//add 1 for delete 0
-		//0 is using another method instead of int
-		inline label_t getValue(raw_label_t str){
-			return (find(map_info.begin(),map_info.end(),str) - map_info.begin());
-		}
+  //label_t checkRules(string srcVal, string dstVal);
+  inline label_t checkRules(label_t edgeVal) {
+    map<short,char>::iterator it;
+    short key = (short)edgeVal;
+    it = rules.find(key);
+    return (it != rules.end()) ? (*it).second : label_t(-1);
+  }
 
-		inline short changeShort(label_t a, label_t b){
-			return (short)a << 8 | b;
-		}
+  inline label_t checkRules(label_t srcVal, label_t dstVal) {
+    map<short,char>::iterator it;
+    short key;
 
-	public:
+    if(dstVal!=0){
+      key = changeShort(srcVal,dstVal);
+    }  
+    else{
+      key = changeShort(0,srcVal);
+    }
 
-		Grammar();
-		~Grammar();
+    it = rules.find(key);
+    return (it != rules.end()) ? (*it).second : label_t(-1);
+  
+  }
 
-		bool loadGrammar(string fname);
-
-		bool print_all();
-
-		inline vector<raw_label_t> getMapInfo() {
-			return map_info;
-		}
-
-		inline set<label_t> getErules() {
-			return eRules;
-		}
-
-		inline short getNumRules() { return rules.size(); }
-
-		//label_t checkRules(string srcVal, string dstVal);
-		inline label_t checkRules(label_t edgeVal) {
-			map<short,char>::iterator it;
-			short key = (short)edgeVal;
-			it = rules.find(key);
-			return (it != rules.end()) ? (*it).second : label_t(-1);
-		}
-
-		inline label_t checkRules(label_t srcVal, label_t dstVal) {
-			map<short,char>::iterator it;
-			short key;
-
-			if(dstVal!=0){
-				key = changeShort(srcVal,dstVal);
-			}  
-			else{
-				key = changeShort(0,srcVal);
-			}
-
-			it = rules.find(key);
-			return (it != rules.end()) ? (*it).second : label_t(-1);
-
-		}
+	inline short getNumRules() { return rules.size(); }
 
 };
 
