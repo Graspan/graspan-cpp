@@ -180,18 +180,18 @@ void Preproc::makePart(Context &context) {
 
 	//make partition files
 	for (int i = 0; i < vitSize; i++) {
-		str = std::to_string((long long)i);
-		name = context.getGraphFile() + "." + PART + "." + HUMA + "." + str.c_str();
+    //	str = std::to_string((long long)i);
+    //	name = context.getGraphFile() + "." + PART + "." + HUMA + "." + str.c_str();
 
-		f = fopen(name.c_str(), "a");
-		if (f != NULL) {
+		// f = fopen(name.c_str(), "a");
+		//if (f != NULL) {
 			for (int j = start; j <= context.vit.getEnd(i); j++) {
 				if (data[j].size() != 0) {
-					fprintf(f, "%d\t%d\t", j, data[j].size());
+					//fprintf(f, "%d\t%d\t", j, data[j].size());
 					for (int k = 0; k < data[j].size(); k++) {
 						for (int l = 1; l < mapInfo.size(); l++) {
 							if (strcmp(data[j][k].second.c_str(), mapInfo[l].c_str()) == 0) {
-								fprintf(f, "%d\t%d\t", data[j][k].first, l);
+								//fprintf(f, "%d\t%d\t", data[j][k].first, l);
 								break;
 							}
 						}
@@ -201,18 +201,18 @@ void Preproc::makePart(Context &context) {
 
 
 					}
-					fprintf(f, "\n");
+            //fprintf(f, "\n");
 				}
 				else {
-					fprintf(f, "%d\t%d\n", j, 0);
+					//fprintf(f, "%d\t%d\n", j, 0);
 				}
 			}
-			fclose(f);
+			//fclose(f);
 			start = context.vit.getEnd(i) + 1;
-		}
-		else {
-			assert(false, "Cannot make human file ");
-		}
+      //}
+     //else {
+      //	assert(false, "Cannot make human file ");
+      //	}
 	}
 
 	for (int i = 0; i < ddmMap[0].size(); i++) {

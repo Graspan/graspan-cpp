@@ -11,7 +11,7 @@ int run_preprocessing(Context &context) {
 
 	//save vit file
 	pre.makeVIT(context.getGraphFile(), context);		//need to fix input file
-	end = clock();
+	//end = clock();
 	//cout << "saveVIT time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 
 	context.ddm.setNumPartition(pre.getNumOfPartitions());
@@ -19,7 +19,7 @@ int run_preprocessing(Context &context) {
 
 	//save text file
 	//begin = clock();
-	pre.makePart(context);
+	pre.makePart(context); // Make human readable file and ddm :TODO: factor the part of ddm out
 	//end = clock();
 	//cout << "makePart time : " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 

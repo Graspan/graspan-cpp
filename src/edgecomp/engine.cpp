@@ -86,6 +86,8 @@ int run_computation(Context &context)
 
 		if (newEdgesThisIter <= 0) {
 			context.ddm.markTerminate(p, q, 0, 0);
+			context.ddm.adjustRow(p);
+			context.ddm.adjustRow(q);
 			cout << intervals[0].hasNewEdges() << endl;
 			cout << intervals[1].hasNewEdges() << endl;
 		}
