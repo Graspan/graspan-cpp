@@ -23,9 +23,9 @@ do
 	echo -e "$date$DELIM$total$DELIM$rss$DELIM$dirty"
 	sleep $DURATION
 
-	NUM=$( ps aux | grep $PID | wc -l )
-	if [ $NUM == 1 ]
+	NUM=$( ps aux | awk '{print $2}' | grep $PID | wc -l )
+	if [ $NUM -eq 0 ];
 	then 
-		break 
+		exit
 	fi
 done
