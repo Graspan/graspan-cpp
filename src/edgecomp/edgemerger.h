@@ -2,6 +2,7 @@
 #define EDGEMERGER_H
 
 #include <iostream>
+#include <algorithm>
 #include <ctime>
 #include <limits>
 #include <unordered_set>
@@ -18,7 +19,7 @@ class EdgeMerger
 	int oUnUdPtr;		// index into the vector of ALL edges
 	int currID;			// the current vertex ID (increasing order)
 
-	std::unordered_set<char> currEvals;		// the current edge values (to check for duplicates)
+	vector<char> currEvals;		// the current edge values (to check for duplicates)
 	std::priority_queue<MinSet, vector<MinSet>, compare> minEdges;
 
 	vector<int> srcoUnUdEdges;		// ALL edges (current source edges and NEW edges)
@@ -30,6 +31,8 @@ class EdgeMerger
 
 	// FUNCTIONS
 	void fillPriorityQueue(vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge, int srcID);
+
+	bool find_val(vector<char> &evals, char val);
 
 	void removeExtraSpace();
 

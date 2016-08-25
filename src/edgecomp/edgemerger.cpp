@@ -69,6 +69,11 @@ void EdgeMerger::fillPriorityQueue(vector< vector<int> > &edgeVecsToMerge, vecto
     srcoUnUdVals.reserve(edgeVecsToMerge[srcID].size() + totTgtRowSize);
 }
 
+bool EdgeMerger::find_val(vector<char> &evals, char val)
+{
+	return std::find(evals.begin(), evals.end(), val) == evals.end();
+}
+
 /**
  * remove the excess space created when duplicate values were removed
  */
@@ -113,13 +118,13 @@ void EdgeMerger::processMinSets(MinSet &srcMS, MinSet &tgtMS, vector<int> &srcEd
 			currEvals.clear();
 		}
 
-        unordered_set<char> &tgtVals = tgtMS.getEvals();
-        for (unordered_set<char>::iterator iter = tgtVals.begin(); iter != tgtVals.end(); iter++)
+        vector<char> &tgtVals = tgtMS.getEvals();
+        for (vector<char>::iterator iter = tgtVals.begin(); iter != tgtVals.end(); iter++)
 		{
-            if (currEvals.find(*iter) == currEvals.end()) {		// check if an edge with that edge value has already been added
+            if (find_val(currEvals, *iter)) {
 				updateVector(tgtMS.getCurrVID(), *iter, srcoUnUdEdges, srcoUnUdVals, oUnUdPtr);		// if not add to both oUnUd
 				updateVector(tgtMS.getCurrVID(), *iter, srcDeltaEdges, srcDeltaVals, deltaPtr);		// and Delta
-				currEvals.insert(*iter);				// insert edge value into currEvals to mark as already used
+				currEvals.push_back(*iter);				// insert edge value into currEvals to mark as already used
             }
         }
         updateMinSet(tgtMS, tgtEdgesToMerge, tgtValsToMerge);
@@ -135,15 +140,15 @@ void EdgeMerger::processMinSets(MinSet &srcMS, MinSet &tgtMS, vector<int> &srcEd
 			currEvals.clear();
 		}
 
-        unordered_set<char> &srcVals = srcMS.getEvals();
-        unordered_set<char> &tgtVals = tgtMS.getEvals();
-        for (unordered_set<char>::iterator iter = tgtVals.begin(); iter != tgtVals.end(); iter++)
+        vector<char> &srcVals = srcMS.getEvals();
+        vector<char> &tgtVals = tgtMS.getEvals();
+        for (vector<char>::iterator iter = tgtVals.begin(); iter != tgtVals.end(); iter++)
 		{
-            if (srcVals.find(*iter) == srcVals.end()) {
-                if (currEvals.find(*iter) == currEvals.end()) {
+            if (find_val(srcVals, *iter)) {
+                if (find_val(currEvals, *iter)) {
 					updateVector(tgtMS.getCurrVID(), *iter, srcoUnUdEdges, srcoUnUdVals, oUnUdPtr);
 					updateVector(tgtMS.getCurrVID(), *iter, srcDeltaEdges, srcDeltaVals, deltaPtr);
-					currEvals.insert(*iter);
+					currEvals.push_back(*iter);
                 }
             }
         }
@@ -160,12 +165,12 @@ void EdgeMerger::processMinSets(MinSet &srcMS, MinSet &tgtMS, vector<int> &srcEd
 			currEvals.clear();
 		}
 
-        unordered_set<char> &srcVals = srcMS.getEvals();
-        for (unordered_set<char>::iterator iter = srcVals.begin(); iter != srcVals.end(); iter++)
+        vector<char> &srcVals = srcMS.getEvals();
+        for (vector<char>::iterator iter = srcVals.begin(); iter != srcVals.end(); iter++)
 		{
-            if (currEvals.find(*iter) == currEvals.end()) {
+            if (find_val(currEvals, *iter)) {
 				updateVector(srcMS.getCurrVID(), *iter, srcoUnUdEdges, srcoUnUdVals, oUnUdPtr);		// only add to oUnUd
-				currEvals.insert(*iter);															// because not new
+				currEvals.push_back(*iter);															// because not new
             }
         }
         updateMinSet(srcMS, srcEdgesToMerge, srcValsToMerge);

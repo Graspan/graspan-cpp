@@ -12,7 +12,7 @@ string MinSet::toString()
 	std::stringstream output;
 	
 	output << currentVID << ": ";
-	for (std::unordered_set<char>::iterator it = evals.begin(); it != evals.end(); it++)
+	for (vector<char>::iterator it = evals.begin(); it != evals.end(); it++)
 		output << (short)*it << ", ";
 
 	output << endl;

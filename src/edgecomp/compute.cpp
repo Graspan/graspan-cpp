@@ -53,7 +53,6 @@ long updateEdges(int vertInd, ComputationSet compsets[], LoadedVertexInterval in
 	bool oldEdgesEmpty = (compSet->getOldEdges().empty()) ? true : false;
 	bool newEdgesEmpty = (compSet->getNewEdges().empty()) ? true : false;
 
-	// check first if current vertex has no old or new edges
 	if (oldEdgesEmpty && newEdgesEmpty) return 0;
 
 	// ESTIMATE the number of vectors we will need to merge
