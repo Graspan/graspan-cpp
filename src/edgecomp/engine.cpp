@@ -162,7 +162,7 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context)
 {
 	newEdgesThisIter = 0;
-	#pragma omp parallel for reduction (+:newEdgesThisIter)
+	#pragma omp parallel for num_threads(64) reduction (+:newEdgesThisIter)
 	for (int i = 0; i < setSize; i++)
 	{
 		long newEdges = 0;
