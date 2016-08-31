@@ -27,6 +27,10 @@ Context::Context(int argc, char** argv) {
 			memBudget = (unsigned long long int)atoi(context)*(unsigned long long int)1073741824;
 			cout << "MEM_BUDGET_KEY =" << memBudget << endl;
 		}
+		else if (!strncmp(argv[i], NUM_THREADS_KEY.c_str(), sizeof(argv[i]))) {
+			parameters.insert(std::make_pair(NUM_THREADS_KEY, atoi(context)));
+			cout << "NUM_THREADS_KEY = " << context << endl;
+		}
 		else if (!strncmp(argv[i], NUM_PARTITION_KEY.c_str(), sizeof(argv[i]))) {
 			parameters.find(NUM_PARTITION_KEY)->second = atoi(context);
 			cout << "NUM_PARTITION_KEY =" << atoi(context) << endl;
@@ -68,12 +72,19 @@ int Context::getMaxEdges() {
 	return parameters[MAX_EDGES_PER_PARTITION_KEY];
 }
 
+int Context::getNumThreads()
+{
+	return parameters[NUM_THREADS_KEY];
+}
+
 string Context::getGraphFile() {
 	return filePath[INPUT_GRAPH_FILE_KEY];
 }
 string Context::getGrammarFile() {
 	return filePath[GRAMMAR_FILE_KEY];
 }
+
+
 bool Context::getInsertFlag() {
 	return flags[INSERT_SORT_FLAG];
 }

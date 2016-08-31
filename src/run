@@ -2,8 +2,7 @@
 
 
 echo "resetting..."
-rm -f resources/*
-cp originalTest/* resources/
+rm -f preproc/bigtest.[dpv]*
 
 if [ "$1" == "dbg" ]
 then 
@@ -15,20 +14,22 @@ INPGRAPH=$1
 GRAMMAR=$2
 NUMPARTITIONS=$3
 MEMBUDGET=$4
+NUMTHREADS=$5
 
 if [ "$1" == "test" ];
 then
-	INPGRAPH=preproc/bigtest.txt
+	INPGRAPH=preproc/bigtest
 	GRAMMAR=resources/grammar
 	NUMPARTITIONS=2
 	MEMBUDGET=8
+	NUMTHREADS=32
 fi
 
 PID=0
 trap "{ kill $PID; exit 12; }" EXIT SIGINT SIGQUIT 
 
 echo "running..."
-../bin/comp numPartitions=$NUMPARTITIONS insertionSort=false alterSchedule=false memBudget=$MEMBUDGET inputGraph=$INPGRAPH grammar=$GRAMMAR
+../bin/comp numPartitions=$NUMPARTITIONS insertionSort=false alterSchedule=false memBudget=$MEMBUDGET inputGraph=$INPGRAPH grammar=$GRAMMAR numThreads=$NUMTHREADS
 
 sleep 1
 PID=$( echo $( ps -f  | grep "../bin/comp" | awk '{print $2}' ) | awk '{print $1}' )

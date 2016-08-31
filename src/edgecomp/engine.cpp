@@ -162,17 +162,22 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context)
 {
 	newEdgesThisIter = 0;
-	#pragma omp parallel for num_threads(64) reduction (+:newEdgesThisIter)
-	for (int i = 0; i < setSize; i++)
+	int numThreads = context.getNumThreads();
+	#pragma omp parallel num_threads(numThreads)
 	{
 		long newEdges = 0;
 
-		newEdges += updateEdges(i, compsets, intervals, context);
-		if (newEdges > 0 && (i >= intervals[0].getIndexStart() && i <= intervals[0].getIndexEnd()))
-			intervals[0].setNewEdgeAdded(true);
-		else if (newEdges > 0 && (i >= intervals[1].getIndexStart() && i <= intervals[1].getIndexEnd()))
-			intervals[1].setNewEdgeAdded(true);
+		#pragma omp for
+		for (int i = 0; i < setSize; i++)
+		{
+			newEdges += updateEdges(i, compsets, intervals, context);
+			if (newEdges > 0 && (i >= intervals[0].getIndexStart() && i <= intervals[0].getIndexEnd()))
+				intervals[0].setNewEdgeAdded(true);
+			else if (newEdges > 0 && (i >= intervals[1].getIndexStart() && i <= intervals[1].getIndexEnd()))
+				intervals[1].setNewEdgeAdded(true);
 
+		}
+		#pragma omp atomic
 		newEdgesThisIter += newEdges;
 	}
 }

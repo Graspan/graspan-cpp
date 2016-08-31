@@ -40,9 +40,11 @@ public:
 	unsigned long long int getMemBudget();
 	int getNumPartitions();
 	int getMaxEdges();
+	int getNumThreads();
 
 	string getGraphFile();
 	string getGrammarFile();
+
 
 	bool getInsertFlag();
 	bool getAlterScheduleFlag();
