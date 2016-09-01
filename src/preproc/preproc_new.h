@@ -1,5 +1,5 @@
-#ifndef PREPROC_H
-#define PREPROC_H
+#ifndef PREPROC_NEW_H
+#define PREPROC_NEW_H
 
 #include <iostream>
 #include <fstream>
@@ -20,35 +20,42 @@
 
 
 
-class Preproc {
+class Preproc_new {
 private:
 	int count;
 	int vitSize;
 	int dataSize;
+	int numEdges;
 	int numVertex;
 
+	int *dataCount;
+	int *numPartBuf;
 	int *dataCheck;
-	set<string> eRules;
+	set<char> eRules;
 	vector<string> mapInfo;
-	vector<pair<int, string>> *data;
+	Vertex *partBuf;
 
 	//Partition *p;
 
 
 public:
-	Preproc(Context &context);
+	Preproc_new(Context &context);
 
 	void countNum(Context &context);
+	void setVIT(Context &context);
+
 	void saveData(Context &context);
-	void makeVIT(Context &context);
-	void makePart(Context &context);
-	void makeBinaryPart(Context &context);
-	void makeDDM(Context &context);
+	void savePartChunk(Context &context, int partNum);
+
+	void mergePart(Context &context);
+	void lodePartChunk(Context &context, int pID);
+	void addErules(Context &context, int pID);
+	void checkPart(Context &context);
+	void savePart(Context &context, int pID);
 
 	void setMapInfo(vector<string> mapInfo, set<char> eRules);
 
-	int getNumOfPartitions();
-	~Preproc();	
+	~Preproc_new();
 };
 
 #endif

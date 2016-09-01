@@ -37,6 +37,12 @@ class Vertex
 	inline void setOutEdges(vector<int> &outEdges) { this->outEdges = outEdges; }
 	inline void setOutEdgeValues(vector<char> &outEdgeValues) { this->outEdgeValues = outEdgeValues; }
 
+	inline void clearVector() { 
+		outEdges.clear(); 
+		outEdgeValues.clear(); 
+		numOutEdges = 0;
+	};
+	
 	string toString();
 };
 

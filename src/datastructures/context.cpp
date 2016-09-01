@@ -83,15 +83,15 @@ bool Context::getAlterScheduleFlag() {
 }
 
 void Context::setNumPartitions(int numPartitions) {
-	parameters[NUM_PARTITION_KEY] = numPartitions;
+	parameters.find(NUM_PARTITION_KEY)->second = numPartitions;
 }
 void Context::setMaxEdges(int maxEdges) {
-	parameters[MAX_EDGES_PER_PARTITION_KEY] = maxEdges;
+	parameters.find(MAX_EDGES_PER_PARTITION_KEY)->second = maxEdges;
 }
 
 void Context::setInsertFlag(bool flag) {
-	flags[INSERT_SORT_FLAG] = flag;
+	flags.find(INSERT_SORT_FLAG)->second = flag;
 }
 void Context::setAlterScheduleFlag(bool flag) {
-	flags[ALTER_SCHEDULE_FLAG] = flag;
+	flags.find(ALTER_SCHEDULE_FLAG)->second = flag;
 }

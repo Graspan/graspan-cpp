@@ -2,6 +2,7 @@
 #define RUN_PRE_H
 
 #include "preproc.h"
+#include "preproc_new.h"
 #include "../datastructures/loader.h"
 #include "../edgecomp/repart.h"
 #include "../datastructures/context.h"
