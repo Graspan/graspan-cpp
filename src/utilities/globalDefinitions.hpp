@@ -49,6 +49,7 @@ const static string HUMA = "human";
 const static string INPUT_GRAPH_FILE_KEY = "inputGraph";
 const static string GRAMMAR_FILE_KEY = "grammar";
 const static string MEM_BUDGET_KEY = "memBudget";
+const static string NUM_THREADS_KEY = "numThreads";
 const static string NUM_PARTITION_KEY = "numPartitions";
 const static string MAX_EDGES_PER_PARTITION_KEY = "maxEdgesPerPartiton";
 
