@@ -35,7 +35,6 @@ int main(int argc, char *argv[])
 	}
 
 	prepTimer.endTimer();
-	return 0;
 	// COMPUTATION
 	compTimer.startTimer();
 
