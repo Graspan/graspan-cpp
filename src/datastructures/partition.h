@@ -38,6 +38,8 @@ public:
 	void setData(vector<Vertex> data);
 	void setExist(bool exist);
 
+	bool checkPart();
+
 	//if user want save the partition to the disk use this function
 	//readable == true then text format, readable == false binary format
 	static void writeToFile(Partition& part, bool readable, Context c);

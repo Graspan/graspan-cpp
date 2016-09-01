@@ -45,6 +45,47 @@ void Partition::setExist(bool exist)
 	this->exist = exist;
 }
 
+bool Partition::checkPart()
+{
+	vector<vertexid_t>::iterator firstA, lastA, resultA;
+	vector<label_t>::iterator firstB, lastB, resultB;
+
+	for (int i = 0; i < numVertices; i++) {
+		vector<vertexid_t> &outEdges = data[i].getOutEdges();
+		vector<label_t> &outEdgeValues = data[i].getOutEdgeValues();
+
+		firstA = outEdges.begin();
+		lastA = outEdges.end();
+		firstB = outEdgeValues.begin();
+		lastB = outEdgeValues.end();
+
+		if (firstA == lastA) continue;
+
+		resultA = firstA;
+		resultB = firstB;
+		while (++firstA != lastA)
+		{
+			++firstB;
+			if (!(*resultA == *firstA) | !(*resultB == *firstB)) {
+				*(++resultA) = *firstA;
+				*(++resultB) = *firstB;
+			}
+			else {
+				cout << "PARTITION " + id << " DUPLICATED HAPPEND";
+				return false;
+			}
+
+		}
+		return true;
+
+		//++resultA;
+		//++resultB;
+
+		//outEdges.erase(resultA, lastA);
+		//outEdgeValues.erase(resultB, lastB);
+	}
+}
+
 void Partition::writeToFile(Partition & part, bool readable, Context c)
 {
 	if (!part.exist)
