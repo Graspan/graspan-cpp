@@ -9,3 +9,6 @@ src/originalTest/*
 *.out
 *.[oa]
 .gpull
+*.ddm*
+*.partition*
+*.vit
