@@ -5,7 +5,7 @@ int run_preprocessing(Context &context) {
 
 	clock_t begin, end;
 	//new Preproc
-	/*
+	
 	begin = clock();
 
 	Preproc_new preN(context);
@@ -19,7 +19,7 @@ int run_preprocessing(Context &context) {
 
 	end = clock();
 	cout << "NEWPREPROC TIME: " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
-	return 0;*/
+	return 0;
 	
 	begin = clock();
 	Preproc pre(context);

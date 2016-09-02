@@ -3,7 +3,7 @@
 
 echo "resetting..."
 rm -f preproc/bigtest.[dpv]*
-
+#rm -f final.txt.[dpv]*
 if [ "$1" == "dbg" ]
 then 
 	gdb ../bin/comp

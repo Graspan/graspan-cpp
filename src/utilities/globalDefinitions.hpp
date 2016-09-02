@@ -22,6 +22,10 @@ using std::map;
 #define ASSERT
 #endif 
 
+#ifndef DEBUG
+#define DEBUG
+#endif
+
 //----------------------------------------------------------------------------------------------------
 typedef char label_t;
 typedef int vertexid_t;

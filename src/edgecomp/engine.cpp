@@ -41,28 +41,66 @@ int run_computation(Context &context)
 		newRoundEdges = 0; 
 		loadTimer.startTimer();
 		if (p != oldP) {
-			if (oldP != -1)
+			if (oldP != -1) {
+			  
+                        #ifdef DEBUG
+			  cout << "writing to file partition oldP = " << oldP << endl;
+
+				cout << "P numEdges =" << p1.getNumEdges() << " P numVertices = " << p1.getNumVertices() << " Psize = " << p1.getData().size() << endl;
+                         #endif	
+
 				Partition::writeToFile(p1, false, context);
+			}
+			
+			if (p != oldQ) {
 			Loader::loadPartition(p, p1, false, context);
+			
+			#ifdef DEBUG
+			cout << "Loading partition " << p << " where oldP is " << oldP << endl;
+
+			cout << "P numEdges =" << p1.getNumEdges() << " P numVertices = " << p1.getNumVertices() << " Psize = " << p1.getData().size() << endl;
+			#endif
+			} else {
+			  p1 = p2;
+			}
+
+
 		}
 		if (q != oldQ) {
-			if (oldQ != -1)
+			if (oldQ != -1) {
+			  #ifdef DEBUG
+				cout << "writing to file partition oldQ = " << oldQ << endl;
+
+				cout << "Q numEdges =" << p2.getNumEdges() << " Q numVertices = " << p2.getNumVertices() << " Qsize = " << p2.getData().size() << endl;
+			  #endif
 				Partition::writeToFile(p2, false, context);
+			}
+			if ( q != oldP) {	
 			Loader::loadPartition(q, p2, false, context);
+			#ifdef DEBUG
+			cout << "Loading partition " << q << " where oldQ is " << oldQ << endl;
+
+			cout << "Q numEdges =" << p2.getNumEdges() << " Q numVertices = " << p2.getNumVertices() << " Qsize = " << p2.getData().size() << endl;
+			#endif
+			} else {
+			  p2 = p1;
+			}
 		}
 		cout << "OG NUM EDGES: " << (p1.getNumEdges() + p2.getNumEdges()) << endl;
-		if (!p1.checkPart() || !p2.checkPart()) {
-			cout << "AGGAGAGGHGHHHHHH!" << endl;
-			return 12;
-		}
+		assert(p1.checkPart() && p2.checkPart(), "pre comp : duplicate check");
+		//if (!p1.checkPart() || !p2.checkPart()) {
+		//	cout << "AGGAGAGGHGHHHHHH!" << endl;
+		//	return 12;
+		//}
 		
 		unsigned long long int sizeLim = (context.getMemBudget() - p1.getNumVertices() * 8 - p2.getNumVertices() * 8) / 5;
 		oldP = p;
 		oldQ = q;
 		loadTimer.endTimer();
 		cout << "P =" << p << " Q =" << q << endl;
-
+	
 		vector<Vertex> &part1 = p1.getData(), &part2 = p2.getData();
+
 
 		ComputationSet *compsets = new ComputationSet[part1.size() + part2.size()];
 		int setSize = part1.size() + part2.size();
@@ -81,10 +119,12 @@ int run_computation(Context &context)
 		updatePartitions(compsets, p1, p2, part1, part2);	// store information to partitions
 
 		cout << "NEW NUM EDGES: " << (p1.getNumEdges() + p2.getNumEdges()) << endl;
-		if (!p1.checkPart() || !p2.checkPart()) {
-			cout << "AGGAGAGGHGHHHHHH!" << endl;
-			return 12;
-		}
+		assert(p1.checkPart() && p2.checkPart(), "duplicate found");
+
+		//if (!p1.checkPart() || !p2.checkPart()) {
+		//	cout << "AGGAGAGGHGHHHHHH!" << endl;
+		//	return 12;
+		//}
 
 		delete[] compsets;
 		if (newTotalEdges > 0) {
@@ -117,6 +157,10 @@ int run_computation(Context &context)
 		cout << "COMP TIME: " << compTimer.hmsFormat() << endl;
 		cout << "REPA TIME: " << repartTimer.hmsFormat() << endl <<  endl << endl;
 	}
+
+	cout << "P numEdges =" << p1.getNumEdges() << " P numVertices = " << p1.getNumVertices() << " Psize = " << p1.getData().size() << endl;
+	cout << "Q numEdges =" << p2.getNumEdges() << " Q numVertices = " << p2.getNumVertices() << " Qsize = " << p2.getData().size() << endl;
+
 	Partition::writeToFile(p1, false, context);
 	Partition::writeToFile(p2, false, context);
 
@@ -134,7 +178,6 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 {
 	Timer iterTimer;
 	iterNo = 0;
-	newTotalEdges = 0;
 
 	cout << "NEW EDGES LIMIT: " << sizeLim << endl;
 	
@@ -158,7 +201,7 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 
 		cout << "EDGES PER SECND: " << (double)newIterEdges / (double)(iterTimer.totalTime() / 1000) << endl;
 		cout << "EDGES THIS ITER: " << newIterEdges << endl;
-		cout << "NEW EDGES TOTAL: " << newTotalEdges << endl;
+		cout << "NEW EDGES TOTAL: " << newRoundEdges << endl;
 		cout << "ITERATER  TIME   " << iterTimer.hmsFormat() << endl << endl;
 
 		if (newRoundEdges > sizeLim) break;
