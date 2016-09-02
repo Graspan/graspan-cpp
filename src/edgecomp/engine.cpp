@@ -2,8 +2,9 @@
 
 #define MAX_NEW_EDGES 3000000
 
-long totNewEdges;
-long newEdgesThisIter;
+long newTotalEdges;
+long newRoundEdges;
+long newIterEdges;
 int iterNo;
 
 bool newEdgesPart1;
@@ -32,10 +33,12 @@ int run_computation(Context &context)
 	string name;
 	Partition p1, p2;
 	partitionid_t p, q, oldP = -1, oldQ = -1;
+	newTotalEdges = 0;
 	int roundNo = 0;
 	while (context.ddm.nextPartitionPair(p, q))
 	{
 		cout << "##### STARTING ROUND " << ++roundNo << " #####" << endl;
+		newRoundEdges = 0; 
 		loadTimer.startTimer();
 		if (p != oldP) {
 			if (oldP != -1)
@@ -48,6 +51,11 @@ int run_computation(Context &context)
 			Loader::loadPartition(q, p2, false, context);
 		}
 		cout << "OG NUM EDGES: " << (p1.getNumEdges() + p2.getNumEdges()) << endl;
+		if (!p1.checkPart() || !p2.checkPart()) {
+			cout << "AGGAGAGGHGHHHHHH!" << endl;
+			return 12;
+		}
+		
 		unsigned long long int sizeLim = (context.getMemBudget() - p1.getNumVertices() * 8 - p2.getNumVertices() * 8) / 5;
 		oldP = p;
 		oldQ = q;
@@ -66,25 +74,30 @@ int run_computation(Context &context)
 		cout << "== COMP START ==" << endl;
 		compTimer.startTimer();
 		computeEdges(compsets, setSize, intervals, context, sizeLim);
+		newTotalEdges += newRoundEdges;
 		compTimer.endTimer();
 		cout << "== COMP END ==" << endl;
 
 		updatePartitions(compsets, p1, p2, part1, part2);	// store information to partitions
 
 		cout << "NEW NUM EDGES: " << (p1.getNumEdges() + p2.getNumEdges()) << endl;
+		if (!p1.checkPart() || !p2.checkPart()) {
+			cout << "AGGAGAGGHGHHHHHH!" << endl;
+			return 12;
+		}
 
 		delete[] compsets;
-		if (totNewEdges > 0) {
+		if (newTotalEdges > 0) {
 			cout << "== REPA START ==" << endl;
 			repartTimer.startTimer();
-			Repart::run(p1, p2, context, intervals[0].hasNewEdges(), intervals[1].hasNewEdges(), newEdgesThisIter);
+			Repart::run(p1, p2, context, intervals[0].hasNewEdges(), intervals[1].hasNewEdges(), newIterEdges);
 			repartTimer.endTimer();
 
 
 			cout << "== REPA END ==" << endl;
 		}
 
-		if (newEdgesThisIter <= 0) {
+		if (newIterEdges <= 0) {
 			context.ddm.markTerminate(p, q, 0, 0);
 			context.ddm.adjustRow(p);
 			context.ddm.adjustRow(q);
@@ -99,7 +112,7 @@ int run_computation(Context &context)
 		context.ddm.save_DDM(name.c_str());
 
 		cout << "===== ROUND INFO =====" << endl;
-		cout << "NEW EDGES: " << totNewEdges << endl;
+		cout << "NEW EDGES: " << newTotalEdges << endl;
 		cout << "LOAD TIME: " << loadTimer.hmsFormat() << endl;
 		cout << "COMP TIME: " << compTimer.hmsFormat() << endl;
 		cout << "REPA TIME: " << repartTimer.hmsFormat() << endl <<  endl << endl;
@@ -121,7 +134,7 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 {
 	Timer iterTimer;
 	iterNo = 0;
-	totNewEdges = 0;
+	newTotalEdges = 0;
 
 	cout << "NEW EDGES LIMIT: " << sizeLim << endl;
 	
@@ -130,7 +143,7 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 		iterTimer.startTimer();
 		computeOneIteration(compsets, setSize, intervals, context);
 
-		totNewEdges += newEdgesThisIter;
+		newRoundEdges += newIterEdges;
 
 		for (int i = 0; i < setSize; i++)
 		{
@@ -143,13 +156,13 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 		}
 		iterTimer.endTimer();
 
-		cout << "EDGES PER SECND: " << (double)newEdgesThisIter / (double)(iterTimer.totalTime() / 1000) << endl;
-		cout << "EDGES THIS ITER: " << newEdgesThisIter << endl;
-		cout << "NEW EDGES TOTAL: " << totNewEdges << endl;
+		cout << "EDGES PER SECND: " << (double)newIterEdges / (double)(iterTimer.totalTime() / 1000) << endl;
+		cout << "EDGES THIS ITER: " << newIterEdges << endl;
+		cout << "NEW EDGES TOTAL: " << newTotalEdges << endl;
 		cout << "ITERATER  TIME   " << iterTimer.hmsFormat() << endl << endl;
 
-		if (totNewEdges > sizeLim) break;
-	} while (newEdgesThisIter > 0);
+		if (newRoundEdges > sizeLim) break;
+	} while (newIterEdges > 0);
 }
 
 /**
@@ -161,24 +174,24 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
  */
 void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context)
 {
-	newEdgesThisIter = 0;
+	newIterEdges = 0;
 	int numThreads = context.getNumThreads();
 	#pragma omp parallel num_threads(numThreads)
 	{
-		long newEdges = 0;
+		long newThreadEdges = 0;
 
 		#pragma omp for
 		for (int i = 0; i < setSize; i++)
 		{
-			newEdges += updateEdges(i, compsets, intervals, context);
-			if (newEdges > 0 && (i >= intervals[0].getIndexStart() && i <= intervals[0].getIndexEnd()))
+			newThreadEdges += updateEdges(i, compsets, intervals, context);
+			if (newThreadEdges > 0 && (i >= intervals[0].getIndexStart() && i <= intervals[0].getIndexEnd()))
 				intervals[0].setNewEdgeAdded(true);
-			else if (newEdges > 0 && (i >= intervals[1].getIndexStart() && i <= intervals[1].getIndexEnd()))
+			else if (newThreadEdges > 0 && (i >= intervals[1].getIndexStart() && i <= intervals[1].getIndexEnd()))
 				intervals[1].setNewEdgeAdded(true);
 
 		}
 		#pragma omp atomic
-		newEdgesThisIter += newEdges;
+		newIterEdges += newThreadEdges;
 	}
 }
 

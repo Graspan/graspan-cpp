@@ -71,7 +71,7 @@ bool Partition::checkPart()
 				*(++resultB) = *firstB;
 			}
 			else {
-				cout << "PARTITION " + id << " DUPLICATED HAPPEND";
+				cout << "PARTITION " << id << " DUPLICATED HAPPEND";
 				return false;
 			}
 
