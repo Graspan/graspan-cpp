@@ -18,13 +18,13 @@ using std::cout;
 using std::endl;
 using std::map;
 
-#ifndef ASSERT
-#define ASSERT
-#endif 
+//#ifndef ASSERT
+//#define ASSERT
+//#endif 
 
-#ifndef DEBUG
-#define DEBUG
-#endif
+//#ifndef DEBUG
+//#define DEBUG
+//#endif
 
 //----------------------------------------------------------------------------------------------------
 typedef char label_t;

@@ -157,10 +157,10 @@ int run_computation(Context &context)
 		cout << "COMP TIME: " << compTimer.hmsFormat() << endl;
 		cout << "REPA TIME: " << repartTimer.hmsFormat() << endl <<  endl << endl;
 	}
-
+#ifdef DEBUG
 	cout << "P numEdges =" << p1.getNumEdges() << " P numVertices = " << p1.getNumVertices() << " Psize = " << p1.getData().size() << endl;
 	cout << "Q numEdges =" << p2.getNumEdges() << " Q numVertices = " << p2.getNumVertices() << " Qsize = " << p2.getData().size() << endl;
-
+#endif
 	Partition::writeToFile(p1, false, context);
 	Partition::writeToFile(p2, false, context);
 
