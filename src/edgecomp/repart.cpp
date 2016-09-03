@@ -56,38 +56,41 @@ void Repart::repartition(Partition &p1, Partition &p2, Context &context) {
 	context.vit.writeToFile("graph.vit");
 }
 
-void Repart::run(Partition &p1, Partition &p2, Context &context, bool newEdgesInP, bool newEdgesInQ, bool terminate) {
+void Repart::run(Partition &p1, Partition &p2, Context &context, long newIterEdges) {
 
-	Partition p12, p22;
-	repartition(p1, p12, context);
-	repartition(p2, p22, context);
+	repartition(p1, p1_2, context);
+	repartition(p2, p2_2, context);
 
 	context.ddm.setNumPartition(context.getNumPartitions());
 	context.ddm.reSize();
 
-	if (newEdgesInP) {
+	if (newIterEdges > 0) {
 		p1.calc_ddr(context);
 	}
-	if (newEdgesInQ) {
+	if (newIterEdges > 0) {
 		p2.calc_ddr(context);
 	}
-	if (p12.getExist()) {
-		cout << "p1 =" << p1.getID() << " p12 =" << p12.getID() << endl;
-		Partition::writeToFile(p12, false, context);
-		context.ddm.copy(p1.getID(), p12.getID());
-		p12.calc_ddr(context);
+	if (p1_2.getExist()) {
+		cout << "p1 =" << p1.getID() << " p12 =" << p1_2.getID() << endl;
+		Partition::writeToFile(p1_2, false, context);
+		context.ddm.copy(p1.getID(), p1_2.getID());
+		p1_2.calc_ddr(context);
 
-		context.ddm.markTerminate(p1.getID(), p12.getID(), terminate, terminate);
-		context.ddm.markTerminate(p2.getID(), p12.getID(), terminate, terminate);
+		if (newIterEdges <= 0) {
+			context.ddm.markTerminate(p1.getID(), p1_2.getID(), newIterEdges, newIterEdges);
+			context.ddm.markTerminate(p2.getID(), p1_2.getID(), newIterEdges, newIterEdges);
+		}
 	}
-	if (p22.getExist()) {
-		cout << "p2 =" << p2.getID() << " p12 =" << p22.getID() << endl;
-		Partition::writeToFile(p22, false, context);
-		context.ddm.copy(p2.getID(), p22.getID());
+	if (p2_2.getExist()) {
+		cout << "p2 =" << p2.getID() << " p12 =" << p2_2.getID() << endl;
+		Partition::writeToFile(p2_2, false, context);
+		context.ddm.copy(p2.getID(), p2_2.getID());
 
-		p22.calc_ddr(context);
-		context.ddm.markTerminate(p1.getID(), p22.getID(), terminate, terminate);
-		context.ddm.markTerminate(p2.getID(), p22.getID(), terminate, terminate);
+		p2_2.calc_ddr(context);
+		if (newIterEdges <= 0) {
+			context.ddm.markTerminate(p1.getID(), p2_2.getID(), newIterEdges, newIterEdges);
+			context.ddm.markTerminate(p2.getID(), p2_2.getID(), newIterEdges, newIterEdges);
+		}
 	}
 	context.ddm.adjust(p1.getID(), p2.getID());
 }

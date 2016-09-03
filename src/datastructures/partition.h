@@ -48,6 +48,7 @@ public:
 	static void loadFromFile(int id, Partition &part, bool readable, Context c);
 
 	string toString();
+	void clear();
 
 	// ddr = destination distribution ratio, i.e., a cell in DDM return BONUS
 	void calc_ddr(Context &context);

@@ -152,6 +152,15 @@ string Partition::toString()
 	return output.str();
 }
 
+void Partition::clear()
+{
+	id = -1;
+	numEdges = 0;
+	numVertices = 0;
+	data.clear();
+	exist = false;
+}
+
 void Partition::calc_ddr(Context &context)	{
 	if (!exist)
 		return;
@@ -190,6 +199,4 @@ void Partition::calc_ddr(Context &context)	{
 }
 
 Partition::~Partition() {
-	for (int i = 0; i < data.size(); i++)
-		data.clear();
 }

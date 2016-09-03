@@ -31,7 +31,11 @@ int run_computation(Context &context)
 	Timer loadTimer, compTimer, repartTimer;
 	string str;
 	string name;
-	Partition p1, p2;
+	vector <Partition*> parts;
+	vector <Partition*>::iterator it;
+	Partition *pp, *qp;
+	Repart r;
+
 	partitionid_t p, q, oldP = -1, oldQ = -1;
 	newTotalEdges = 0;
 	int roundNo = 0;
@@ -40,68 +44,51 @@ int run_computation(Context &context)
 		cout << "##### STARTING ROUND " << ++roundNo << " #####" << endl;
 		newRoundEdges = 0; 
 		loadTimer.startTimer();
-		if (p != oldP) {
-			if (oldP != -1) {
-			  
-                        #ifdef DEBUG
-			  cout << "writing to file partition oldP = " << oldP << endl;
 
-				cout << "P numEdges =" << p1.getNumEdges() << " P numVertices = " << p1.getNumVertices() << " Psize = " << p1.getData().size() << endl;
-                         #endif	
-
-				Partition::writeToFile(p1, false, context);
+		pp = NULL, qp = NULL;
+		//check parts
+		for (it = parts.begin(); it != parts.end(); ) {
+			if ((*(*it)).getID() != p && (*(*it)).getID() != q) {
+				Partition::writeToFile(*(*it), false, context);
+				delete[](*it);
+				it = parts.erase(it);
 			}
-			
-			if (p != oldQ) {
-			Loader::loadPartition(p, p1, false, context);
-			
-			#ifdef DEBUG
-			cout << "Loading partition " << p << " where oldP is " << oldP << endl;
-
-			cout << "P numEdges =" << p1.getNumEdges() << " P numVertices = " << p1.getNumVertices() << " Psize = " << p1.getData().size() << endl;
-			#endif
-			} else {
-			  p1 = p2;
-			}
-
-
-		}
-		if (q != oldQ) {
-			if (oldQ != -1) {
-			  #ifdef DEBUG
-				cout << "writing to file partition oldQ = " << oldQ << endl;
-
-				cout << "Q numEdges =" << p2.getNumEdges() << " Q numVertices = " << p2.getNumVertices() << " Qsize = " << p2.getData().size() << endl;
-			  #endif
-				Partition::writeToFile(p2, false, context);
-			}
-			if ( q != oldP) {	
-			Loader::loadPartition(q, p2, false, context);
-			#ifdef DEBUG
-			cout << "Loading partition " << q << " where oldQ is " << oldQ << endl;
-
-			cout << "Q numEdges =" << p2.getNumEdges() << " Q numVertices = " << p2.getNumVertices() << " Qsize = " << p2.getData().size() << endl;
-			#endif
-			} else {
-			  p2 = p1;
+			else {
+				if ((*(*it)).getID() == p)
+					pp = *it;
+				else
+					qp = *it;
+				++it;
 			}
 		}
-		cout << "OG NUM EDGES: " << (p1.getNumEdges() + p2.getNumEdges()) << endl;
-		assert(p1.checkPart() && p2.checkPart(), "pre comp : duplicate check");
+		//p or q are not exist in parts then load
+		if (pp == NULL) {
+			Partition *p1 = new Partition[1];
+			Loader::loadPartition(p, *p1, false, context);
+			parts.push_back(p1);
+			pp = p1;
+		}
+		if (qp == NULL) {
+			Partition *p2 = new Partition[1];
+			Loader::loadPartition(q, *p2, false, context);
+			parts.push_back(p2);
+			qp = p2;
+		}
+
+		cout << "OG NUM EDGES: " << ((*pp).getNumEdges() + (*qp).getNumEdges()) << endl;
+		assert((*pp).checkPart() && (*qp).checkPart(), "pre comp : duplicate check");
 		//if (!p1.checkPart() || !p2.checkPart()) {
 		//	cout << "AGGAGAGGHGHHHHHH!" << endl;
 		//	return 12;
 		//}
 		
-		unsigned long long int sizeLim = (context.getMemBudget() - p1.getNumVertices() * 8 - p2.getNumVertices() * 8) / 5;
-		oldP = p;
-		oldQ = q;
+		unsigned long long int sizeLim = (context.getMemBudget() - (*pp).getNumVertices() * 8 - (*qp).getNumVertices() * 8) / 5;
 		loadTimer.endTimer();
 		cout << "P =" << p << " Q =" << q << endl;
-	
-		vector<Vertex> &part1 = p1.getData(), &part2 = p2.getData();
-
-
+		cout << qp->getNumVertices() << endl;
+		vector<Vertex> &part1 = (*pp).getData(), &part2 = (*qp).getData();
+		cout << (*pp).getID() << endl;
+		cout << "hi" << endl;
 		ComputationSet *compsets = new ComputationSet[part1.size() + part2.size()];
 		int setSize = part1.size() + part2.size();
 		initCompSets(compsets, part1, part2);				// Initialize the ComputationSet list
@@ -116,10 +103,10 @@ int run_computation(Context &context)
 		compTimer.endTimer();
 		cout << "== COMP END ==" << endl;
 
-		updatePartitions(compsets, p1, p2, part1, part2);	// store information to partitions
+		updatePartitions(compsets, *pp, *qp, part1, part2);	// store information to partitions
 
-		cout << "NEW NUM EDGES: " << (p1.getNumEdges() + p2.getNumEdges()) << endl;
-		assert(p1.checkPart() && p2.checkPart(), "duplicate found");
+		cout << "NEW NUM EDGES: " << ((*pp).getNumEdges() + (*qp).getNumEdges()) << endl;
+		assert((*pp).checkPart() && (*qp).checkPart(), "duplicate found");
 
 		//if (!p1.checkPart() || !p2.checkPart()) {
 		//	cout << "AGGAGAGGHGHHHHHH!" << endl;
@@ -128,11 +115,26 @@ int run_computation(Context &context)
 
 		delete[] compsets;
 		if (newTotalEdges > 0) {
+			Partition *p3 = new Partition[1];
+			Partition *p4 = new Partition[1];
 			cout << "== REPA START ==" << endl;
 			repartTimer.startTimer();
-			Repart::run(p1, p2, context, intervals[0].hasNewEdges(), intervals[1].hasNewEdges(), newIterEdges);
+			r.run(*pp, *qp, context, newIterEdges);
 			repartTimer.endTimer();
+			*p3 = r.getPartitionP1_2();
+			*p4 = r.getPartitionP2_2();
 
+			//if p3 or p4 exist then put in the parts, if not delete
+			if (p3->getExist()) {
+				parts.push_back(p3);
+			}
+			else
+				delete[] p3;
+			if (p4->getExist()) {
+				parts.push_back(p4);
+			}
+			else
+				delete[] p4;
 
 			cout << "== REPA END ==" << endl;
 		}
@@ -158,11 +160,16 @@ int run_computation(Context &context)
 		cout << "REPA TIME: " << repartTimer.hmsFormat() << endl <<  endl << endl;
 	}
 #ifdef DEBUG
-	cout << "P numEdges =" << p1.getNumEdges() << " P numVertices = " << p1.getNumVertices() << " Psize = " << p1.getData().size() << endl;
-	cout << "Q numEdges =" << p2.getNumEdges() << " Q numVertices = " << p2.getNumVertices() << " Qsize = " << p2.getData().size() << endl;
+	cout << "P numEdges =" << (*pp).getNumEdges() << " P numVertices = " << (*pp).getNumVertices() << " Psize = " << (*pp).getData().size() << endl;
+	cout << "Q numEdges =" << (*qp).getNumEdges() << " Q numVertices = " << (*qp).getNumVertices() << " Qsize = " << (*qp).getData().size() << endl;
 #endif
-	Partition::writeToFile(p1, false, context);
-	Partition::writeToFile(p2, false, context);
+	//save rest of the files in the parts
+	for (it = parts.begin(); it != parts.end(); ) {
+		Partition::writeToFile(*(*it), false, context);
+		delete[](*it);
+		it = parts.erase(it);
+		++it;
+	}
 
 	return 0;
 }

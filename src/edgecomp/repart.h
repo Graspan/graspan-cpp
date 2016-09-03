@@ -20,10 +20,18 @@
 
 class Repart {
 private:
+	Partition p1_2;
+	Partition p2_2;
 public:
 	//p1 is exceeded partition and p2 is new partition
-	static void repartition(Partition &p1, Partition &p2, Context &context);
-	static void run(Partition &p1, Partition &p2, Context &context, bool newEdgesInP, bool newEdgesInQ, bool terminate);
+	void repartition(Partition &p1, Partition &p2, Context &context);
+	void run(Partition &p1, Partition &p2, Context &context, long newIterEdges);
+
+	inline void setPartitionP1_2(Partition &p1_2) { this->p1_2 = p1_2; }
+	inline void setPartitionP2_2(Partition &p2_2) { this->p2_2 = p2_2; }
+
+	inline Partition &getPartitionP1_2() { return p1_2; }
+	inline Partition &getPartitionP2_2() { return p2_2; }
 
 };
 
