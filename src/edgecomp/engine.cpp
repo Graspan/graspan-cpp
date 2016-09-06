@@ -1,7 +1,5 @@
 #include "engine.h"
 
-#define MAX_NEW_EDGES 3000000
-
 long newTotalEdges;
 long newRoundEdges;
 long newIterEdges;
@@ -15,9 +13,9 @@ void initCompSets(ComputationSet compsets[], vector<Vertex> &part1, vector<Verte
 
 void initLVIs(LoadedVertexInterval intervals[], vector<Vertex> &part1, vector<Vertex> &part2);
 
-void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context, unsigned long long int sizeLim);
+void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context, unsigned long long int sizeLim, int numThreads);
 
-void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context);
+void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context, int numThreads);
 
 void updatePartitions(ComputationSet compsets[], Partition &p1, Partition &p2, vector<Vertex> &part1, vector<Vertex> &part2);
 
@@ -25,7 +23,7 @@ void updatePartitions(ComputationSet compsets[], Partition &p1, Partition &p2, v
 /**
  * runs the edge computation for graspan
  */
-int run_computation(Context &context)
+long run_computation(Context &context)
 {
 	// load partitions into memory
 	Timer loadTimer, compTimer, repartTimer;
@@ -38,7 +36,7 @@ int run_computation(Context &context)
 
 	partitionid_t p, q, oldP = -1, oldQ = -1;
 	newTotalEdges = 0;
-	int roundNo = 0;
+	int roundNo = 0, numThreads = context.getNumThreads();
 	while (context.ddm.nextPartitionPair(p, q))
 	{
 		cout << "##### STARTING ROUND " << ++roundNo << " #####" << endl;
@@ -98,7 +96,7 @@ int run_computation(Context &context)
 
 		cout << "== COMP START ==" << endl;
 		compTimer.startTimer();
-		computeEdges(compsets, setSize, intervals, context, sizeLim);
+		computeEdges(compsets, setSize, intervals, context, sizeLim, numThreads);
 		newTotalEdges += newRoundEdges;
 		compTimer.endTimer();
 		cout << "== COMP END ==" << endl;
@@ -171,7 +169,7 @@ int run_computation(Context &context)
 		++it;
 	}
 
-	return 0;
+	return newTotalEdges;
 }
 
 /**
@@ -181,7 +179,7 @@ int run_computation(Context &context)
  * @param compsets
  * @param intervals
  */
-void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context, unsigned long long int sizeLim)
+void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context, unsigned long long int sizeLim, int numThreads)
 {
 	Timer iterTimer;
 	iterNo = 0;
@@ -191,7 +189,7 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 	do {
 		cout << "===== STARTING ITERATION " << ++iterNo << endl;
 		iterTimer.startTimer();
-		computeOneIteration(compsets, setSize, intervals, context);
+		computeOneIteration(compsets, setSize, intervals, context, numThreads);
 
 		newRoundEdges += newIterEdges;
 
@@ -222,10 +220,10 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
  * @param compsets
  * @param intervals
  */
-void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context)
+void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context, int numThreads)
 {
 	newIterEdges = 0;
-	int numThreads = context.getNumThreads();
+	
 	#pragma omp parallel num_threads(numThreads)
 	{
 		long newThreadEdges = 0;
@@ -238,11 +236,23 @@ void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInt
 				intervals[0].setNewEdgeAdded(true);
 			else if (newThreadEdges > 0 && (i >= intervals[1].getIndexStart() && i <= intervals[1].getIndexEnd()))
 				intervals[1].setNewEdgeAdded(true);
-
 		}
+
 		#pragma omp atomic
 		newIterEdges += newThreadEdges;
+		
 	}
+//	#pragma omp parallel for num_threads(numThreads) reduction (+:newIterEdges)
+//	for (int i = 0; i < setSize; i++)
+//	{
+//		long newThreadEdges = updateEdges(i, compsets, intervals, context);
+//		if (newThreadEdges > 0 && (i >= intervals[0].getIndexStart() && i <= intervals[0].getIndexEnd()))
+//			intervals[0].setNewEdgeAdded(true);
+//		else if (newThreadEdges > 0 && (i >= intervals[1].getIndexStart() && i <= intervals[1].getIndexEnd()))
+//			intervals[1].setNewEdgeAdded(true);
+//
+//		newIterEdges += newThreadEdges;
+//	}
 }
 
 /**

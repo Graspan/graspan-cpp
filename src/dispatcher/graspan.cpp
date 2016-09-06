@@ -39,14 +39,15 @@ int main(int argc, char *argv[])
 	compTimer.startTimer();
 
 	cout << "###### STARTING COMPUTATION #####" << endl;
-	run_computation(c);
+	long newEdges = run_computation(c);
 
 	compTimer.endTimer();
 
 	graspanTimer.endTimer();
 	std::cerr << "===== GRASPAN FINISHED =====" << endl;
-	cout << "TOTAL PREPROC TIME: " << prepTimer.hmsFormat() << endl;
-	cout << "TOTAL COMPUTE TIME: " << compTimer.hmsFormat() << endl;
+	cout << "TOTAL PREPROC TIME: " << prepTimer.hmsFormat() << endl << endl;
+	cout << "TOTAL NUM NEW EDGE: " << newEdges << endl;
+	cout << "TOTAL COMPUTE TIME: " << compTimer.hmsFormat() << endl << endl;
 	cout << "TOTAL GRASPAN TIME: " << graspanTimer.hmsFormat() << "\n" << endl;
 
 	return 0;

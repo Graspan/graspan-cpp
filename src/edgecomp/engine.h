@@ -13,6 +13,6 @@
 #include "../datastructures/loader.h"
 #include "../../test/timer.h"
 
-int run_computation(Context &context);
+long run_computation(Context &context);
 
 #endif

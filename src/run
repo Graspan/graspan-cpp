@@ -2,8 +2,6 @@
 
 
 echo "resetting..."
-rm -f preproc/bigtest.[dpv]*
-rm -f final.txt.[dpv]*
 if [ "$1" == "dbg" ]
 then 
 	gdb ../bin/comp
@@ -17,14 +15,6 @@ MEMBUDGET=$4
 NUMTHREADS=$5
 
 rm -f $1.[dpv]*
-if [ "$1" == "test" ];
-then
-	INPGRAPH=preproc/bigtest
-	GRAMMAR=resources/grammar
-	NUMPARTITIONS=2
-	MEMBUDGET=8
-	NUMTHREADS=32
-fi
 
 PID=0
 trap "{ kill $PID; exit 12; }" EXIT SIGINT SIGQUIT 
