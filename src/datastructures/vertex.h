@@ -38,8 +38,11 @@ class Vertex
 	inline void setOutEdgeValues(vector<char> &outEdgeValues) { this->outEdgeValues = outEdgeValues; }
 
 	inline void clearVector() { 
-		outEdges.clear(); 
-		outEdgeValues.clear(); 
+		outEdges.erase(outEdges.begin(), outEdges.begin()+ numOutEdges);
+		outEdgeValues.erase(outEdgeValues.begin(), outEdgeValues.begin() + numOutEdges);
+		
+		vector<vertexid_t>().swap(outEdges);
+		vector<label_t>().swap(outEdgeValues);
 		numOutEdges = 0;
 	};
 	

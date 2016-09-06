@@ -42,11 +42,9 @@ void Preproc_new::countNum(Context &context)
 	}
 
 	dataCount = new int[dataSize];
-	dataCheck = new int[dataSize];
 
 	for (int i = 0; i < dataSize; i++) {
 		dataCount[i] = 0;
-		dataCheck[i] = 0;
 	}
 
 	//count data per src
@@ -54,8 +52,6 @@ void Preproc_new::countNum(Context &context)
 	if (fp != NULL) {
 		while (fscanf(fp, "%d\t%d\t%s\n", &src, &dst, ctemp) != EOF) {
 			dataCount[src]++;
-			dataCheck[dst] = 1;
-			dataCheck[src] = 1;
 			count++;
 		}
 		fclose(fp);
@@ -184,6 +180,7 @@ void Preproc_new::saveData(Context &context) {
 					break;
 				}
 			}
+
 			numPartBuf[temp]++;
 			label = "";
 
@@ -254,7 +251,7 @@ void Preproc_new::mergePart(Context & context)	{
 
 	numVertex = 0;
 	for (int i = 0; i < context.getNumPartitions(); i++) {
-		lodePartChunk(context, i);
+		loadPartChunk(context, i);
 		//add erule
 		begin = clock();
 		addErules(context, i);
@@ -269,7 +266,7 @@ void Preproc_new::mergePart(Context & context)	{
 	cout << "NumVertex " << numVertex << endl;
 }
 
-void Preproc_new::lodePartChunk(Context &context, int pID) {
+void Preproc_new::loadPartChunk(Context &context, int pID) {
 	vector<vector<double> > &ddmMap = context.ddm.getDdmMap();
 	FILE *f;
 	string str, str2, name;
@@ -422,6 +419,7 @@ void Preproc_new::setMapInfo(vector<string> mapInfo, set<char> eRules) {
 Preproc_new::~Preproc_new()
 {
 	delete[]dataCount;
+	delete[] partBuf;
 }
 
 //make these thing in Vertex
