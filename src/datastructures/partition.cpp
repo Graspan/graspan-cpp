@@ -156,8 +156,12 @@ void Partition::clear()
 {
 	id = -1;
 	numEdges = 0;
+	for (int i = 0; i < numVertices; i++)
+		data[i].clearVector();
 	numVertices = 0;
 	data.clear();
+	vector<Vertex>().swap(data);
+
 	exist = false;
 }
 

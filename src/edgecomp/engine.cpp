@@ -48,6 +48,7 @@ long run_computation(Context &context)
 		for (it = parts.begin(); it != parts.end(); ) {
 			if ((*(*it)).getID() != p && (*(*it)).getID() != q) {
 				Partition::writeToFile(*(*it), false, context);
+				(*(*it)).clear();
 				delete[](*it);
 				it = parts.erase(it);
 			}
@@ -164,6 +165,7 @@ long run_computation(Context &context)
 	//save rest of the files in the parts
 	for (it = parts.begin(); it != parts.end(); ) {
 		Partition::writeToFile(*(*it), false, context);
+		(*(*it)).clear();
 		delete[](*it);
 		it = parts.erase(it);
 		++it;
