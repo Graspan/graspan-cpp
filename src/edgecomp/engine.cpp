@@ -47,6 +47,7 @@ long run_computation(Context &context)
 		//check parts
 		for (it = parts.begin(); it != parts.end(); ) {
 			if ((*(*it)).getID() != p && (*(*it)).getID() != q) {
+				cout << "PARTITION :" << (*(*it)).getID() << " IS SAVED" << endl;
 				Partition::writeToFile(*(*it), false, context);
 				(*(*it)).clear();
 				delete[](*it);
@@ -74,7 +75,6 @@ long run_computation(Context &context)
 			qp = p2;
 		}
 
-		cout << "OG NUM EDGES: " << ((*pp).getNumEdges() + (*qp).getNumEdges()) << endl;
 		assert((*pp).checkPart() && (*qp).checkPart(), "pre comp : duplicate check");
 		//if (!p1.checkPart() || !p2.checkPart()) {
 		//	cout << "AGGAGAGGHGHHHHHH!" << endl;
@@ -87,14 +87,14 @@ long run_computation(Context &context)
 		cout << qp->getNumVertices() << endl;
 		vector<Vertex> &part1 = (*pp).getData(), &part2 = (*qp).getData();
 		cout << (*pp).getID() << endl;
-		cout << "hi" << endl;
+		cout << "OG NUM EDGES: " << ((*pp).getNumEdges() + (*qp).getNumEdges()) << endl;
+		cout << "NUM VERTECES: " << part1.size() + part2.size() << endl;
 		ComputationSet *compsets = new ComputationSet[part1.size() + part2.size()];
 		int setSize = part1.size() + part2.size();
 		initCompSets(compsets, part1, part2);				// Initialize the ComputationSet list
-		
+
 		LoadedVertexInterval intervals[2] = {LoadedVertexInterval{p}, LoadedVertexInterval{q}};
 		initLVIs(intervals, part1, part2);					// Initialize the Loaded Vertex Intervals
-
 		cout << "== COMP START ==" << endl;
 		compTimer.startTimer();
 		computeEdges(compsets, setSize, intervals, context, sizeLim, numThreads);
@@ -164,11 +164,11 @@ long run_computation(Context &context)
 #endif
 	//save rest of the files in the parts
 	for (it = parts.begin(); it != parts.end(); ) {
+		cout << "PARTITION :" << (*(*it)).getID() << " IS SAVED" << endl;
 		Partition::writeToFile(*(*it), false, context);
 		(*(*it)).clear();
 		delete[](*it);
 		it = parts.erase(it);
-		++it;
 	}
 
 	return newTotalEdges;
@@ -273,7 +273,6 @@ void initCompSets(ComputationSet compsets[], vector<Vertex> &part1, vector<Verte
 		compsets[i].setoldUnewEdges(part1[i].getOutEdges());
 		compsets[i].setoldUnewVals(part1[i].getOutEdgeValues());
 	}
-
 	int offset = part1.size();
 	for (int j = part1.size(); j < part1.size() + part2.size(); j++)
 	{
