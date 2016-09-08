@@ -13,13 +13,15 @@ EdgeMerger::EdgeMerger()
  * merge edges into a new list
  */
 void EdgeMerger::mergeVectors(vector< vector<int> > &edgeVecsToMerge,
-		vector< vector<char> > &valVecsToMerge, int srcID)
+		vector< vector<char> > &valVecsToMerge,  vector<int> &srcDeltaEdges,
+		vector<char> &srcDeltaVals, vector<int> &srcoUnUdEdges,
+		vector<char> &srcoUnUdVals, int srcID)
 {
 	MinSet srcMS;				// initialize a MinSet for the source vertex
 	srcMS.setMinSetID(0);
 	updateMinSet(srcMS, edgeVecsToMerge[srcID], valVecsToMerge[srcID]);		// initialize the info of the source MinSet
 	
-	fillPriorityQueue(edgeVecsToMerge, valVecsToMerge, srcID);
+	fillPriorityQueue(edgeVecsToMerge, valVecsToMerge, srcDeltaEdges, srcDeltaVals, srcoUnUdEdges, srcoUnUdVals, srcID);
 	
     MinSet tgt;
     int max = std::numeric_limits<int>::max();
@@ -35,11 +37,10 @@ void EdgeMerger::mergeVectors(vector< vector<int> > &edgeVecsToMerge,
         }
 
         int indOfTgt = tgt.getMinSetID();
-        processMinSets(srcMS, tgt, edgeVecsToMerge[srcID], valVecsToMerge[srcID], edgeVecsToMerge[indOfTgt], valVecsToMerge[indOfTgt]);
-
+        processMinSets(srcMS, tgt, edgeVecsToMerge[srcID], valVecsToMerge[srcID], edgeVecsToMerge[indOfTgt], valVecsToMerge[indOfTgt], srcDeltaEdges, srcDeltaVals, srcoUnUdEdges, srcoUnUdVals);
     }
 
-    removeExtraSpace();
+    removeExtraSpace(srcDeltaEdges, srcDeltaVals, srcoUnUdEdges, srcoUnUdVals);
 }
 
 
@@ -48,7 +49,9 @@ void EdgeMerger::mergeVectors(vector< vector<int> > &edgeVecsToMerge,
  * fill the minEdges priority_queue with the lowest value in each vector. Find the total number of new edges and reserve
  * space in the vectors accordingly
  */
-void EdgeMerger::fillPriorityQueue(vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge, int srcID)
+void EdgeMerger::fillPriorityQueue(vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge,
+		vector<int> &srcDeltaEdges, vector<char> &srcDeltaVals, vector<int> &srcoUnUdEdges, vector<char> &srcoUnUdVals,
+		int srcID)
 {
 	MinSet newminset;
 	int totTgtRowSize = 0;
@@ -77,7 +80,7 @@ bool EdgeMerger::find_val(vector<char> &evals, char val)
 /**
  * remove the excess space created when duplicate values were removed
  */
-void EdgeMerger::removeExtraSpace()
+void EdgeMerger::removeExtraSpace(vector<int> &srcDeltaEdges, vector<char> &srcDeltaVals, vector<int> &srcoUnUdEdges, vector<char> &srcoUnUdVals)
 {
 	// TODO: this happens no matter what right now. Use a conditional statement to stop this from
 	// happening every time and avoid excessive copying!
@@ -109,7 +112,8 @@ void EdgeMerger::updateMinSet(MinSet &minset, vector<int> &edges, vector<char> &
  */
 void EdgeMerger::processMinSets(MinSet &srcMS, MinSet &tgtMS, vector<int> &srcEdgesToMerge,
 		vector<char> &srcValsToMerge, vector<int> &tgtEdgesToMerge,
-		vector<char> &tgtValsToMerge)
+		vector<char> &tgtValsToMerge, vector<int> &srcDeltaEdges, vector<char> &srcDeltaVals,
+		vector<int> &srcoUnUdEdges, vector<char> &srcoUnUdVals)
 {
 	// case 1 - the target vertexID is smaller than the source vertexID
 	if (srcMS.getCurrVID() > tgtMS.getCurrVID()) {

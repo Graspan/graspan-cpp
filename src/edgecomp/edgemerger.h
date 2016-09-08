@@ -22,25 +22,28 @@ class EdgeMerger
 	vector<char> currEvals;		// the current edge values (to check for duplicates)
 	std::priority_queue<MinSet, vector<MinSet>, compare> minEdges;
 
-	vector<int> srcoUnUdEdges;		// ALL edges (current source edges and NEW edges)
-	vector<char> srcoUnUdVals;
-
-	vector<int> srcDeltaEdges;		// ONLY NEW edges
-	vector<char> srcDeltaVals;
+//	vector<int> srcoUnUdEdges;		// ALL edges (current source edges and NEW edges)
+//	vector<char> srcoUnUdVals;
+//
+//	vector<int> srcDeltaEdges;		// ONLY NEW edges
+//	vector<char> srcDeltaVals;
 
 
 	// FUNCTIONS
-	void fillPriorityQueue(vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge, int srcID);
+	void fillPriorityQueue(vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge,
+			vector<int> &srcDeltaEdges, vector<char> &srcDeltaVals, vector<int> &srcoUnUdEdges, vector<char> &srcoUnUdVals,
+			int srcID);
 
 	bool find_val(vector<char> &evals, char val);
 
-	void removeExtraSpace();
+	void removeExtraSpace(vector<int> &srcDeltaEdges, vector<char> &srcDeltaVals, vector<int> &srcoUnUdEdges, vector<char> &srcoUnUdVals);
 
 	void updateMinSet(MinSet &minset, vector<int> &edges, vector<char> &vals);
 
 	void processMinSets(MinSet &srcMS, MinSet &tgtMS, vector<int> &srcEdgesToMerge,
 		vector<char> &srcValsToMerge, vector<int> &tgtEdgesToMerge,
-		vector<char> &tgtValsToMerge);
+		vector<char> &tgtValsToMerge, vector<int> &srcDeltaEdges, vector<char> &srcDeltaVals,
+		vector<int> &srcoUnUdEdges, vector<char> &srcoUnUdVals);
 
 	void updateVector(int vid, char val, vector<int> &edges, vector<char> &vals, int &ptr);
 
@@ -49,17 +52,19 @@ class EdgeMerger
 	EdgeMerger();
 
 	// getters
-	inline vector<int> &getoUnUdEdges() { return srcoUnUdEdges; }
-	inline vector<char> &getoUnUdVals() { return srcoUnUdVals; }
+	//inline vector<int> &getoUnUdEdges() { return srcoUnUdEdges; }
+	//inline vector<char> &getoUnUdVals() { return srcoUnUdVals; }
 
-	inline vector<int> &getDeltaEdges() { return srcDeltaEdges; }
-	inline vector<char> &getDeltaVals() { return srcDeltaVals; }
+	//inline vector<int> &getDeltaEdges() { return srcDeltaEdges; }
+	//inline vector<char> &getDeltaVals() { return srcDeltaVals; }
 
 	inline int getNumNewEdges() { return deltaPtr + 1; }
 
 	// given all new edges and their values, merge with the source creating a vector of old U new edges
 	// and only new edges
-	void mergeVectors(vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge, int srcID);
+	void mergeVectors(vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge,
+		vector<int> &srcDeltaEdges, vector<char> &srcDeltaVals, vector<int> &srcoUnUdEdges,
+		vector<char> &srcoUnUdVals, int srcID);
 };
 
 #endif
