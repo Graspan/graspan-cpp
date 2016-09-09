@@ -86,8 +86,8 @@ void Preproc_new::setVIT(Context &context)
 	vector<pair<vertexid_t, vertexid_t>> &tempVIT = context.vit.getVIT();
 	vector<int> &vitDegree = context.vit.getDegree();
 
-	if (mSize / (unsigned long long int)size > context.getMemBudget() / (unsigned long long int)4) {
-		size = mSize / (context.getMemBudget() / (unsigned long long int) 4);
+	if (mSize / (unsigned long long int)size > context.getMemBudget() / (unsigned long long int)48) {
+		size = mSize / (context.getMemBudget() / ((unsigned long long int) 48));
 		size++;
 		context.setNumPartitions(size);
 	}

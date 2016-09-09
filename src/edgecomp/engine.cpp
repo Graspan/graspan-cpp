@@ -80,8 +80,8 @@ long run_computation(Context &context)
 		//	cout << "AGGAGAGGHGHHHHHH!" << endl;
 		//	return 12;
 		//}
-		
-		unsigned long long int sizeLim = (context.getMemBudget() - (*pp).getNumVertices() * 8 - (*qp).getNumVertices() * 8) / 5;
+		cout << "MEMBUDGET =" << context.getMemBudget() << endl;
+		unsigned long long int sizeLim = (context.getMemBudget() / (unsigned long long int)12 - (*pp).getNumVertices() * 8 - (*qp).getNumVertices() * 8 - (*pp).getNumEdges() * 5 - (*qp).getNumEdges() * 5) / (unsigned long long int)5;
 		loadTimer.endTimer();
 		cout << "P =" << p << " Q =" << q << endl;
 		cout << qp->getNumVertices() << endl;
@@ -211,7 +211,7 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 		cout << "NEW EDGES TOTAL: " << newRoundEdges << endl;
 		cout << "ITERATER  TIME   " << iterTimer.hmsFormat() << endl << endl;
 
-		if (newRoundEdges > sizeLim) break;
+		if (newRoundEdges > sizeLim || newRoundEdges + newIterEdges > sizeLim) break;
 	} while (newIterEdges > 0);
 }
 

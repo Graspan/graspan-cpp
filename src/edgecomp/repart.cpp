@@ -2,7 +2,7 @@
 
 void Repart::repartition(Partition &p1, Partition &p2, Context &context) {
 	unsigned long long int size = (p1.getNumVertices() * 8 + p1.getNumEdges() * 5);
-	if (size < context.getMemBudget() / (unsigned long long int) 4) {
+	if (size < context.getMemBudget() / ((unsigned long long int) 48)) {
 		p2.setExist(false);
 		return;
 	}
