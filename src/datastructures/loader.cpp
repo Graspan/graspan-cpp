@@ -72,8 +72,10 @@ bool Loader::loadPartition(partitionid_t id, Partition &p, bool readable, Contex
 				int i = 0;
 				while (p_token != NULL ) {
 					ctemp[i++] = p_token;
+					#if DEBUG
 					assert(p_token != "", "blank token" );
 					assert(p_token != " ", "space token" );
+					#endif
 					//assert(p_token != "\s", "anyspace token" );
 					// you don't have to do this right? you know which vector to push 
 					// one vector has only elements whose index is odd, the other, even
@@ -101,7 +103,9 @@ bool Loader::loadPartition(partitionid_t id, Partition &p, bool readable, Contex
 			fclose(fp);
 			return 1;
 		} else {
+			#if DEGUB
 			assert(false, "Cannot open human file " + id);
+			#endif
 		}
 	}
 	else {
@@ -143,7 +147,7 @@ bool Loader::loadPartition(partitionid_t id, Partition &p, bool readable, Contex
 				outEdgeValues.push_back(label);
 				}*/
 
-				Vertex v(0, src, outEdges, outEdgeValues);
+				Vertex v(src, outEdges, outEdgeValues);
 				data.push_back(v);
 			}
 			p.setID(id);
@@ -153,7 +157,9 @@ bool Loader::loadPartition(partitionid_t id, Partition &p, bool readable, Contex
 			return 1;
 		}
 		else {
+			#if DEBUG
 			assert(false, "cant open bin file " + id);
+			#endif
 		}
 	}
 	return 0; // this is dead code!!!

@@ -21,7 +21,6 @@ class Vertex
 
 	// Getters
 	inline int getVertexID() { return id; }
-	inline int getVertexIdx() { return idx; }
 	inline int getNumOutEdges() { return numOutEdges; }
 	inline vector<int> &getOutEdges() { return outEdges; }
 	inline vector<char> &getOutEdgeValues() { return outEdgeValues; }
