@@ -11,21 +11,18 @@ int main(int argc, char *argv[])
 	graspanTimer.startTimer();
 	Context c(argc, argv);
 
-	if (!c.ddm.load_DDM(c.getGraphFile() + ".ddm")) {
-		cout << "execution failed: couldn't load DDM" << endl;
-		//return 12;
-	}
-
 	if (!c.grammar.loadGrammar(c.getGrammarFile())) {
 		cout << "execution failed: couldn't load grammar" << endl;
 		return 12;
 	}
+
+	if (!c.ddm.load_DDM(c.getGraphFile() + ".ddm"))
+		cout << "couldn't load DDM" << endl;
+
+	if (!c.vit.loadFromFile(c.getGraphFile() + ".vit")) 
+		cout << "couldn't load VIT" << endl;
 	
-	if (!c.vit.loadFromFile(c.getGraphFile() + ".vit")) {
-		cout << "execution failed: couldn't load VIT" << endl;
-		//return 12;
-	}
-	
+
 	// PREPROCESSING
 	prepTimer.startTimer();
 

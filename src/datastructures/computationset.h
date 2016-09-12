@@ -5,28 +5,26 @@
 
 class ComputationSet
 {
-	vector<int> oldEdges;		// old
+	vector<int> oldEdges;		// edges from last iter
 	vector<char> oldVals;
 
-	vector<int> newEdges;		// new
+	vector<int> newEdges;		// edges from most recent iter
 	vector<char> newVals;
 
-	vector<int> oldUnewEdges;	// old U new
+	vector<int> oldUnewEdges;	// all edges up to prev iter
 	vector<char> oldUnewVals;
 
 	// VECTORS WILL STORE NEW EDGES UNTIL END OF COMPUTATION
-	vector<int> deltaEdges;
+	vector<int> deltaEdges;		// new edges to be added this iter
 	vector<char> deltaVals;
 
-	vector<int> oUnUdEdges;
+	vector<int> oUnUdEdges;		// all edges inlcuding new
 	vector<char> oUnUdVals;
 
 
 	public:
 	// Constructor
 	ComputationSet() {}
-
-  //TODO: Small methods should be inlined 
 
 	// old getters and setters
 	inline vector<int> &getOldEdges() { return oldEdges; }
@@ -50,7 +48,11 @@ class ComputationSet
 	inline void setoldUnewVals(vector<char> &oldUnewVals) { this->oldUnewVals = oldUnewVals; }
 
 
-	// THESE VECTORS STORE NEW EDGES UNTIL END OF COMPUTATION
+	/*
+		In order to ensure all edges are added, any edges added in the current iteration are
+		stored in the delta vectros so the state of the graph does not change until all edges
+		have been added for every vertex
+	*/
 	// delta getters and setters
 	inline vector<int> &getDeltaEdges() { return deltaEdges; }
 	inline vector<char> &getDeltaVals() { return deltaVals; }

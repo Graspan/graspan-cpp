@@ -92,7 +92,7 @@ bool Loader::loadPartition(partitionid_t id, Partition &p, bool readable, Contex
 						i = 0;
 					}
 				}
-				Vertex v(0, src, outEdges, outEdgeValues);
+				Vertex v(src, outEdges, outEdgeValues);
 				data.push_back(v);
 			}
 			p.setID(id);

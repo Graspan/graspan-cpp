@@ -20,13 +20,7 @@ class EdgeMerger
 	int currID;			// the current vertex ID (increasing order)
 
 	vector<char> currEvals;		// the current edge values (to check for duplicates)
-	std::priority_queue<MinSet, vector<MinSet>, compare> minEdges;
-
-//	vector<int> srcoUnUdEdges;		// ALL edges (current source edges and NEW edges)
-//	vector<char> srcoUnUdVals;
-//
-//	vector<int> srcDeltaEdges;		// ONLY NEW edges
-//	vector<char> srcDeltaVals;
+	std::priority_queue<MinSet, vector<MinSet>, compare> minEdges;		// finds the minset with the minimum current vertex ID
 
 
 	// FUNCTIONS
@@ -52,12 +46,6 @@ class EdgeMerger
 	EdgeMerger();
 
 	// getters
-	//inline vector<int> &getoUnUdEdges() { return srcoUnUdEdges; }
-	//inline vector<char> &getoUnUdVals() { return srcoUnUdVals; }
-
-	//inline vector<int> &getDeltaEdges() { return srcDeltaEdges; }
-	//inline vector<char> &getDeltaVals() { return srcDeltaVals; }
-
 	inline int getNumNewEdges() { return deltaPtr + 1; }
 
 	// given all new edges and their values, merge with the source creating a vector of old U new edges

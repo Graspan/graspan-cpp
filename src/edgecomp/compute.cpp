@@ -44,7 +44,7 @@ void print_edges(vector<vector<int>> &edgeVecsToMerge, vector<vector<char>> &val
  * @param vertInd			-index of source vertex in compsets[]
  * @param compsets[]		-ComputationSet list for all in-memory vertices
  * @param intervals			-list (size=2) with information about the partitions
- * @param context				-Context object for checking grammar
+ * @param context			-Context object for checking grammar
  */
 long updateEdges(int vertInd, ComputationSet compsets[], LoadedVertexInterval intervals[], Context &context)
 {
@@ -79,18 +79,6 @@ long updateEdges(int vertInd, ComputationSet compsets[], LoadedVertexInterval in
 
 	em.mergeVectors(edgeVecsToMerge, valVecsToMerge, srcDeltaEdges, srcDeltaVals, srcoUnUdEdges, srcoUnUdVals, 0);
 
-//	compSet->setDeltaEdges(em.getDeltaEdges());
-//	compSet->setDeltaVals(em.getDeltaVals());
-//	compSet->setoUnUdEdges(em.getoUnUdEdges());
-//	compSet->setoUnUdVals(em.getoUnUdVals());
-	
-//	compSet->setOldEdges(compSet->getoldUnewEdges());
-//	compSet->setOldVals(compSet->getoldUnewVals());
-//	compSet->setoldUnewEdges(em.getoUnUdEdges());
-//	compSet->setoldUnewVals(em.getoUnUdVals());
-//	compSet->setNewEdges(em.getDeltaEdges());
-//	compSet->setNewVals(em.getDeltaVals());
-
 	return em.getNumNewEdges();
 }
 
@@ -98,10 +86,12 @@ long updateEdges(int vertInd, ComputationSet compsets[], LoadedVertexInterval in
  * @param CompSet			-ComputationSet of source vertex
  * @param compsets[] 		-ComputationSet list of in-mem vertices
  * @param intervals[] 		-information about partition intervals
+ * @param oldEdgesEmpty		-old edge list is empty
+ * @param newEdgesEmpty		-new edge list is empty
  * @param edgeVecsToMerge	-2D vector of sorted edges to merge
  * @param valVecsToMerge	-2D vector of vals associated with edges
  * @param rowMergeID		-current row to add edges to
- * @param context				-grammar checker
+ * @param context			-grammar checker
  */
 void getEdgesToMerge(ComputationSet *compSet, ComputationSet compsets[],
 		LoadedVertexInterval intervals[], bool oldEdgesEmpty, bool newEdgesEmpty,
@@ -198,7 +188,7 @@ void checkEdges(int dstInd, char dstVal, ComputationSet compsets[],
 	bool added = false;
 	for (int i = 0; i < edges.size(); i++)
 	{
-		newVal = context.grammar.checkRules(dstVal, vals[i]);   // check if dstVal  ->  vals[i]  == newVal
+		newVal = context.grammar.checkRules(dstVal, vals[i]);   // check if  ( dstVal  ->  vals[i] ) == newVal
 		if (newVal != (char)-1) {
 			edgeVecsToMerge[rowMergeID].push_back(edges[i]);
 			valVecsToMerge[rowMergeID].push_back(newVal);

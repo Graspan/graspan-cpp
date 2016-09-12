@@ -5,9 +5,6 @@ long newRoundEdges;
 long newIterEdges;
 int iterNo;
 
-bool newEdgesPart1;
-bool newEdgesPart2;
-
 // FUNCTION DEFS
 void initCompSets(ComputationSet compsets[], vector<Vertex> &part1, vector<Vertex> &part2);
 
@@ -89,12 +86,14 @@ long run_computation(Context &context)
 		cout << (*pp).getID() << endl;
 		cout << "OG NUM EDGES: " << ((*pp).getNumEdges() + (*qp).getNumEdges()) << endl;
 		cout << "NUM VERTECES: " << part1.size() + part2.size() << endl;
+
 		ComputationSet *compsets = new ComputationSet[part1.size() + part2.size()];
 		int setSize = part1.size() + part2.size();
 		initCompSets(compsets, part1, part2);				// Initialize the ComputationSet list
 
 		LoadedVertexInterval intervals[2] = {LoadedVertexInterval{p}, LoadedVertexInterval{q}};
 		initLVIs(intervals, part1, part2);					// Initialize the Loaded Vertex Intervals
+
 		cout << "== COMP START ==" << endl;
 		compTimer.startTimer();
 		computeEdges(compsets, setSize, intervals, context, sizeLim, numThreads);
@@ -175,11 +174,10 @@ long run_computation(Context &context)
 }
 
 /**
- * Get start and end indices of each partition
+ * perform computation on list of ComputationSets until no more new edges can be added or 
+ * the newRoundEdges would exceed the memory Budget
  *
- * @param vertices
  * @param compsets
- * @param intervals
  */
 void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context, unsigned long long int sizeLim, int numThreads)
 {
@@ -211,16 +209,15 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 		cout << "NEW EDGES TOTAL: " << newRoundEdges << endl;
 		cout << "ITERATER  TIME   " << iterTimer.hmsFormat() << endl << endl;
 
-		if (newRoundEdges > sizeLim || newRoundEdges + newIterEdges > sizeLim) break;
+		if (newRoundEdges > sizeLim || newRoundEdges + newIterEdges > sizeLim) break;	// if the num of new edges added this round exceeds the limit
+																						// found using the mem budget, end the round
 	} while (newIterEdges > 0);
 }
 
 /**
  * compute the new edges of each vertex simultaneously
  *
- * @param vertices
- * @param compsets
- * @param intervals
+ * 
  */
 void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context, int numThreads)
 {
@@ -228,7 +225,7 @@ void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInt
 	
 	#pragma omp parallel num_threads(numThreads)
 	{
-		long newThreadEdges = 0;
+		long newThreadEdges = 0;		// local to each thread. Num of edges that thread has added
 
 		#pragma omp for
 		for (int i = 0; i < setSize; i++)
@@ -242,19 +239,7 @@ void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInt
 
 		#pragma omp atomic
 		newIterEdges += newThreadEdges;
-		
 	}
-//	#pragma omp parallel for num_threads(numThreads) reduction (+:newIterEdges)
-//	for (int i = 0; i < setSize; i++)
-//	{
-//		long newThreadEdges = updateEdges(i, compsets, intervals, context);
-//		if (newThreadEdges > 0 && (i >= intervals[0].getIndexStart() && i <= intervals[0].getIndexEnd()))
-//			intervals[0].setNewEdgeAdded(true);
-//		else if (newThreadEdges > 0 && (i >= intervals[1].getIndexStart() && i <= intervals[1].getIndexEnd()))
-//			intervals[1].setNewEdgeAdded(true);
-//
-//		newIterEdges += newThreadEdges;
-//	}
 }
 
 /**

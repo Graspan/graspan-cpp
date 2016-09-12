@@ -25,7 +25,7 @@ echo "RUN ON COMPUTER: "$(hostname) > log/pmap.$MEMBUDGET.$NUMPARTITIONS.output
 echo >> log/pmap.$MEMBUDGET.$NUMPARTITIONS.output
 
 echo "running..."
-../bin/comp numPartitions=$NUMPARTITIONS insertionSort=false alterSchedule=false memBudget=$MEMBUDGET inputGraph=$INPGRAPH grammar=$GRAMMAR numThreads=$NUMTHREADS >> log/cpp.$MEMBUDGET.$NUMPARTITIONS.output
+../bin/comp numPartitions=$NUMPARTITIONS insertionSort=false alterSchedule=false memBudget=$MEMBUDGET inputGraph=$INPGRAPH grammar=$GRAMMAR numThreads=$NUMTHREADS >> log/cpp.$MEMBUDGET.$NUMPARTITIONS.output &
 
 sleep 1
 PID=$( echo $( ps -f  | grep "../bin/comp" | awk '{print $2}' ) | awk '{print $1}' )

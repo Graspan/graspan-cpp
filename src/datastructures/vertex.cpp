@@ -1,11 +1,9 @@
 #include "vertex.h"
 
 // Constructors
-Vertex::Vertex(int idx, int id, vector<int> outEdges, vector<char> outEdgeValues)
+Vertex::Vertex(int id, vector<int> outEdges, vector<char> outEdgeValues)
 {
-	this->idx = idx;
 	this->id = id;
-	this->numOutEdges = 0;
 	this->outEdges = outEdges;
 	this->outEdgeValues = outEdgeValues;
 

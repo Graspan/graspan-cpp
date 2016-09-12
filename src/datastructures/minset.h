@@ -13,10 +13,8 @@ class MinSet
 	
 	int minSetID;			// index in the vectors to merge of the current minset
 	int currentVID;			// current value of the minset
-//	std::unordered_set<char> evals;		// all edge values that are associated with
 
-	vector<char> evals;
-										// the current VID
+	vector<char> evals;		// all possible edge values for the current VID
 
 
 	public:
@@ -27,7 +25,6 @@ class MinSet
 	inline int getMinSetID() { return minSetID; }
 	inline int getCurrVID() const { return currentVID; }
 	inline int getPtr() { return ptr; }
-//	inline std::unordered_set<char> &getEvals() { return evals; }
 	inline vector<char> &getEvals() { return evals; }
 
 	// setters

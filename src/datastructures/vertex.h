@@ -4,15 +4,12 @@
 #include <sstream>
 #include "../utilities/globalDefinitions.hpp"
 
-//TODO: clean this up
 class Vertex
 {
-	int idx;
-
 	vertexid_t id;
-	int numOutEdges;
+	int numOutEdges;		// degree
 
-	vector<vertexid_t> outEdges;
+	vector<vertexid_t> outEdges;	
 	vector<label_t> outEdgeValues;
 	
 
@@ -20,9 +17,8 @@ class Vertex
 	// Constructors
 	Vertex() {};
 	Vertex(int id, int outDegree);
-	Vertex(int idx, int id, vector<int> outEdges, vector<char> outEdgeValues);
+	Vertex(int id, vector<int> outEdges, vector<char> outEdgeValues);
 
-  //ALL small methods should be inlined!!!
 	// Getters
 	inline int getVertexID() { return id; }
 	inline int getVertexIdx() { return idx; }
@@ -37,6 +33,7 @@ class Vertex
 	inline void setOutEdges(vector<int> &outEdges) { this->outEdges = outEdges; }
 	inline void setOutEdgeValues(vector<char> &outEdgeValues) { this->outEdgeValues = outEdgeValues; }
 
+	// clean up memory from vertices
 	inline void clearVector() { 
 		outEdges.clear();
 		outEdgeValues.clear();
