@@ -2,8 +2,7 @@
 
 
 echo "resetting..."
-rm -f resources/*
-cp originalTest/* resources/
+rm -f $1.[dpv]*
 
 if [ "$1" == "dbg" ]
 then 
@@ -20,7 +19,7 @@ PID=0
 trap "{ kill $PID; exit 12; }" EXIT SIGINT SIGQUIT 
 
 echo "running..."
-../bin/comp numPartitions=$NUMPARTITIONS insertionSort=false alterSchedule=false memBudget=$MEMBUDGET inputGraph=$INPGRAPH grammar=$GRAMMAR > log/cpp.$MEMBUDGET.$NUMPARTITIONS.output &
+../bin/comp numPartitions=$NUMPARTITIONS insertionSort=false alterSchedule=false memBudget=$MEMBUDGET inputGraph=$INPGRAPH grammar=$GRAMMAR # > log/cpp.$MEMBUDGET.$NUMPARTITIONS.output &
 
 sleep 1
 PID=$( echo $( ps -f  | grep "../bin/comp" | awk '{print $2}' ) | awk '{print $1}' )

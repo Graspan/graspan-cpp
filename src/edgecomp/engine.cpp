@@ -1,6 +1,5 @@
 #include "engine.h"
 
-#define MAX_NEW_EDGES 3000000
 
 long totNewEdges;
 long newEdgesThisIter;
@@ -127,6 +126,13 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 	
 	do {
 		cout << "===== STARTING ITERATION " << ++iterNo << endl;
+
+		{
+			ComputationSet *compset = &compsets[0];
+			cout << compset->newString();
+			cout << compset->oUnString();
+		}
+
 		iterTimer.startTimer();
 		computeOneIteration(compsets, setSize, intervals, context);
 
@@ -146,9 +152,20 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 		cout << "EDGES PER SECND: " << (double)newEdgesThisIter / (double)(iterTimer.totalTime() / 1000) << endl;
 		cout << "EDGES THIS ITER: " << newEdgesThisIter << endl;
 		cout << "NEW EDGES TOTAL: " << totNewEdges << endl;
-		cout << "ITERATER  TIME   " << iterTimer.hmsFormat() << endl << endl;
+		cout << "ITERATER  TIME	" << iterTimer.hmsFormat() << endl << endl;
 
 		if (totNewEdges > sizeLim) break;
+
+		{
+			ComputationSet *compset = &compsets[0];
+			cout << compset->oldString();
+			cout << compset->newString();
+			cout << compset->oUnString();
+		}
+
+//		std::cerr << "++++++ STOPPING... ++++++\n";
+//		int num = 0;
+//		std::cin >> num;
 	} while (newEdgesThisIter > 0);
 }
 
@@ -162,18 +179,22 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context)
 {
 	newEdgesThisIter = 0;
-	#pragma omp parallel for reduction (+:newEdgesThisIter)
-	for (int i = 0; i < setSize; i++)
+	#pragma omp parallel num_threads(32)
 	{
-		long newEdges = 0;
+		long newThreadEdges = 0;
+	
+		#pragma omp for
+		for (int i = 0; i < setSize; i++)
+		{
+			newThreadEdges += updateEdges(i, compsets, intervals, context);
+			if (newThreadEdges > 0 && (i >= intervals[0].getIndexStart() && i <= intervals[0].getIndexEnd()))
+				intervals[0].setNewEdgeAdded(true);
+			else if (newThreadEdges > 0 && (i >= intervals[1].getIndexStart() && i <= intervals[1].getIndexEnd()))
+				intervals[1].setNewEdgeAdded(true);
 
-		newEdges += updateEdges(i, compsets, intervals, context);
-		if (newEdges > 0 && (i >= intervals[0].getIndexStart() && i <= intervals[0].getIndexEnd()))
-			intervals[0].setNewEdgeAdded(true);
-		else if (newEdges > 0 && (i >= intervals[1].getIndexStart() && i <= intervals[1].getIndexEnd()))
-			intervals[1].setNewEdgeAdded(true);
-
-		newEdgesThisIter += newEdges;
+		}
+		#pragma omp atomic
+		newEdgesThisIter += newThreadEdges;
 	}
 }
 
@@ -188,19 +209,25 @@ void initCompSets(ComputationSet compsets[], vector<Vertex> &part1, vector<Verte
 {
 	for (int i = 0; i < part1.size(); i++)
 	{
+		compsets[i].initializeEdges(part1[i].getOutEdges(), part1[i].getOutEdgeValues());
+		/*
 		compsets[i].setNewEdges(part1[i].getOutEdges());
 		compsets[i].setNewVals(part1[i].getOutEdgeValues());
 		compsets[i].setoldUnewEdges(part1[i].getOutEdges());
 		compsets[i].setoldUnewVals(part1[i].getOutEdgeValues());
+		*/
 	}
 
 	int offset = part1.size();
 	for (int j = part1.size(); j < part1.size() + part2.size(); j++)
 	{
+		compsets[j].initializeEdges(part2[j - offset].getOutEdges(), part2[j - offset].getOutEdgeValues());
+		/*
 		compsets[j].setNewEdges(part2[j - offset].getOutEdges());
 		compsets[j].setNewVals(part2[j - offset].getOutEdgeValues());
 		compsets[j].setoldUnewEdges(part2[j - offset].getOutEdges());
 		compsets[j].setoldUnewVals(part2[j - offset].getOutEdgeValues());
+		*/
 	}
 }
 
@@ -228,19 +255,19 @@ void updatePartitions(ComputationSet compsets[], Partition &p1, Partition &p2, v
 	int p1Edges = 0;
 	for (int i = 0; i < part1.size(); i++)
 	{
-		p1Edges += compsets[i].getoldUnewEdges().size();
-		part1[i].setNumOutEdges(compsets[i].getoldUnewEdges().size());
-		part1[i].setOutEdges(compsets[i].getoldUnewEdges());
-		part1[i].setOutEdgeValues(compsets[i].getoldUnewVals());
+		p1Edges += compsets[i].getoldUnewEdges()->size();
+		part1[i].setNumOutEdges(compsets[i].getoldUnewEdges()->size());
+		part1[i].setOutEdges(*(compsets[i].getoldUnewEdges()));
+		part1[i].setOutEdgeValues(*(compsets[i].getoldUnewVals()));
 	}
 
 	int offset = part1.size(), p2Edges = 0;
 	for (int j = 0; j < part2.size(); j++)
 	{
-		p2Edges += compsets[j+offset].getoldUnewEdges().size();
-		part2[j].setNumOutEdges(compsets[j+offset].getoldUnewEdges().size());
-		part2[j].setOutEdges(compsets[j+offset].getoldUnewEdges());
-		part2[j].setOutEdgeValues(compsets[j+offset].getoldUnewVals());
+		p2Edges += compsets[j+offset].getoldUnewEdges()->size();
+		part2[j].setNumOutEdges(compsets[j+offset].getoldUnewEdges()->size());
+		part2[j].setOutEdges(*(compsets[j+offset].getoldUnewEdges()));
+		part2[j].setOutEdgeValues(*(compsets[j+offset].getoldUnewVals()));
 	}
 
 	p1.setNumEdges(p1Edges);

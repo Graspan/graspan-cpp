@@ -26,6 +26,6 @@ do
 	NUM=$( ps aux | awk '{print $2}' | grep $PID | wc -l )
 	if [ $NUM -eq 0 ];
 	then 
-		exit
+		break
 	fi
 done

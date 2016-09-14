@@ -50,11 +50,11 @@ long updateEdges(int vertInd, ComputationSet compsets[], LoadedVertexInterval in
 {
 	ComputationSet *compSet = &compsets[vertInd];
 
-	bool oldEdgesEmpty = (compSet->getOldEdges().empty()) ? true : false;
-	bool newEdgesEmpty = (compSet->getNewEdges().empty()) ? true : false;
+	bool oldEdgesEmpty = (compSet->getOldEdges() == NULL || compSet->getOldEdges()->empty()) ? true : false;
+	bool newEdgesEmpty = (compSet->getNewEdges() == NULL || compSet->getNewEdges()->empty()) ? true : false;
 
 	// check first if current vertex has no old or new edges
-	if (oldEdgesEmpty && newEdgesEmpty) return 0;
+	//if (oldEdgesEmpty && newEdgesEmpty) return 0;
 
 	// ESTIMATE the number of vectors we will need to merge
 	vector< vector<double> > &ddm = context.ddm.getDdmMap();
@@ -64,27 +64,39 @@ long updateEdges(int vertInd, ComputationSet compsets[], LoadedVertexInterval in
 
 	// set edgeVecsToMerge[0] equal to the current vertex's outgoing edges
 	int rowMergeID = 0;
-	edgeVecsToMerge[rowMergeID] = compSet->getoldUnewEdges();
-	valVecsToMerge[rowMergeID++] = compSet->getoldUnewVals();
+	edgeVecsToMerge[rowMergeID] = *(compSet->getoldUnewEdges());
+	valVecsToMerge[rowMergeID++] = *(compSet->getoldUnewVals());
 
 	// find new edges
 	getEdgesToMerge(compSet, compsets, intervals, oldEdgesEmpty, newEdgesEmpty, edgeVecsToMerge, valVecsToMerge, rowMergeID, context);
 
 	EdgeMerger em;
 
-	em.mergeVectors(edgeVecsToMerge, valVecsToMerge, 0);
+	em.mergeVectors(vertInd, edgeVecsToMerge, valVecsToMerge, 0);
 
+  /*
 	compSet->setDeltaEdges(em.getDeltaEdges());
 	compSet->setDeltaVals(em.getDeltaVals());
 	compSet->setoUnUdEdges(em.getoUnUdEdges());
 	compSet->setoUnUdVals(em.getoUnUdVals());
-	
+	*/
+
+	compSet->deltaEdges = (em.getDeltaEdges());
+	compSet->deltaVals = (em.getDeltaVals());
+	compSet->oUnUdEdges = (em.getoUnUdEdges());
+	compSet->oUnUdVals = (em.getoUnUdVals());
+
 //	compSet->setOldEdges(compSet->getoldUnewEdges());
 //	compSet->setOldVals(compSet->getoldUnewVals());
 //	compSet->setoldUnewEdges(em.getoUnUdEdges());
 //	compSet->setoldUnewVals(em.getoUnUdVals());
 //	compSet->setNewEdges(em.getDeltaEdges());
 //	compSet->setNewVals(em.getDeltaVals());
+
+	if (vertInd == 0) {
+		cout << compSet->deltString();
+		cout << compSet->oUnUdString();
+	}
 
 	return em.getNumNewEdges();
 }
@@ -103,11 +115,11 @@ void getEdgesToMerge(ComputationSet *compSet, ComputationSet compsets[],
 		vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge,
 		int &rowMergeID, Context &context)
 {
-	vector<int> &oldEdges = compSet->getOldEdges();
-	vector<char> &oldVals = compSet->getOldVals();
+	vector<int>& oldEdges = *(compSet->getOldEdges());
+	vector<char>& oldVals = *(compSet->getOldVals());
 
-	vector<int> &newEdges = compSet->getNewEdges();
-	vector<char> &newVals = compSet->getNewVals();
+	vector<int>& newEdges = *(compSet->getNewEdges());
+	vector<char>& newVals = *(compSet->getNewVals());
 
 	// look through new edges of current vertex to see if any S-Rules
 	if (!newEdgesEmpty)
@@ -169,9 +181,9 @@ void genD_RuleEdges(ComputationSet compsets[], LoadedVertexInterval intervals[],
 					edgeVecsToMerge.push_back( vector<int>() );
 					valVecsToMerge.push_back( vector<char>() );
 				}
-				if (flag == 'o' && compsets[dstInd].getNewEdges().size() > 0)
+				if (flag == 'o' && compsets[dstInd].getNewEdges()->size() > 0)
 					checkEdges(dstInd, vals[i], compsets, edgeVecsToMerge, valVecsToMerge, rowMergeID, context, flag);
-				else if (flag == 'n' && compsets[dstInd].getoldUnewEdges().size() > 0)
+				else if (flag == 'n' && compsets[dstInd].getoldUnewEdges()->size() > 0)
 					checkEdges(dstInd, vals[i], compsets, edgeVecsToMerge, valVecsToMerge, rowMergeID, context, flag);
 			}
 		}
@@ -186,8 +198,8 @@ void checkEdges(int dstInd, char dstVal, ComputationSet compsets[],
 		vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge, int &rowMergeID,
 		Context &context, char flag)
 {
-	vector<int> &edges = (flag == 'o') ? compsets[dstInd].getNewEdges() : compsets[dstInd].getoldUnewEdges();
-	vector<char> &vals = (flag == 'o') ? compsets[dstInd].getNewVals() : compsets[dstInd].getoldUnewVals();
+	vector<int> &edges = (flag == 'o') ? *(compsets[dstInd].getNewEdges()) : *(compsets[dstInd].getoldUnewEdges());
+	vector<char> &vals = (flag == 'o') ? *(compsets[dstInd].getNewVals()) : *(compsets[dstInd].getoldUnewVals());
 
 	char newVal;
 	bool added = false;

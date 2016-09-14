@@ -6,6 +6,7 @@
 #include <string>
 #include <string.h>
 #include <iostream>
+#include <memory>
 #include <vector>
 #include <unordered_set>
 #include <set>
@@ -17,6 +18,7 @@ using std::set;
 using std::cout;
 using std::endl;
 using std::map;
+using std::shared_ptr;
 
 #ifndef ASSERT
 #define ASSERT

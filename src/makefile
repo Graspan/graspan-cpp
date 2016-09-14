@@ -11,7 +11,7 @@ PREP=preproc/preproc.cpp preproc/run_pre.cpp
 COMPUTATION=edgecomp/engine.cpp edgecomp/compute.cpp edgecomp/edgemerger.cpp edgecomp/repart.cpp
 LOADER=datastructures/loader.cpp edgecomp/grammar.cpp
 # computation sets included through header files
-DATASTRUCTS=datastructures/vertex.cpp datastructures/loadedvertexinterval.cpp datastructures/minset.cpp datastructures/partition.cpp datastructures/context.cpp datastructures/vit.cpp datastructures/DDM.cpp
+DATASTRUCTS=datastructures/vertex.cpp datastructures/loadedvertexinterval.cpp datastructures/minset.cpp datastructures/partition.cpp datastructures/context.cpp datastructures/vit.cpp datastructures/DDM.cpp datastructures/computationset.cpp
 UTIL=../test/timer.cpp Library/Logger.cpp
 
 

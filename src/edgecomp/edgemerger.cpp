@@ -6,13 +6,19 @@ EdgeMerger::EdgeMerger()
 	deltaPtr = -1;
 	oUnUdPtr = -1;
 	currID = -1;
+
+	srcDeltaEdges = std::make_shared<vector<int>>(vector<int>());
+	srcDeltaVals = std::make_shared<vector<char>>(vector<char>());
+
+	srcoUnUdEdges = std::make_shared<vector<int>>(vector<int>());
+	srcoUnUdVals = std::make_shared<vector<char>>(vector<char>());
 }
 
 /**
  * given the vectors and vals to merge, as well as the ID of the source edges,
  * merge edges into a new list
  */
-void EdgeMerger::mergeVectors(vector< vector<int> > &edgeVecsToMerge,
+void EdgeMerger::mergeVectors(int vertInd, vector< vector<int> > &edgeVecsToMerge,
 		vector< vector<char> > &valVecsToMerge, int srcID)
 {
 	MinSet srcMS;				// initialize a MinSet for the source vertex
@@ -39,6 +45,16 @@ void EdgeMerger::mergeVectors(vector< vector<int> > &edgeVecsToMerge,
 
     }
 
+	if (vertInd == 0) {	
+		cout << "== SRCOUNUD ===\n";
+		if (srcoUnUdEdges->empty()) cout << "srcoUnUdEdges empty...\n\n";
+		else {
+			for (int i = 0; i < srcoUnUdEdges->size(); i++)
+				cout << "(" << srcoUnUdEdges->at(i) << ", " << (short)srcoUnUdVals->at(i) << ")  ";
+
+			cout << endl << endl;
+		}
+	}
     removeExtraSpace();
 }
 
@@ -62,11 +78,11 @@ void EdgeMerger::fillPriorityQueue(vector< vector<int> > &edgeVecsToMerge, vecto
 		newminset.resetPtr();
     }
 
-    srcDeltaEdges.reserve(totTgtRowSize);
-    srcDeltaVals.reserve(totTgtRowSize);
+    srcDeltaEdges->reserve(totTgtRowSize);
+    srcDeltaVals->reserve(totTgtRowSize);
 
-    srcoUnUdEdges.reserve(edgeVecsToMerge[srcID].size() + totTgtRowSize);
-    srcoUnUdVals.reserve(edgeVecsToMerge[srcID].size() + totTgtRowSize);
+    srcoUnUdEdges->reserve(edgeVecsToMerge[srcID].size() + totTgtRowSize);
+    srcoUnUdVals->reserve(edgeVecsToMerge[srcID].size() + totTgtRowSize);
 }
 
 /**
@@ -76,11 +92,27 @@ void EdgeMerger::removeExtraSpace()
 {
 	// TODO: this happens no matter what right now. Use a conditional statement to stop this from
 	// happening every time and avoid excessive copying!
-	srcoUnUdEdges = vector<int>(srcoUnUdEdges.begin(), srcoUnUdEdges.begin() + oUnUdPtr + 1);
-	srcoUnUdVals = vector<char>(srcoUnUdVals.begin(), srcoUnUdVals.begin() + oUnUdPtr + 1);
+	/*
+	vector<int> *tempoUnUdEdges = new vector<int>(srcoUnUdEdges->begin(), srcoUnUdEdges->begin() + oUnUdPtr + 1);
+	vector<int> *tempDeltaEdges = new vector<int>(srcDeltaEdges->begin(), srcDeltaEdges->begin() + deltaPtr + 1);
+	vector<char> *tempoUnUdVals = new vector<char>(srcoUnUdVals->begin(), srcoUnUdVals->begin() + oUnUdPtr + 1);
+	vector<char> *tempDeltaVals = new vector<char>(srcDeltaVals->begin(), srcDeltaVals->begin() + deltaPtr + 1);
 
-	srcDeltaEdges = vector<int>(srcDeltaEdges.begin(), srcDeltaEdges.begin() + deltaPtr + 1);
-	srcDeltaVals = vector<char>(srcDeltaVals.begin(), srcDeltaVals.begin() + deltaPtr + 1);
+	vector<int> *tempe = srcoUnUdEdges;
+	vector<char> *tempv = srcoUnUdVals;
+	vector<int> *tempde = srcDeltaEdges;
+	vector<char> *tempdv = srcDeltaVals;
+
+	srcoUnUdEdges = tempoUnUdEdges;
+	srcoUnUdVals = tempoUnUdVals;
+	srcDeltaEdges = tempDeltaEdges;
+	srcDeltaVals = tempDeltaVals;
+
+	delete tempe;
+	delete tempv;
+	delete tempde;
+	delete tempdv;
+	*/
 }
 
 /**
@@ -117,8 +149,12 @@ void EdgeMerger::processMinSets(MinSet &srcMS, MinSet &tgtMS, vector<int> &srcEd
         for (unordered_set<char>::iterator iter = tgtVals.begin(); iter != tgtVals.end(); iter++)
 		{
             if (currEvals.find(*iter) == currEvals.end()) {		// check if an edge with that edge value has already been added
-				updateVector(tgtMS.getCurrVID(), *iter, srcoUnUdEdges, srcoUnUdVals, oUnUdPtr);		// if not add to both oUnUd
-				updateVector(tgtMS.getCurrVID(), *iter, srcDeltaEdges, srcDeltaVals, deltaPtr);		// and Delta
+				oUnUdPtr++;
+				deltaPtr++;
+				srcoUnUdEdges->push_back(tgtMS.getCurrVID());
+				srcDeltaEdges->push_back(tgtMS.getCurrVID());
+				srcoUnUdVals->push_back(*iter);
+				srcDeltaVals->push_back(*iter);
 				currEvals.insert(*iter);				// insert edge value into currEvals to mark as already used
             }
         }
@@ -141,8 +177,12 @@ void EdgeMerger::processMinSets(MinSet &srcMS, MinSet &tgtMS, vector<int> &srcEd
 		{
             if (srcVals.find(*iter) == srcVals.end()) {
                 if (currEvals.find(*iter) == currEvals.end()) {
-					updateVector(tgtMS.getCurrVID(), *iter, srcoUnUdEdges, srcoUnUdVals, oUnUdPtr);
-					updateVector(tgtMS.getCurrVID(), *iter, srcDeltaEdges, srcDeltaVals, deltaPtr);
+					oUnUdPtr++;
+					deltaPtr++;
+					srcoUnUdEdges->push_back(tgtMS.getCurrVID());
+					srcDeltaEdges->push_back(tgtMS.getCurrVID());
+					srcoUnUdVals->push_back(*iter);
+					srcDeltaVals->push_back(*iter);
 					currEvals.insert(*iter);
                 }
             }
@@ -164,7 +204,9 @@ void EdgeMerger::processMinSets(MinSet &srcMS, MinSet &tgtMS, vector<int> &srcEd
         for (unordered_set<char>::iterator iter = srcVals.begin(); iter != srcVals.end(); iter++)
 		{
             if (currEvals.find(*iter) == currEvals.end()) {
-				updateVector(srcMS.getCurrVID(), *iter, srcoUnUdEdges, srcoUnUdVals, oUnUdPtr);		// only add to oUnUd
+				oUnUdPtr++;
+				srcoUnUdEdges->push_back(srcMS.getCurrVID());
+				srcoUnUdVals->push_back(*iter);
 				currEvals.insert(*iter);															// because not new
             }
         }
@@ -178,8 +220,11 @@ void EdgeMerger::processMinSets(MinSet &srcMS, MinSet &tgtMS, vector<int> &srcEd
 /**
  * increment the pointer, then add the vertexID and the edge value into the vector
  */
-void EdgeMerger::updateVector(int vid, char val, vector<int> &edges, vector<char> &vals, int &ptr)
+void EdgeMerger::updateVector(int vid, char val, int &ptr, char flag)
 {
+	vector<int> &edges = (flag == 'o') ? *(srcoUnUdEdges) : *(srcDeltaEdges);
+	vector<char> &vals = (flag =='o') ? *(srcoUnUdVals) : *(srcDeltaVals);
+
 	ptr++;
 	edges[ptr] = vid;
 	vals[ptr] = val;

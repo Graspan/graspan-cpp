@@ -21,11 +21,16 @@ class EdgeMerger
 	std::unordered_set<char> currEvals;		// the current edge values (to check for duplicates)
 	std::priority_queue<MinSet, vector<MinSet>, compare> minEdges;
 
-	vector<int> srcoUnUdEdges;		// ALL edges (current source edges and NEW edges)
-	vector<char> srcoUnUdVals;
+//	vector<int> *srcoUnUdEdges;		// ALL edges (current source edges and NEW edges)
+//	vector<char> *srcoUnUdVals;
+	shared_ptr< vector<int> > srcoUnUdEdges;
+	shared_ptr< vector<char> > srcoUnUdVals;
 
-	vector<int> srcDeltaEdges;		// ONLY NEW edges
-	vector<char> srcDeltaVals;
+	shared_ptr< vector<int> > srcDeltaEdges;
+	shared_ptr< vector<char> > srcDeltaVals;
+
+//	vector<int> *srcDeltaEdges;		// ONLY NEW edges
+//	vector<char> *srcDeltaVals;
 
 
 	// FUNCTIONS
@@ -39,24 +44,24 @@ class EdgeMerger
 		vector<char> &srcValsToMerge, vector<int> &tgtEdgesToMerge,
 		vector<char> &tgtValsToMerge);
 
-	void updateVector(int vid, char val, vector<int> &edges, vector<char> &vals, int &ptr);
+	void updateVector(int vid, char val, int &ptr, char flag);
 
 	public:
 	// constructor
 	EdgeMerger();
 
 	// getters
-	inline vector<int> &getoUnUdEdges() { return srcoUnUdEdges; }
-	inline vector<char> &getoUnUdVals() { return srcoUnUdVals; }
+	inline shared_ptr< vector<int> > getoUnUdEdges() { return srcoUnUdEdges; }
+	inline shared_ptr< vector<char> > getoUnUdVals() { return srcoUnUdVals; }
 
-	inline vector<int> &getDeltaEdges() { return srcDeltaEdges; }
-	inline vector<char> &getDeltaVals() { return srcDeltaVals; }
+	inline shared_ptr< vector<int> > getDeltaEdges() { return srcDeltaEdges; }
+	inline shared_ptr< vector<char> > getDeltaVals() { return srcDeltaVals; }
 
 	inline int getNumNewEdges() { return deltaPtr + 1; }
 
 	// given all new edges and their values, merge with the source creating a vector of old U new edges
 	// and only new edges
-	void mergeVectors(vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge, int srcID);
+	void mergeVectors(int vertInd, vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge, int srcID);
 };
 
 #endif
