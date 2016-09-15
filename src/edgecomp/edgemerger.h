@@ -23,11 +23,11 @@ class EdgeMerger
 
 //	vector<int> *srcoUnUdEdges;		// ALL edges (current source edges and NEW edges)
 //	vector<char> *srcoUnUdVals;
-	shared_ptr< vector<int> > srcoUnUdEdges;
-	shared_ptr< vector<char> > srcoUnUdVals;
+	unique_ptr< vector<int> > srcoUnUdEdges;
+	unique_ptr< vector<char> > srcoUnUdVals;
 
-	shared_ptr< vector<int> > srcDeltaEdges;
-	shared_ptr< vector<char> > srcDeltaVals;
+	unique_ptr< vector<int> > srcDeltaEdges;
+	unique_ptr< vector<char> > srcDeltaVals;
 
 //	vector<int> *srcDeltaEdges;		// ONLY NEW edges
 //	vector<char> *srcDeltaVals;
@@ -51,11 +51,11 @@ class EdgeMerger
 	EdgeMerger();
 
 	// getters
-	inline shared_ptr< vector<int> > getoUnUdEdges() { return srcoUnUdEdges; }
-	inline shared_ptr< vector<char> > getoUnUdVals() { return srcoUnUdVals; }
+	inline unique_ptr< vector<int> > &getoUnUdEdges() { return srcoUnUdEdges; }
+	inline unique_ptr< vector<char> > &getoUnUdVals() { return srcoUnUdVals; }
 
-	inline shared_ptr< vector<int> > getDeltaEdges() { return srcDeltaEdges; }
-	inline shared_ptr< vector<char> > getDeltaVals() { return srcDeltaVals; }
+	inline unique_ptr< vector<int> > &getDeltaEdges() { return srcDeltaEdges; }
+	inline unique_ptr< vector<char> > &getDeltaVals() { return srcDeltaVals; }
 
 	inline int getNumNewEdges() { return deltaPtr + 1; }
 

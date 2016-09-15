@@ -16,9 +16,16 @@ using std::unordered_set;
 using std::pair;
 using std::set;
 using std::cout;
+using std::cin;
 using std::endl;
 using std::map;
-using std::shared_ptr;
+using std::unique_ptr;
+
+template <typename T, typename... Args>
+std::unique_ptr<T> make_unique(Args&&... args)
+{
+    return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+}
 
 #ifndef ASSERT
 #define ASSERT

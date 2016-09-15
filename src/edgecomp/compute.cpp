@@ -74,17 +74,10 @@ long updateEdges(int vertInd, ComputationSet compsets[], LoadedVertexInterval in
 
 	em.mergeVectors(vertInd, edgeVecsToMerge, valVecsToMerge, 0);
 
-  /*
 	compSet->setDeltaEdges(em.getDeltaEdges());
 	compSet->setDeltaVals(em.getDeltaVals());
 	compSet->setoUnUdEdges(em.getoUnUdEdges());
 	compSet->setoUnUdVals(em.getoUnUdVals());
-	*/
-
-	compSet->deltaEdges = (em.getDeltaEdges());
-	compSet->deltaVals = (em.getDeltaVals());
-	compSet->oUnUdEdges = (em.getoUnUdEdges());
-	compSet->oUnUdVals = (em.getoUnUdVals());
 
 //	compSet->setOldEdges(compSet->getoldUnewEdges());
 //	compSet->setOldVals(compSet->getoldUnewVals());

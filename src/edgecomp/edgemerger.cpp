@@ -7,11 +7,11 @@ EdgeMerger::EdgeMerger()
 	oUnUdPtr = -1;
 	currID = -1;
 
-	srcDeltaEdges = std::make_shared<vector<int>>(vector<int>());
-	srcDeltaVals = std::make_shared<vector<char>>(vector<char>());
+	srcDeltaEdges = make_unique<vector<int>>(vector<int>());
+	srcDeltaVals = make_unique<vector<char>>(vector<char>());
 
-	srcoUnUdEdges = std::make_shared<vector<int>>(vector<int>());
-	srcoUnUdVals = std::make_shared<vector<char>>(vector<char>());
+	srcoUnUdEdges = make_unique<vector<int>>(vector<int>());
+	srcoUnUdVals = make_unique<vector<char>>(vector<char>());
 }
 
 /**
