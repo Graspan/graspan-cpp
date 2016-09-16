@@ -1,8 +1,8 @@
 #include "repart.h"
 
 void Repart::repartition(Partition &p1, Partition &p2, Context &context) {
-	unsigned long long int size = (p1.getNumVertices() * 8 + p1.getNumEdges() * 5);
-	if (size < context.getMemBudget() / ((unsigned long long int) 48)) {
+	unsigned long long int size = (unsigned long long int)(p1.getNumVertices()) * (unsigned long long int)423 + (unsigned long long int)(p1.getNumEdges()) * (unsigned long long int)8;
+	if (size < context.getMemBudget() / ((unsigned long long int) 4)) {
 		p2.setExist(false);
 		return;
 	}
@@ -17,12 +17,12 @@ void Repart::repartition(Partition &p1, Partition &p2, Context &context) {
 	vector<pair<vertexid_t, vertexid_t>> &tempVIT = context.vit.getVIT();
 	vector<Vertex> &dataTemp = p1.getData();
 
-	check += dataTemp[0].getNumOutEdges() * 5;
-	check += 8;
+	check += dataTemp[0].getNumOutEdges() * 8;
+	check += 423;
 	for (i ; i < p1.getNumVertices() - 1; i++) {
 		sum += dataTemp[i].getNumOutEdges();
-		check += dataTemp[i + 1].getNumOutEdges() * 5;
-		check += 8;
+		check += dataTemp[i + 1].getNumOutEdges() * 8;
+		check += 423;
 		if (check > size) {
 			break;
 		}

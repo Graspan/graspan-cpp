@@ -15,7 +15,7 @@ class Vertex
 
 	public:
 	// Constructors
-	Vertex() {};
+	Vertex() { numOutEdges = 0; }
 	Vertex(int id, int outDegree);
 	Vertex(int id, vector<int> outEdges, vector<char> outEdgeValues);
 

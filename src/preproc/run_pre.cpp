@@ -16,7 +16,8 @@ int run_preprocessing(Context &context) {
 	context.ddm.reSize();
 	preN.saveData(context);
 	preN.mergePart(context);
-
+	//preN.test_saveData(context);
+	//preN.test_mergePart(context);
 	end = clock();
 	cout << "NEWPREPROC TIME: " << ((end - begin) / CLOCKS_PER_SEC) << std::endl;
 	return 0;

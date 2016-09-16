@@ -32,8 +32,9 @@ private:
 	int *numPartBuf;
 	set<char> eRules;
 	vector<string> mapInfo;
+	Vertex **vertices;
 	Vertex *partBuf;
-
+	
 	//Partition *p;
 
 
@@ -45,11 +46,11 @@ public:
 
 	void saveData(Context &context);
 	void savePartChunk(Context &context, int partNum);
-
+	
 	void mergePart(Context &context);
 	void loadPartChunk(Context &context, int pID);
 	void addErules(Context &context, int pID);
-	void checkPart(Context &context);
+	void checkPart(Context &context, int pID);
 	void savePart(Context &context, int pID);
 
 	void setMapInfo(vector<string> mapInfo, set<char> eRules);

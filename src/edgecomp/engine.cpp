@@ -77,12 +77,14 @@ long run_computation(Context &context)
 		//	cout << "AGGAGAGGHGHHHHHH!" << endl;
 		//	return 12;
 		//}
+		unsigned long long int sizeLim = (context.getMemBudget()/ (unsigned long long int)2 - (*pp).getNumVertices() * 423 - (*qp).getNumVertices() * 423 - (*pp).getNumEdges()*(unsigned long long int)(8) - (*qp).getNumEdges()*(unsigned long long int)(8)) / (unsigned long long int)(8);
+
 		cout << "MEMBUDGET =" << context.getMemBudget() << endl;
-		unsigned long long int sizeLim = (context.getMemBudget() / (unsigned long long int)12 - (*pp).getNumVertices() * 8 - (*qp).getNumVertices() * 8 - (*pp).getNumEdges() * 5 - (*qp).getNumEdges() * 5) / (unsigned long long int)5;
 		loadTimer.endTimer();
 		cout << "P =" << p << " Q =" << q << endl;
 		cout << qp->getNumVertices() << endl;
 		vector<Vertex> &part1 = (*pp).getData(), &part2 = (*qp).getData();
+		
 		cout << (*pp).getID() << endl;
 		cout << "OG NUM EDGES: " << ((*pp).getNumEdges() + (*qp).getNumEdges()) << endl;
 		cout << "NUM VERTECES: " << part1.size() + part2.size() << endl;
@@ -93,7 +95,7 @@ long run_computation(Context &context)
 
 		LoadedVertexInterval intervals[2] = {LoadedVertexInterval{p}, LoadedVertexInterval{q}};
 		initLVIs(intervals, part1, part2);					// Initialize the Loaded Vertex Intervals
-
+		
 		cout << "== COMP START ==" << endl;
 		compTimer.startTimer();
 		computeEdges(compsets, setSize, intervals, context, sizeLim, numThreads);
