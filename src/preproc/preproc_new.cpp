@@ -677,6 +677,7 @@ void Preproc_new::savePart(Context & context, int pID)
 	end = context.vit.getEnd(pID);
 
 	vector<vector<double> > &ddmMap = context.ddm.getDdmMap();
+	vector<vector<double> > &d_ddmMap = context.ddm.getD_ddmMap();
 	FILE *f;
 	string name;
 	char label;
@@ -702,8 +703,10 @@ void Preproc_new::savePart(Context & context, int pID)
 		vTemp[j-start].clearVector();
 	}
 	fclose(f);
-	for (int i = 0; i < ddmMap[0].size(); i++)
+	for (int i = 0; i < ddmMap[0].size(); i++) {
 		ddmMap[pID][i] /= (double)numVertexEdges;
+		d_ddmMap[pID][i] = ddmMap[pID][i];
+	}
 }
 /*
 void Preproc_new::savePart(Context &context, int pID) {

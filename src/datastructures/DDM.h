@@ -15,6 +15,7 @@ class DDM{
   //TODO: implement scheduling policy described in the paper
   int max_size;
   vector<vector<double> > ddmMap; //array for storing ddmInfo
+  vector<vector<double> > d_ddmMap; //array for terminate ddminfo
 	int numPartition;
 
  public:
@@ -25,10 +26,15 @@ class DDM{
   inline vector<vector<double> >& getDdmMap(){
     return ddmMap;
   };
-  
+
+  inline vector<vector<double> >& getD_ddmMap() {
+	  return d_ddmMap;
+  };
+
   //small methods should be inlined for efficiency
   inline void set(partitionid_t p, partitionid_t q, double rate) {
     ddmMap[p][q] = rate;
+	ddmMap[q][p] = rate;
   }
   int getNumPartition();
 
@@ -37,8 +43,8 @@ class DDM{
 
   inline void markTerminate(partitionid_t p, partitionid_t q, bool newEdgesInP, bool newEdgesInQ) {
     cout << "DDM Terminate" << endl;
-	if (!newEdgesInP && ddmMap[p][q] > 0) ddmMap[p][q] *= -1;
- 	if (!newEdgesInQ && ddmMap[q][p] > 0) ddmMap[q][p] *= -1;
+	if (!newEdgesInP && d_ddmMap[p][q] > 0) d_ddmMap[p][q] = 0;
+ 	if (!newEdgesInQ && d_ddmMap[q][p] > 0) d_ddmMap[q][p] = 0;
   }
 
   // the indices p and q tell which partitionRate[p][q] is max: i.e., this is our scheduler

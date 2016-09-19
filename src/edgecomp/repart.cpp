@@ -72,10 +72,10 @@ void Repart::run(Partition &p1, Partition &p2, Context &context, long newIterEdg
 	}
 	if (p1_2.getExist()) {
 		cout << "p1 =" << p1.getID() << " p12 =" << p1_2.getID() << endl;
-		Partition::writeToFile(p1_2, false, context);
+		//Partition::writeToFile(p1_2, false, context);
 		context.ddm.copy(p1.getID(), p1_2.getID());
 		p1_2.calc_ddr(context);
-
+		context.ddm.adjustRow(p1_2.getID());
 		if (newIterEdges <= 0) {
 			context.ddm.markTerminate(p1.getID(), p1_2.getID(), newIterEdges, newIterEdges);
 			context.ddm.markTerminate(p2.getID(), p1_2.getID(), newIterEdges, newIterEdges);
@@ -83,14 +83,13 @@ void Repart::run(Partition &p1, Partition &p2, Context &context, long newIterEdg
 	}
 	if (p2_2.getExist()) {
 		cout << "p2 =" << p2.getID() << " p12 =" << p2_2.getID() << endl;
-		Partition::writeToFile(p2_2, false, context);
+		//Partition::writeToFile(p2_2, false, context);
 		context.ddm.copy(p2.getID(), p2_2.getID());
-
 		p2_2.calc_ddr(context);
+		context.ddm.adjustRow(p2_2.getID());
 		if (newIterEdges <= 0) {
 			context.ddm.markTerminate(p1.getID(), p2_2.getID(), newIterEdges, newIterEdges);
 			context.ddm.markTerminate(p2.getID(), p2_2.getID(), newIterEdges, newIterEdges);
 		}
 	}
-	context.ddm.adjust(p1.getID(), p2.getID());
 }
