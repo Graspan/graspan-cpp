@@ -45,6 +45,7 @@ long run_computation(Context &context)
 		for (it = parts.begin(); it != parts.end(); ) {
 			if ((*(*it)).getID() != p && (*(*it)).getID() != q) {
 				cout << "PARTITION :" << (*(*it)).getID() << " IS SAVED" << endl;
+				context.ddm.adjustRow((*(*it)).getID());
 				Partition::writeToFile(*(*it), false, context);
 				(*(*it)).clear();
 				delete[](*it);
@@ -147,7 +148,8 @@ long run_computation(Context &context)
 			cout << intervals[1].hasNewEdges() << endl;
 		}
 		else {
-			context.ddm.set(p, q, 1);
+			context.ddm.adjustRow(p);
+			context.ddm.adjustRow(q);
 		}
 		str = std::to_string((long long)roundNo);
 		name = context.getGraphFile() + ".ddm." + str;
@@ -166,6 +168,7 @@ long run_computation(Context &context)
 	//save rest of the files in the parts
 	for (it = parts.begin(); it != parts.end(); ) {
 		cout << "PARTITION :" << (*(*it)).getID() << " IS SAVED" << endl;
+		context.ddm.adjustRow((*(*it)).getID());
 		Partition::writeToFile(*(*it), false, context);
 		(*(*it)).clear();
 		delete[](*it);

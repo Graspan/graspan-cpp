@@ -7,6 +7,7 @@ DDM::DDM() {
  // std::cin >>  max_size;
   max_size = 25;
   ddmMap.assign(max_size,vector<double>(max_size,0));
+  d_ddmMap.assign(max_size, vector<double>(max_size, 0));
 }
 
 DDM::~DDM(){}
@@ -18,17 +19,23 @@ int DDM::getNumPartition()
 
 //the meaning of adjust p is to set teminate_map[p][] and teminate_map[][p] into UNMARK
 void DDM::adjust(int p, int q) {
-	if (ddmMap[p][q] > 0)
+	if (d_ddmMap[p][q] > 0 && ddmMap[p][q] < 1)
 		ddmMap[p][q] += 1;
-	if (ddmMap[q][p] > 0)
+	if (d_ddmMap[q][p] > 0 && ddmMap[q][p] < 1)
 		ddmMap[q][p] += 1;
+	if (d_ddmMap[p][q] == 0 && ddmMap[p][q] > 1)
+		ddmMap[p][q] -= 1;
+	if (d_ddmMap[q][p] == 0 && ddmMap[q][p] > 1)
+		ddmMap[q][p] -= 1;
 }
 
 void DDM::adjustRow(int pId)
 {
 	for (int i = 0; i < ddmMap[pId].size(); i++) {
-		if (ddmMap[pId][i] > 0)
+		if (ddmMap[pId][i] < 1 && ddmMap[pId][i] > 0)
 			ddmMap[pId][i] += 1;
+		else if (ddmMap[pId][i] > 1)
+			ddmMap[pId][i] -= 1;
 	}
 }
 
@@ -40,16 +47,15 @@ bool DDM::nextPartitionPair(partitionid_t &p, partitionid_t &q) {
   double max = 0.0;
 
   for (int i = 0; i < numPartition; ++i) {
-    for (int j = 0; j < numPartition; ++j ) {
-		if (i == j)
-			continue;
-      if (max < ddmMap[i][j]){
-        max=ddmMap[i][j];
-        p = i;
-        q = j;
-      }
-    }
-
+	  for (int j = i+1; j < numPartition; ++j) {
+		  if (i == j | (d_ddmMap[i][j] == 0 && d_ddmMap[j][i] == 0))
+			  continue;
+		  if (max < ddmMap[i][j] + ddmMap[j][i]) {
+			  max = ddmMap[i][j] + ddmMap[j][i];
+			  p = i;
+			  q = j;
+		  }
+	  }
   }
 
   if (max == 0.0) { // should terminate since every cell is either 0 or negative -- we assume a pair is done when its partitionRate is negative
@@ -62,8 +68,11 @@ bool DDM::nextPartitionPair(partitionid_t &p, partitionid_t &q) {
 // I have a feeling this is not quite right
 void DDM::reSize() {
 	ddmMap.resize(numPartition);
-	for (int i = 0; i < numPartition; ++i)
+	d_ddmMap.resize(numPartition);
+	for (int i = 0; i < numPartition; ++i) {
 		ddmMap[i].resize(numPartition, 0);
+		d_ddmMap[i].resize(numPartition, 0);
+	}
 }
 
 void DDM::copy(int p, int q) {
@@ -85,6 +94,11 @@ bool DDM::load_DDM(string fname){
 			fin >> ddmMap[i][j];
 		}
 	}
+	for (int i = 0; i<numPartition; i++) {
+		for (int j = 0; j<numPartition; j++) {
+			fin >> d_ddmMap[i][j];
+		}
+	}
 	fin.close();
 	
 	return true;
@@ -104,6 +118,13 @@ bool DDM::save_DDM(string fname){
 		for(int j=0;j<numPartition;j++){
 		
 			fout << ddmMap[i][j] << " ";
+		}
+		fout << endl;
+	}
+	fout << endl;
+	for (int i = 0; i<numPartition; i++) {
+		for (int j = 0; j<numPartition; j++) {
+			fout << d_ddmMap[i][j] << " ";
 		}
 		fout << endl;
 	}
