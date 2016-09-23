@@ -39,13 +39,13 @@ long run_computation(Context &context)
 		cout << "##### STARTING ROUND " << ++roundNo << " #####" << endl;
 		newRoundEdges = 0; 
 		loadTimer.startTimer();
-
-		pp = NULL, qp = NULL;
+		context.ddm.save_DDM(name.c_str());
+		p = NULL, qp = NULL;
 		//check parts
 		for (it = parts.begin(); it != parts.end(); ) {
+			context.ddm.adjustRow((*(*it)).getID());	
 			if ((*(*it)).getID() != p && (*(*it)).getID() != q) {
 				cout << "PARTITION :" << (*(*it)).getID() << " IS SAVED" << endl;
-				context.ddm.adjustRow((*(*it)).getID());
 				Partition::writeToFile(*(*it), false, context);
 				(*(*it)).clear();
 				delete[](*it);
@@ -153,7 +153,6 @@ long run_computation(Context &context)
 		}
 		str = std::to_string((long long)roundNo);
 		name = context.getGraphFile() + ".ddm." + str;
-		context.ddm.save_DDM(name.c_str());
 
 		cout << "===== ROUND INFO =====" << endl;
 		cout << "NEW EDGES: " << newTotalEdges << endl;
