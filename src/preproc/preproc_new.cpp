@@ -7,6 +7,7 @@ int partition(vector<vertexid_t>&, vector<label_t>&, int, int);
 Preproc_new::Preproc_new(Context &context) {
 	vitSize = 0;
 	numVertex = 0;
+	numEdges = 0;
 	count = 0;
 }
 
@@ -416,6 +417,7 @@ void Preproc_new::mergePart(Context & context)
 	}
 	context.ddm.save_DDM(context.getGraphFile() + ".ddm");
 	cout << "NumVertex " << numVertex << endl;
+	cout << "NumEdges " << numEdges << endl;
 }
 
 /*void Preproc_new::mergePart(Context & context)	{
@@ -675,7 +677,6 @@ void Preproc_new::savePart(Context & context, int pID)
 	int start, end;
 	start = context.vit.getStart(pID);
 	end = context.vit.getEnd(pID);
-
 	vector<vector<double> > &ddmMap = context.ddm.getDdmMap();
 	vector<vector<double> > &d_ddmMap = context.ddm.getD_ddmMap();
 	FILE *f;
@@ -689,7 +690,7 @@ void Preproc_new::savePart(Context & context, int pID)
 	for (int j = context.vit.getStart(pID); j <= context.vit.getEnd(pID); j++) {
 		src = j;
 		degree = vTemp[j-start].getNumOutEdges();
-
+		numEdges += degree;
 		fwrite((const void*)& src, sizeof(int), 1, f);
 		fwrite((const void*)& degree, sizeof(int), 1, f);
 

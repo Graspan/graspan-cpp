@@ -25,9 +25,8 @@ private:
 	int count;
 	int vitSize;
 	int dataSize;
-	int numEdges;
 	int numVertex;
-
+	long numEdges;
 	int *dataCount;
 	int *numPartBuf;
 	set<char> eRules;
