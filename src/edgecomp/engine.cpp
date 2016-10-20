@@ -40,7 +40,7 @@ long run_computation(Context &context)
 		newRoundEdges = 0; 
 		loadTimer.startTimer();
 		context.ddm.save_DDM(name.c_str());
-		p = NULL, qp = NULL;
+		pp = NULL, qp = NULL;
 		//check parts
 		for (it = parts.begin(); it != parts.end(); ) {
 			context.ddm.adjustRow((*(*it)).getID());	
