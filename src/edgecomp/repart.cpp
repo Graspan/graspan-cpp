@@ -2,7 +2,7 @@
 
 void Repart::repartition(Partition &p1, Partition &p2, Context &context) {
 	unsigned long long int size = (unsigned long long int)(p1.getNumVertices()) * (unsigned long long int)423 + (unsigned long long int)(p1.getNumEdges()) * (unsigned long long int)8;
-	if (size < context.getMemBudget() / ((unsigned long long int) 4)) {
+	if (size < (context.getMemBudget() / (unsigned long long int) 4)) {
 		p2.setExist(false);
 		return;
 	}
@@ -31,6 +31,7 @@ void Repart::repartition(Partition &p1, Partition &p2, Context &context) {
 		p2.setExist(false);
 		return;
 	}
+	p2.setExist(true);
 	context.vit.setVITID(p1.getID(), context.vit.getStart(p1.getID()), dataTemp[i].getVertexID());
 	i++;
 
@@ -52,7 +53,6 @@ void Repart::repartition(Partition &p1, Partition &p2, Context &context) {
 
 	p1.setNumEdges(sum);
 	p1.setNumVertices(i);
-
 	context.vit.writeToFile("graph.vit");
 }
 
@@ -70,6 +70,7 @@ void Repart::run(Partition &p1, Partition &p2, Context &context, long newIterEdg
 	if (newIterEdges > 0) {
 		p2.calc_ddr(context);
 	}
+	cout << "exist = " <<  p1_2.getExist() << " " << p2_2.getExist() << endl;
 	if (p1_2.getExist()) {
 		cout << "p1 =" << p1.getID() << " p12 =" << p1_2.getID() << endl;
 		//Partition::writeToFile(p1_2, false, context);

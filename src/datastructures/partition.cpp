@@ -169,6 +169,7 @@ void Partition::calc_ddr(Context &context)	{
 	if (!exist)
 		return;
 	vector<vector<double> > &ddmMap = context.ddm.getDdmMap();
+	vector<vector<double> > &d_ddmMap = context.ddm.getD_ddmMap();
 	vector<double> tempDdm; // TODO: why don't you just get the vector[id] from ddmMap? it would save the copying  later
 	//cout << "ddmMap[id].size " << ddmMap[id].size() << endl;
 	double count = 0, sum = 0;
@@ -187,6 +188,7 @@ void Partition::calc_ddr(Context &context)	{
 
 	for (int i = 0; i < ddmMap[0].size(); i++) {
 		ddmMap[id][i] /= (double)numEdges;
+		d_ddmMap[id][i] = ddmMap[id][i];	
 	}
 	
 	//cout << "###BONUS =" << sum / (count * count) << "###" << endl;
