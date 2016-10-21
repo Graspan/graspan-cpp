@@ -23,7 +23,7 @@ void Preproc_new::countNum(Context &context)
 	int temp = eRules.size();
 	dataSize = 0;
 	count = 0;
-
+	int count = 0;
 	//fisrt file scan for count how many src is in the file
 	//for malloc
 	fp = fopen(context.getGraphFile().c_str(), "r");
@@ -31,6 +31,7 @@ void Preproc_new::countNum(Context &context)
 		while (NULL != fgets(buf, sizeof(buf), fp)) {
 			p_token = strtok_r(buf, "\n", &text);
 			p_token = strtok_r(buf, "\t", &text);
+			count ++;
 			src = atoi(p_token);
 			if (src > dataSize)
 				dataSize = src;
@@ -41,7 +42,7 @@ void Preproc_new::countNum(Context &context)
 	else {
 		assert(false, "Cannot open graph_file ");
 	}
-
+	cout << "numEdges =" << count << endl;
 	dataCount = new int[dataSize];
 
 	for (int i = 0; i < dataSize; i++) {
@@ -224,6 +225,11 @@ void Preproc_new::saveData(Context &context) {
 					vTemp[src-start].setNumOutEdges(outEdgeValues.size());
 
 					break;
+				}
+				//label is not exist in the grammar
+				if (i == mapInfo.size() - 1) {
+					mapInfo.push_back(label.c_str());
+					continue;
 				}
 			}
 
