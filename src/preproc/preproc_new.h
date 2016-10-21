@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <set>
+#include <unistd.h>
 
 #include "../utilities/globalDefinitions.hpp"
 #include "../datastructures/vit.h"

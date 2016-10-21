@@ -1,5 +1,4 @@
 bin/*
-src/log/
 src/log/*
 src/resources/*
 src/originalTest/*
@@ -12,3 +11,5 @@ src/originalTest/*
 *.ddm*
 *.partition*
 *.vit
+!.gitignore
+
