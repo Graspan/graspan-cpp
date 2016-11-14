@@ -42,7 +42,7 @@ void Preproc_new::countNum(Context &context)
 	else {
 		assert(false, "Cannot open graph_file ");
 	}
-	cout << "numEdges =" << count << endl;
+//	cout << "numEdges =" << count << endl;
 	dataCount = new int[dataSize];
 
 	for (int i = 0; i < dataSize; i++) {
@@ -70,7 +70,7 @@ void Preproc_new::countNum(Context &context)
 	//add count numErules
 	if (temp != 0)
 		count += (temp * numVertex);
-
+//	cout << "numVertex = " << numVertex << endl;
 }
 
 void Preproc_new::setVIT(Context &context)
@@ -402,7 +402,7 @@ void Preproc_new::mergePart(Context & context)
 {
 	clock_t begin, end;
 
-	numVertex = 0;
+//	numVertex = 0;
 	cout << context.getNumPartitions() << endl;
 	for (int i = 0; i < context.getNumPartitions(); i++) {
 		Vertex * vTemp = new Vertex[context.vit.getEnd(i) - context.vit.getStart(i) + 1];
@@ -638,7 +638,7 @@ void Preproc_new::checkPart(Context & context, int pID)
 
 		outEdges.erase(resultA, lastA);
 		outEdgeValues.erase(resultB, lastB);
-		numVertex += outEdges.size();
+//		numVertex += outEdges.size();
 	}
 }
 /*
