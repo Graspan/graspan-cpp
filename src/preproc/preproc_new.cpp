@@ -402,7 +402,7 @@ void Preproc_new::mergePart(Context & context)
 {
 	clock_t begin, end;
 
-//	numVertex = 0;
+	numVertex = 0;
 	cout << context.getNumPartitions() << endl;
 	for (int i = 0; i < context.getNumPartitions(); i++) {
 		Vertex * vTemp = new Vertex[context.vit.getEnd(i) - context.vit.getStart(i) + 1];
@@ -566,7 +566,6 @@ void Preproc_new::addErules(Context & context, int pID)
 
 		//	if (partBuf[j].getNumOutEdges() == 0 && dataCheck[j] == 0)
 		//		continue;
-
 		vector<vertexid_t> &outEdges = vTemp[i-start].getOutEdges();
 		vector<label_t> &outEdgeValues = vTemp[i-start].getOutEdgeValues();
 
@@ -638,7 +637,6 @@ void Preproc_new::checkPart(Context & context, int pID)
 
 		outEdges.erase(resultA, lastA);
 		outEdgeValues.erase(resultB, lastB);
-//		numVertex += outEdges.size();
 	}
 }
 /*
@@ -699,13 +697,15 @@ void Preproc_new::savePart(Context & context, int pID)
 		numEdges += degree;
 		fwrite((const void*)& src, sizeof(int), 1, f);
 		fwrite((const void*)& degree, sizeof(int), 1, f);
-
+		
 		for (int k = 0; k < degree; k++) {
 			dst = vTemp[j-start].getOutEdge(k);
 			label = vTemp[j-start].getOutEdgeValue(k);
 			fwrite((const void*)& dst, sizeof(int), 1, f);
 			fwrite((const void*)& label, sizeof(char), 1, f);
 		}
+		if (degree != 0)
+			numVertex ++;
 		numVertexEdges += degree;
 		vTemp[j-start].clearVector();
 	}
