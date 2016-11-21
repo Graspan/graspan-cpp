@@ -2,7 +2,11 @@
 #include "../../test/timer.h"
 
 
+
 // FUNCTION DEFINITIONS
+long updateEdges(int vertInd, ComputationSet compsets[], LoadedVertexInterval intervals[],
+		Context &context);
+
 void getEdgesToMerge(ComputationSet *compSet, ComputationSet compsets[],
 		LoadedVertexInterval intervals[], bool oldEdgesEmpty, bool newEdgesEmpty,
 		vector< vector<int> > &edgeVecsToMerge, vector< vector<char> > &valVecsToMerge,

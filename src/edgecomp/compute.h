@@ -13,7 +13,6 @@
 #include "../datastructures/context.h"
 #include "../utilities/globalDefinitions.hpp"
 
-
 long updateEdges(int vertInd, ComputationSet compsets[], LoadedVertexInterval intervals[], Context &context);
 
 #endif

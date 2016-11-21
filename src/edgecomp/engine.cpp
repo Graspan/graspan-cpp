@@ -5,14 +5,21 @@ long newRoundEdges;
 long newIterEdges;
 int iterNo;
 
+std::mutex add_edges, comp_mtx;
+std::condition_variable cv;
+short numFinished;
+bool compFinished;
+
 // FUNCTION DEFS
 void initCompSets(ComputationSet compsets[], vector<Vertex> &part1, vector<Vertex> &part2);
 
 void initLVIs(LoadedVertexInterval intervals[], vector<Vertex> &part1, vector<Vertex> &part2);
 
-void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context, unsigned long long int sizeLim, int numThreads);
+void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context, unsigned long long int sizeLim, boost::asio::io_service &ioServ);
 
-void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context, int numThreads);
+void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context, boost::asio::io_service &ioServ);
+
+void runUpdates(int lower, int upper, ComputationSet compsets[], LoadedVertexInterval intervals[], Context &context);
 
 void updatePartitions(ComputationSet compsets[], Partition &p1, Partition &p2, vector<Vertex> &part1, vector<Vertex> &part2);
 
@@ -30,6 +37,14 @@ long run_computation(Context &context)
 	vector <Partition*>::iterator it;
 	Partition *pp, *qp;
 	Repart r;
+
+	boost::asio::io_service ioServ;
+	boost::thread_group threadpool;
+
+	boost::asio::io_service::work work(ioServ);
+
+	for (int i = 0; i < context.getNumThreads(); i++)
+		threadpool.create_thread(boost::bind(&boost::asio::io_service::run, &ioServ));
 
 	partitionid_t p, q, oldP = -1, oldQ = -1;
 	newTotalEdges = 0;
@@ -90,8 +105,8 @@ long run_computation(Context &context)
 		cout << "OG NUM EDGES: " << ((*pp).getNumEdges() + (*qp).getNumEdges()) << endl;
 		cout << "NUM VERTECES: " << part1.size() + part2.size() << endl;
 
-		ComputationSet *compsets = new ComputationSet[part1.size() + part2.size()];
 		int setSize = part1.size() + part2.size();
+		ComputationSet *compsets = new ComputationSet[setSize];
 		initCompSets(compsets, part1, part2);				// Initialize the ComputationSet list
 
 		LoadedVertexInterval intervals[2] = {LoadedVertexInterval{p}, LoadedVertexInterval{q}};
@@ -99,7 +114,7 @@ long run_computation(Context &context)
 		
 		cout << "== COMP START ==" << endl;
 		compTimer.startTimer();
-		computeEdges(compsets, setSize, intervals, context, sizeLim, numThreads);
+		computeEdges(compsets, setSize, intervals, context, sizeLim, ioServ);
 		newTotalEdges += newRoundEdges;
 		compTimer.endTimer();
 		cout << "== COMP END ==" << endl;
@@ -183,7 +198,7 @@ long run_computation(Context &context)
  *
  * @param compsets
  */
-void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context, unsigned long long int sizeLim, int numThreads)
+void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context, unsigned long long int sizeLim, boost::asio::io_service &ioServ)
 {
 	Timer iterTimer;
 	iterNo = 0;
@@ -193,7 +208,7 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 	do {
 		cout << "===== STARTING ITERATION " << ++iterNo << endl;
 		iterTimer.startTimer();
-		computeOneIteration(compsets, setSize, intervals, context, numThreads);
+		computeOneIteration(compsets, setSize, intervals, context, ioServ);
 
 		newRoundEdges += newIterEdges;
 
@@ -223,28 +238,51 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
  *
  * 
  */
-void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context, int numThreads)
+void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context, boost::asio::io_service &ioServ)
 {
 	newIterEdges = 0;
+	int segment = setSize/context.getNumThreads();	
+	int lower, upper;
+	numFinished = 0;
+	compFinished = false;
+
+	std::cout << "SETSIZ: " << setSize << std::endl;
 	
-	#pragma omp parallel num_threads(numThreads)
+	for (int i = 0; i < context.getNumThreads(); i++)
 	{
-		long newThreadEdges = 0;		// local to each thread. Num of edges that thread has added
+		lower = i * segment;
+		upper = (i == context.getNumThreads()-1) ? setSize : (i+1) * segment;
+		ioServ.post(boost::bind(runUpdates, lower, upper, compsets, intervals, context));
+	}
 
-		#pragma omp for
-		for (int i = 0; i < setSize; i++)
-		{
-			newThreadEdges += updateEdges(i, compsets, intervals, context);
-			if (newThreadEdges > 0 && (i >= intervals[0].getIndexStart() && i <= intervals[0].getIndexEnd()))
-				intervals[0].setNewEdgeAdded(true);
-			else if (newThreadEdges > 0 && (i >= intervals[1].getIndexStart() && i <= intervals[1].getIndexEnd()))
-				intervals[1].setNewEdgeAdded(true);
-		}
+	std::unique_lock<std::mutex> lck(comp_mtx);
+	while (!compFinished) cv.wait(lck);
+}
 
-		#pragma omp atomic
-		newIterEdges += newThreadEdges;
+
+void runUpdates(int lower, int upper, ComputationSet compsets[], LoadedVertexInterval intervals[], Context &context)
+{
+	long newThreadEdges = 0;
+
+	for (int i = lower; i < upper; i++)
+	{
+		newThreadEdges += updateEdges(i, compsets, intervals, context);
+		if (newThreadEdges > 0 && (i >= intervals[0].getIndexStart() && i <= intervals[0].getIndexEnd()))
+			intervals[0].setNewEdgeAdded(true);
+		else if (newThreadEdges > 0 && (i >= intervals[1].getIndexStart() && i <= intervals[1].getIndexEnd()))
+			intervals[1].setNewEdgeAdded(true);
+
+	}
+
+	std::unique_lock<std::mutex> lck(add_edges);
+	newIterEdges += newThreadEdges;
+	numFinished++;
+	if (numFinished == context.getNumThreads()) {
+		compFinished = true;
+		cv.notify_one();
 	}
 }
+
 
 /**
  * load both partitions into a list of ComputationSet

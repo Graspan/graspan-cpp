@@ -3,6 +3,8 @@
 
 // This file holds all globally used constants & types, class (forward)
 // declarations and a few frequently used utility functions.
+#include <unistd.h>
+
 #include <string>
 #include <string.h>
 #include <iostream>
@@ -10,6 +12,8 @@
 #include <unordered_set>
 #include <set>
 #include <map>
+#include <mutex>
+#include <condition_variable>
 using std::vector;
 using std::unordered_set;
 using std::pair;
