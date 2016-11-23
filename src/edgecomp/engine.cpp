@@ -17,9 +17,9 @@ void initLVIs(LoadedVertexInterval intervals[], vector<Vertex> &part1, vector<Ve
 
 void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context, unsigned long long int sizeLim, boost::asio::io_service &ioServ);
 
-void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context, boost::asio::io_service &ioServ);
+void computeOneIteration(ComputationSet compsets[], int setSize, int segsiz, int nSegs, LoadedVertexInterval intervals[], Context &context, boost::asio::io_service &ioServ);
 
-void runUpdates(int lower, int upper, ComputationSet compsets[], LoadedVertexInterval intervals[], Context &context);
+void runUpdates(int lower, int upper, int nSegs, ComputationSet compsets[], LoadedVertexInterval intervals[], Context &context);
 
 void updatePartitions(ComputationSet compsets[], Partition &p1, Partition &p2, vector<Vertex> &part1, vector<Vertex> &part2);
 
@@ -204,11 +204,14 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
 	iterNo = 0;
 
 	cout << "NEW EDGES LIMIT: " << sizeLim << endl;
+
+	int segsiz = setSize / 64 + 1;
+	int nSegs = setSize / segsiz + 1;
 	
 	do {
 		cout << "===== STARTING ITERATION " << ++iterNo << endl;
 		iterTimer.startTimer();
-		computeOneIteration(compsets, setSize, intervals, context, ioServ);
+		computeOneIteration(compsets, setSize, segsiz, nSegs, intervals, context, ioServ);
 
 		newRoundEdges += newIterEdges;
 
@@ -238,21 +241,19 @@ void computeEdges(ComputationSet compsets[], int setSize, LoadedVertexInterval i
  *
  * 
  */
-void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInterval intervals[], Context &context, boost::asio::io_service &ioServ)
+void computeOneIteration(ComputationSet compsets[], int setSize, int segsiz, int nSegs, LoadedVertexInterval intervals[], Context &context, boost::asio::io_service &ioServ)
 {
-	newIterEdges = 0;
-	int segment = setSize/context.getNumThreads();	
 	int lower, upper;
+	newIterEdges = 0;
 	numFinished = 0;
 	compFinished = false;
 
-	std::cout << "SETSIZ: " << setSize << std::endl;
 	
-	for (int i = 0; i < context.getNumThreads(); i++)
+	for (int i = 0; i < nSegs; i++)
 	{
-		lower = i * segment;
-		upper = (i == context.getNumThreads()-1) ? setSize : (i+1) * segment;
-		ioServ.post(boost::bind(runUpdates, lower, upper, compsets, intervals, context));
+		lower = i * segsiz;
+		upper = (lower + segsiz < setSize) ? lower + segsiz : setSize;
+		ioServ.post(boost::bind(runUpdates, lower, upper, nSegs, compsets, intervals, context));
 	}
 
 	std::unique_lock<std::mutex> lck(comp_mtx);
@@ -260,7 +261,7 @@ void computeOneIteration(ComputationSet compsets[], int setSize, LoadedVertexInt
 }
 
 
-void runUpdates(int lower, int upper, ComputationSet compsets[], LoadedVertexInterval intervals[], Context &context)
+void runUpdates(int lower, int upper, int nSegs, ComputationSet compsets[], LoadedVertexInterval intervals[], Context &context)
 {
 	long newThreadEdges = 0;
 
@@ -277,7 +278,7 @@ void runUpdates(int lower, int upper, ComputationSet compsets[], LoadedVertexInt
 	std::unique_lock<std::mutex> lck(add_edges);
 	newIterEdges += newThreadEdges;
 	numFinished++;
-	if (numFinished == context.getNumThreads()) {
+	if (numFinished == nSegs) {
 		compFinished = true;
 		cv.notify_one();
 	}
