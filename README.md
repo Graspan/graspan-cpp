@@ -1,10 +1,10 @@
-# Graspan
+# Graspan C++
 
-Welcome to the home repository of Graspan.
+Welcome to the home repository of Graspan C++.
 
-Graspan is a disk-based parallel graph system that uses an edge-pair centric computation model to compute dynamic transitive closures on large program graphs. Graspan has been implemented in two languages: Java and C++. Both implementations are provided in this repository. 
+Graspan is a disk-based parallel graph system that uses an edge-pair centric computation model to compute dynamic transitive closures on large program graphs. Graspan has been implemented in two languages: Java and C++. This repository provides the C++ implementation of Graspan.
 
-This Readme (in revision) provides a how-to-use guide for both of these implementations. It also provides a description Graspan's motivations and design. 
+This Readme (under revision) provides a how-to-use guide for Graspan C++. 
 
 For a detailed description of our system, you please see the preliminary version of our paper [here](http://www.ics.uci.edu/~guoqingx/papers/wang-asplos17.pdf), which has been accepted in ASPLOS 2017. In addition, a tutorial of Graspan is scheduled to be presented in ASPLOS 2017. If you are interested, please visit our tutorial [page](http://www.ics.uci.edu/~guoqingx/asplos-tutorial/main.html). 
 
