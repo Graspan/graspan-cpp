@@ -12,7 +12,7 @@ For a detailed description of our system, you please see the preliminary version
 
 * [**Kai Wang**](http://www.ics.uci.edu/~wangk7/) - *PhD Student, UCI* 
 * [**Aftab Hussain**](http://www.ics.uci.edu/~aftabh/) - *PhD Student, UCI* 
-* [**Zhiqiang Zuo**](http://zuozhiqiang.bitbucket.org/) - *Postdoc Scholar, UCI* 
+* [**Zhiqiang Zuo**](http://zuozhiqiang.bitbucket.io/) - *Postdoc Scholar, UCI* 
 * [**Harry Xu**](http://www.ics.uci.edu/~guoqingx/) - *Assistant Professor, UCI* 
 * [**Ardalan Sani**](http://www.ics.uci.edu/~ardalan/) - *Assistant Professor, UCI* 
 * **John Thorpe** - *Undergraduate Student, UCI*
