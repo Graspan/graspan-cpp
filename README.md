@@ -36,7 +36,7 @@ You may copy any graph and grammar file from our sample datasets [here](https://
 ```
 A B C
 ```
-*represents a rule such that **A** is the left-side of the rule and **BC** is the right-side of the production.*
+*represents a rule such that A is the left-side of the rule and BC is the right-side of the rule.*
 
 After getting the graph and grammar file into the **graspan-cpp/src** folder, run the **run.sh** script in your command line specifying, 
 
