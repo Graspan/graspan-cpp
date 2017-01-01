@@ -1,5 +1,11 @@
 CC=g++ -std=c++0x
 
+#use path according to boost installation directory in user machine
+export LD_LIBRARY_PATH=/home/aftab/Downloads/boost_1.62_installed/lib:$LD_LIBRARY_PATH 
+
+#use paths according to boost installation directory in user machine
+CFLAGS= -I/home/aftab/Downloads/boost_1.62_installed/include -L/home/aftab/Downloads/boost_1.62_installed/lib -O2 -ggdb -lboost_thread -lpthread -lboost_system
+
 ##### source files #####
 # preprocessing
 PREP=preproc/preproc.cpp preproc/preproc_new.cpp preproc/run_pre.cpp
