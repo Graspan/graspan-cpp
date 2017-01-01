@@ -1,5 +1,7 @@
 #! /bin/bash
 
+#use path according to boost installation directory in user machine
+export LD_LIBRARY_PATH=/home/aftab/Downloads/boost_1.62_installed/lib:$LD_LIBRARY_PATH
 
 echo "resetting..."
 if [ "$1" == "dbg" ]
@@ -25,7 +27,7 @@ echo "RUN ON COMPUTER: "$(hostname) > log/pmap.$MEMBUDGET.$NUMPARTITIONS.output
 echo >> log/pmap.$MEMBUDGET.$NUMPARTITIONS.output
 
 echo "running..."
-../bin/comp numPartitions=$NUMPARTITIONS insertionSort=false alterSchedule=false memBudget=$MEMBUDGET inputGraph=$INPGRAPH grammar=$GRAMMAR numThreads=$NUMTHREADS #>> log/cpp.$MEMBUDGET.$NUMPARTITIONS.output &
+../bin/comp numPartitions=$NUMPARTITIONS insertionSort=false alterSchedule=false memBudget=$MEMBUDGET inputGraph=$INPGRAPH grammar=$GRAMMAR numThreads=$NUMTHREADS >> log/cpp.$MEMBUDGET.$NUMPARTITIONS.output &
 
 sleep 1
 PID=$( echo $( ps -f  | grep "../bin/comp" | awk '{print $2}' ) | awk '{print $1}' )
