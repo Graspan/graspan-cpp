@@ -17,8 +17,7 @@ Ensure that you have a recent version of the Boost library installed in your sys
 
 ### Compiling GraspanCPP
 First, download the entire **graspan-cpp** source code into your machine. 
-Next, edit the **makefile** to set the paths to the Boost library include files and lib files in your machine. 
-Finally, run the makefile in your source folder using **make**. GraspanCPP should now be compiled and ready to run. 
+Next, edit the **src/makefile** to set the paths to the Boost library include files and lib files in your machine. Do the same for the **src/run** file. Finally, run the makefile in the **src** folder using **make**. GraspanCPP should now be compiled and ready to run. 
 
 ### Running GraspanCPP
 
