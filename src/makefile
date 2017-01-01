@@ -1,8 +1,10 @@
 CC=g++ -std=c++0x
 
-# will eventually need to use threads
-#CFLAGS=-ggdb -fopenmp -O2
-CFLAGS=-lboost_thread -O3 -ggdb
+#use path according to boost installation directory in user machine
+export LD_LIBRARY_PATH=/home/aftab/Downloads/boost_1.62_installed/lib:$LD_LIBRARY_PATH 
+
+#use paths according to boost installation directory in user machine
+CFLAGS= -I/home/aftab/Downloads/boost_1.62_installed/include -L/home/aftab/Downloads/boost_1.62_installed/lib -O2 -ggdb -lboost_thread -lpthread -lboost_system
 
 ##### source files #####
 # preprocessing
@@ -14,10 +16,7 @@ LOADER=datastructures/loader.cpp edgecomp/grammar.cpp
 DATASTRUCTS=datastructures/vertex.cpp datastructures/loadedvertexinterval.cpp datastructures/minset.cpp datastructures/partition.cpp datastructures/context.cpp datastructures/vit.cpp datastructures/DDM.cpp
 UTIL=../test/timer.cpp Library/Logger.cpp
 
-
-
-
 ##### build rules #####
 comp: dispatcher/graspan.cpp $(PREP) $(LOADER) $(COMPUTATION) $(DATASTRUCTS) $(UTIL)
-	$(CC) $(CFLAGS) dispatcher/graspan.cpp $(PREP) $(LOADER) $(COMPUTATION) $(DATASTRUCTS) $(UTIL) -o ../bin/comp
+	$(CC) dispatcher/graspan.cpp $(PREP) $(LOADER) $(COMPUTATION) $(DATASTRUCTS) $(UTIL) -o ../bin/comp -I/home/aftab/Downloads/boost_1.62_installed/include -L/home/aftab/Downloads/boost_1.62_installed/lib -O2 -ggdb -lboost_thread -lpthread -lboost_system
 
