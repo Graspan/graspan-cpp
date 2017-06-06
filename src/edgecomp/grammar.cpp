@@ -16,7 +16,7 @@ bool Grammar::loadGrammar(string fname){
 	vector<string> tok; //for distinguishing rules
 	string temp; //temporary storage
 
-	while(!fin.getline(str,sizeof(str)).eof()){
+	while(fin.getline(str,sizeof(str))){
 		p = strtok(str,"\t");
 		while(p != NULL){
 			temp = trimStr(p);
