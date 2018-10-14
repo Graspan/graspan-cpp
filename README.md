@@ -8,7 +8,7 @@ This Readme (under revision) provides a how-to-use guide for Graspan C++. To see
 
 See [here](https://github.com/Graspan/graspan-java/blob/master/AboutGraspan.md) to understand **how Graspan works** and how it performs in comparison to other systems (under revision).
 
-For a detailed description of our system, please see the **preliminary version of our paper** [here](http://www.ics.uci.edu/~guoqingx/papers/wang-asplos17.pdf), which has been accepted in ASPLOS 2017. In addition, a tutorial of Graspan is scheduled to be presented in ASPLOS 2017. If you are interested, please visit our **ASPLOS 2017 tutorial** [page](http://www.ics.uci.edu/~guoqingx/asplos-tutorial/main.html). 
+For a detailed description of our system, please see the **preliminary version of our paper** [here](http://www.ics.uci.edu/~guoqingx/papers/wang-asplos17.pdf), which has been accepted in ASPLOS 2017. In addition, a tutorial of Graspan has been presented in ASPLOS 2017. If you are interested, visit our **ASPLOS 2017 tutorial** [page](http://www.ics.uci.edu/~guoqingx/asplos-tutorial/main.html). 
 
 ## Getting Started
 
