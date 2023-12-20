@@ -25,7 +25,7 @@ Next, edit the **src/makefile** to set the paths to the Boost library include fi
 
 Graspan needs two input files: (1) a graph on which Graspan can perform computations and (2) a grammar file which describes how the computations (edge additions) are to be performed.
 
-You may copy any graph and grammar file from our sample datasets [here](https://drive.google.com/drive/folders/0B8bQanV_QfNkbDJsOWc2WWk4SkE?usp=sharing) inside the **graspan-cpp/src** folder in your machine. 
+You may copy any graph and grammar file from our sample datasets [here](https://drive.google.com/drive/folders/1M4WxwykUd-jX8jBA50pSNf2R-1IJ49PJ?usp=drive_link) inside the **graspan-cpp/src** folder in your machine. 
 
 *Note that Graspan supports graph files in edge-list format as shown below,*
 
